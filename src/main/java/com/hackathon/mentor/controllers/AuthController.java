@@ -1,5 +1,6 @@
 package com.hackathon.mentor.controllers;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -21,11 +22,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.hackathon.mentor.payload.request.LoginRequest;
 import com.hackathon.mentor.payload.request.SignupRequest;
@@ -142,4 +139,9 @@ public class AuthController {
 		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
 	}
 
+	@GetMapping("/user/role")
+	public ResponseEntity<?> getRole(Principal principal) {
+		User user = userRepository.getByEmail(principal.getName());
+		return ResponseEntity.ok(user.getRoles());
+	}
 }
