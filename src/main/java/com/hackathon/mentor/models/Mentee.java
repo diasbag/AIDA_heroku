@@ -11,7 +11,7 @@ public class Mentee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private  User user;
 
@@ -30,6 +30,7 @@ public class Mentee {
 
     @Column(name = "achievements")
     private String achievements;
+
 
     public Long getId() {
         return id;

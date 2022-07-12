@@ -19,13 +19,13 @@ public class MentorService {
 
     private MenteeRepository menteeRepository;
 
-    public ResponseEntity<?> rateMentor(Long id, double rate) {
-        Mentor mentor = mentorRepository.findById(id).orElse(null);
-        long count  = mentor.getPeopleCount() +1;
-        double res = (rate + mentor.getRating())/count;
-        mentor.setRating(res);
-        mentor.setPeopleCount(count);
-        mentorRepository.save(mentor);
-        return new ResponseEntity<>(mentor, HttpStatus.OK);
-    }
+//    public ResponseEntity<?> rateMentor(Long id, double rate) {
+//        Mentor mentor = mentorRepository.findById(id).orElse(null);
+//        long count  = mentor.getPeopleCount() +1;
+//        double res = (rate + mentor.getRating())/count;
+//        mentor.setRating(res);
+//        mentor.setPeopleCount(count);
+//        mentorRepository.save(mentor);
+//        return new ResponseEntity<>(mentor, HttpStatus.OK);
+//    }
 }

@@ -13,4 +13,5 @@ public interface MenteeRepository extends JpaRepository<Mentee, Long> {
     List<Mentee> getAll();
 
     Mentee findByUser(User user);
+
 }

@@ -2,7 +2,9 @@ package com.hackathon.mentor.models;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -14,7 +16,7 @@ public class Mentor {
 
 
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private  User user;
 
@@ -23,6 +25,10 @@ public class Mentor {
     private int age;
 
     private String number;
+
+    @OneToOne
+    @JoinColumn(name = "rating_id")
+    private Rating rating;
 
     private String iin;
 
@@ -38,11 +44,14 @@ public class Mentor {
 
     private String school;
 
-    @Column(name = "rating")
-    private double rating;
 
-    @Column(name = "peopleCount")
-    private long peopleCount;
+    @OneToMany
+    private List<Image> images;
+
+    @OneToMany
+    @Column(name = "mentee_id")
+    private Set<Mentee> mentees = new HashSet<>();
+
 
 
     public Mentor(
@@ -65,20 +74,35 @@ public class Mentor {
     }
 
 
-    public long getPeopleCount() {
-        return peopleCount;
+    public Set<Mentee> getMentees() {
+        return mentees;
     }
 
-    public void setPeopleCount(long peopleCount) {
-        this.peopleCount = peopleCount;
+    public Mentee getMentee() {
+        List<Mentee> menteeList = new ArrayList<>(mentees);
+        for (int i = 0; i < menteeList.size(); i++) {
+            return menteeList.get(i);
+        }
+        return null;
     }
 
-    public double getRating() {
+    public Rating getRating() {
         return rating;
     }
 
-    public void setRating(double rating) {
+    public void setRating(Rating rating) {
         this.rating = rating;
+    }
+
+    public List<Image> getImages() {
+        return images;
+    }
+
+    public void setImages(List<Image> images) {
+        this.images = images;
+    }
+    public void setMentees(Set<Mentee> mentees) {
+        this.mentees = mentees;
     }
 
     public String getSchool() {

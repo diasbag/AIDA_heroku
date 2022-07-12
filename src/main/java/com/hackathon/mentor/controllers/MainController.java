@@ -1,31 +1,24 @@
 package com.hackathon.mentor.controllers;
 
-import com.hackathon.mentor.models.ERole;
-import com.hackathon.mentor.models.Mentor;
-import com.hackathon.mentor.models.Role;
-import com.hackathon.mentor.models.User;
+import com.hackathon.mentor.models.*;
 import com.hackathon.mentor.payload.request.SignupMentorRequest;
 import com.hackathon.mentor.payload.request.UpdateMentorRequest;
 import com.hackathon.mentor.payload.response.MessageResponse;
-import com.hackathon.mentor.repository.MentorRepository;
-import com.hackathon.mentor.repository.RoleRepository;
-import com.hackathon.mentor.repository.UserRepository;
+import com.hackathon.mentor.repository.*;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -45,6 +38,12 @@ public class MainController {
     @Autowired
     RoleRepository roleRepository;
 
+    @Autowired
+    SubscribeRepository subscribeRepository;
+
+    @Autowired
+    MenteeRepository menteeRepository;
+
     @GetMapping("/mentors")
     public ResponseEntity<?> getMentors() {
         List<Mentor> mentors = mentorRepository.getAll();
@@ -61,7 +60,7 @@ public class MainController {
         return new ResponseEntity<>(mentor, HttpStatus.OK);
     }
 
-    @GetMapping("/mentors/profile")
+    @GetMapping("/user/profile")
     public ResponseEntity<?> getProfile() {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = userDetails.getUsername();
@@ -69,7 +68,7 @@ public class MainController {
         Mentor mentor = mentorRepository.findByUser(user);
         return new ResponseEntity<>(mentor, HttpStatus.OK);
     }
-    @PutMapping("/mentors/profile/edit")
+    @PutMapping("/mentor/profile/edit")
     public ResponseEntity<?> updateMentor(@RequestBody  UpdateMentorRequest signupMentorRequest) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = userDetails.getUsername();
@@ -93,5 +92,65 @@ public class MainController {
         mentor.setSchool(signupMentorRequest.getSchool());
         mentorRepository.save(mentor);
         return ResponseEntity.ok("User updated successfully!");
+    }
+
+    @GetMapping("/mentor/subscribers")
+    public ResponseEntity<?> getMySubscribers() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = userDetails.getUsername();
+
+        User user = userRepository.findByEmail(email).orElse(null);
+        Mentor mentor = mentorRepository.findByUser(user);
+
+        List<Subscribe> subscribes = subscribeRepository.findByMentor(mentor);
+
+        List<Mentee> mentees = new ArrayList<>();
+        for(int i = 0; i < subscribes.size(); i++) {
+            mentees.add(subscribes.get(i).getMentee());
+        }
+        return new ResponseEntity<>(mentees, HttpStatus.OK);
+    }
+
+    @PutMapping("/mentor/mentee/{id}/confirm")
+    public ResponseEntity<?> confirm(@PathVariable("id") Long id) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = userDetails.getUsername();
+        User user = userRepository.findByEmail(email).orElse(null);
+        Mentor mentor = mentorRepository.findByUser(user);
+        Mentee mentee = menteeRepository.findById(id).orElse(null);
+        Subscribe subscribe = subscribeRepository.getByMentorAndMentee(mentor, mentee);
+        Set<Mentee> mentees = new HashSet<>();
+        mentees.add(mentee);
+        mentor.setMentees(mentees);
+        mentorRepository.save(mentor);
+        Long sid = subscribe.getId();
+        subscribeRepository.deleteById(sid);
+        return new ResponseEntity<>("Success!!!", HttpStatus.OK);
+    }
+
+    @PostMapping("/mentor/mentee/{id}/reject")
+    public ResponseEntity<?> reject(@PathVariable("id") Long id) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = userDetails.getUsername();
+        User user = userRepository.findByEmail(email).orElse(null);
+        Mentor mentor = mentorRepository.findByUser(user);
+        Mentee mentee = menteeRepository.findById(id).orElse(null);
+        Subscribe subscribe = subscribeRepository.getByMentorAndMentee(mentor, mentee);
+        Long sid = subscribe.getId();
+        System.out.println("qwerqwerqwerqwerqwer   " + subscribe.getId());
+        subscribeRepository.deleteById(sid);
+
+        return new ResponseEntity<>("Success" , HttpStatus.OK);
+    }
+
+    @GetMapping("/mentor/mentees")
+    public ResponseEntity<?> getMentorMentees() {
+       UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+       String email = userDetails.getUsername();
+       User user = userRepository.findByEmail(email).orElse(null);
+       Mentor mentor = mentorRepository.findByUser(user);
+
+
+       return new ResponseEntity<>(mentor.getMentees(), HttpStatus.OK);
     }
 }

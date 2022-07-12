@@ -2,11 +2,10 @@ package com.hackathon.mentor.controllers;
 
 import com.hackathon.mentor.models.Mentee;
 import com.hackathon.mentor.models.Mentor;
+import com.hackathon.mentor.models.Subscribe;
 import com.hackathon.mentor.models.User;
 import com.hackathon.mentor.payload.request.UpdateMenteeRequest;
-import com.hackathon.mentor.repository.MenteeRepository;
-import com.hackathon.mentor.repository.RoleRepository;
-import com.hackathon.mentor.repository.UserRepository;
+import com.hackathon.mentor.repository.*;
 import com.hackathon.mentor.security.services.MentorService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -32,6 +33,9 @@ public class MenteeController {
     UserRepository userRepository;
 
     @Autowired
+    MentorRepository mentorRepository;
+
+    @Autowired
     PasswordEncoder encoder;
 
     @Autowired
@@ -39,6 +43,7 @@ public class MenteeController {
 
     @Autowired
     MentorService mentorService;
+
 
     @GetMapping("/mentees")
     public ResponseEntity<?> getAllMentees() {
@@ -55,17 +60,17 @@ public class MenteeController {
         return new ResponseEntity<>(mentee, HttpStatus.OK);
     }
 
-    @GetMapping("/mentees/profile")
-    public ResponseEntity<?> getMenteeProfile() {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String email = userDetails.getUsername();
-        User user = userRepository.getByEmail(email);
-        Mentee mentee = menteeRepository.findByUser(user);
+//    @GetMapping("/user/profile")
+//    public ResponseEntity<?> getMenteeProfile() {
+//        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        String email = userDetails.getUsername();
+//        User user = userRepository.getByEmail(email);
+//        Mentee mentee = menteeRepository.findByUser(user);
+//
+//        return new ResponseEntity<>(mentee, HttpStatus.OK);
+//    }
 
-        return new ResponseEntity<>(mentee, HttpStatus.OK);
-    }
-
-    @PutMapping("/mentees/profile/edit")
+    @PutMapping("/mentee/profile/edit")
     public ResponseEntity<?>  editProfile(@RequestBody UpdateMenteeRequest updateMenteeRequest) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = userDetails.getUsername();
@@ -87,8 +92,10 @@ public class MenteeController {
         return new ResponseEntity<>(mentee, HttpStatus.OK);
     }
 
-    @PostMapping("/mentees/mentors/{id}")
-    public ResponseEntity<?> rateMentor(@PathVariable("id") Long id, @RequestParam("rate") Double rate) {
-        return mentorService.rateMentor(id, rate);
-    }
+
+
+//    @PostMapping("/mentees/mentors/{id}")
+//    public ResponseEntity<?> rateMentor(@PathVariable("id") Long id, @RequestParam("rate") Double rate) {
+//        return mentorService.rateMentor(id, rate);
+//    }
 }

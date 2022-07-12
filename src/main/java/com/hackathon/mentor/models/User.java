@@ -1,6 +1,7 @@
 package com.hackathon.mentor.models;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -39,6 +40,11 @@ public class User {
 	@Size(max = 120)
 	private String password;
 
+	@OneToOne(cascade=CascadeType.PERSIST)
+	@JoinTable(name = "user_avatar",
+			joinColumns = @JoinColumn(name = "user_id"),
+			inverseJoinColumns = @JoinColumn(name = "role_id"))
+	private Image image;
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(	name = "user_roles", 
 				joinColumns = @JoinColumn(name = "user_id"), 
@@ -113,5 +119,13 @@ public class User {
 
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
+	}
+
+	public Image getImage() {
+		return image;
+	}
+
+	public void setImage(Image image) {
+		this.image = image;
 	}
 }

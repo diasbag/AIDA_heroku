@@ -1,5 +1,6 @@
 package com.hackathon.mentor.payload.request;
 
+import javax.persistence.Column;
 import javax.validation.constraints.*;
 import java.util.Set;
 
@@ -36,7 +37,6 @@ public class SignupMentorRequest {
     @Email
     private String email;
 
-
     @NotBlank
     @Size(min = 4, max = 40)
     private String password;
@@ -48,8 +48,6 @@ public class SignupMentorRequest {
     public void setSchool(String school) {
         this.school = school;
     }
-
-
 
     public String getFirstname() {
         return firstname;

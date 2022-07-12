@@ -25,18 +25,12 @@ public class Post {
     @JoinColumn(name = "mentor_id")
     private Mentor mentor;
 
+    @OneToOne
+    @JoinTable(name = "post_image",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "image_id"))
+    private Image image;
 
-//    @Lob
-//    @Column(name = "image")
-//    private byte[] image;
-
-//    public byte[] getPhoto() {
-//        return image;
-//    }
-//
-//    public void setPhoto(byte[] photo) {
-//        this.image = photo;
-//    }
 
 
     public Long getId() {
