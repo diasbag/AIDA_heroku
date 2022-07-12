@@ -1,5 +1,6 @@
 package com.hackathon.mentor.controllers;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -90,10 +91,12 @@ public class AuthController {
 				signupMentorRequest.getEmail(),
 				encoder.encode(signupMentorRequest.getPassword()));
 		Role role = roleRepository.findByName(ERole.ROLE_MENTOR).orElseThrow(() -> new RuntimeException("Error: Role is not found."));;
-		Set<Role> roles = new HashSet<>();
+		List<Role> roles = new ArrayList<>();
 		roles.add(role);
 		user.setRoles(roles);
+
 		userRepository.save(user);
+
 		Mentor mentor = new Mentor();
 		mentor.setAge(signupMentorRequest.getAge());
 		mentor.setIin(signupMentorRequest.getIin());
@@ -122,7 +125,7 @@ public class AuthController {
 				signupMenteeRequest.getEmail(),
 				encoder.encode(signupMenteeRequest.getPassword()));
 		Role role = roleRepository.findByName(ERole.ROLE_MENTEE).orElseThrow(() -> new RuntimeException("Error: Role is not found."));;
-		Set<Role> roles = new HashSet<>();
+		List<Role> roles = new ArrayList<>();
 		roles.add(role);
 		user.setRoles(roles);
 		userRepository.save(user);

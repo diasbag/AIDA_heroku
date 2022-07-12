@@ -31,7 +31,13 @@ public class Post {
             inverseJoinColumns = @JoinColumn(name = "image_id"))
     private Image image;
 
+    public Image getImage() {
+        return image;
+    }
 
+    public void setImage(Image image) {
+        this.image = image;
+    }
 
     public Long getId() {
         return id;

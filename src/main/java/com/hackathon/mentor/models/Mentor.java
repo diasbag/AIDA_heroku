@@ -14,9 +14,7 @@ public class Mentor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
-
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "user_id")
     private  User user;
 
@@ -44,14 +42,13 @@ public class Mentor {
 
     private String school;
 
-
-    @OneToMany
-    private List<Image> images;
+//
+//    @OneToMany
+//    private List<Image> images;
 
     @OneToMany
     @Column(name = "mentee_id")
     private Set<Mentee> mentees = new HashSet<>();
-
 
 
     public Mentor(
@@ -94,13 +91,13 @@ public class Mentor {
         this.rating = rating;
     }
 
-    public List<Image> getImages() {
-        return images;
-    }
-
-    public void setImages(List<Image> images) {
-        this.images = images;
-    }
+//    public List<Image> getImages() {
+//        return images;
+//    }
+//
+//    public void setImages(List<Image> images) {
+//        this.images = images;
+//    }
     public void setMentees(Set<Mentee> mentees) {
         this.mentees = mentees;
     }

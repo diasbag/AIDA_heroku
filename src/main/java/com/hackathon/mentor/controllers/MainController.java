@@ -65,8 +65,17 @@ public class MainController {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = userDetails.getUsername();
         User user = userRepository.findByEmail(email).orElse(null);
-        Mentor mentor = mentorRepository.findByUser(user);
-        return new ResponseEntity<>(mentor, HttpStatus.OK);
+        ERole role = user.getRoles().get(0).getName();
+        System.out.println("8888888888888888888   " + role.name());
+        if (role.name().equals("ROLE_MENTOR") ) {
+            Mentor mentor = mentorRepository.findByUser(user);
+            return new ResponseEntity<>(mentor, HttpStatus.OK);
+        }
+       if (role.equals(ERole.ROLE_MENTEE)) {
+           Mentee mentee = menteeRepository.findByUser(user);
+           return new ResponseEntity<>(mentee, HttpStatus.OK);
+       }
+        return null;
     }
     @PutMapping("/mentor/profile/edit")
     public ResponseEntity<?> updateMentor(@RequestBody  UpdateMentorRequest signupMentorRequest) {
