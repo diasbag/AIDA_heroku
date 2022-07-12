@@ -58,7 +58,7 @@ public class SubscribeController {
         mentees.add(mentee);
         subscribe.setMentee(mentees);
         subscribe.setMentor(mentor);
-        mentor.setMenteesCount(mentor.getMenteesCount()+1);
+//        mentor.setMenteesCount(mentor.getMenteesCount()+1);
         subscribeRepository.save(subscribe);
 
         return new ResponseEntity<>("Success!!!", HttpStatus.OK);
