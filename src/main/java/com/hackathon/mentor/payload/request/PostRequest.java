@@ -10,13 +10,14 @@ import java.util.Date;
 
 public class PostRequest {
 
+
     @NotNull
     private String title;
 
 
     @NotNull
     private String article;
-
+//
 //    @OneToOne
 //    private Image image;
 

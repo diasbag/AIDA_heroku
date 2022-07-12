@@ -1,5 +1,7 @@
 package com.hackathon.mentor.models;
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -13,19 +15,23 @@ public class Post {
     private Long id;
 
     @NotNull
+    @Column(name = "title")
     private String title;
 
 
+    @NotNull
+    @Column(name = "created_date")
     private Date date;
 
     @NotNull
+    @Column(name = "article")
     private String article;
 
     @ManyToOne
     @JoinColumn(name = "mentor_id")
     private Mentor mentor;
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.ALL})
     private Image image;
 
     public Image getImage() {

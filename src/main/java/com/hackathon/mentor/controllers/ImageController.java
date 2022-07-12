@@ -28,7 +28,7 @@ public class ImageController {
     private FileNameHelper fileHelper = new FileNameHelper();
 
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadSingleFile(@RequestParam(value = "file") MultipartFile file) {
+    public ResponseEntity<?> uploadSingleFile(@RequestParam("file") MultipartFile file) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = userDetails.getUsername();
         User user = userRepository.findByEmail(email).orElse(null);

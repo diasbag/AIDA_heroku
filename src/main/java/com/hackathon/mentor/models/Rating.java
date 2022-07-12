@@ -10,9 +10,9 @@ public class Rating {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private double rating;
+    private double rating = 0;
 
-    private long peopleCount;
+    private long peopleCount = 0;
 
     public Long getId() {
         return id;

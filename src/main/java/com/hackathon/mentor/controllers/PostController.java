@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -57,8 +59,9 @@ public class PostController {
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
 
-    @PostMapping("/post")
-    public ResponseEntity<?> createPost(@Valid @RequestBody PostRequest postRequest, @RequestParam("file") MultipartFile file) {
+    @PostMapping(value = "/post/create", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE} )
+    public ResponseEntity<?> createPost(@Valid @RequestPart(value = "post") PostRequest postRequest,
+                                        @RequestPart(required = true) MultipartFile file) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = userDetails.getUsername();
 
@@ -69,7 +72,7 @@ public class PostController {
         Post post = new Post();
         post.setDate(Date.from(Instant.now()));
         post.setTitle(postRequest.getTitle());
-        post.setArticle(post.getArticle());
+        post.setArticle(postRequest.getArticle());
         post.setMentor(mentor);
         post.setImage(image);
         postRepository.save(post);

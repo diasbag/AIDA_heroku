@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.hackathon.mentor</groupId>
-	<artifactId>spring-boot-security-postgresql</artifactId>
+	<artifactId>spring-boot-hackathon</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<properties>
 		<java.version>1.8</java.version>

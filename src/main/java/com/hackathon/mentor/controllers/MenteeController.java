@@ -1,9 +1,7 @@
 package com.hackathon.mentor.controllers;
 
-import com.hackathon.mentor.models.Mentee;
-import com.hackathon.mentor.models.Mentor;
-import com.hackathon.mentor.models.Subscribe;
-import com.hackathon.mentor.models.User;
+import com.hackathon.mentor.models.*;
+import com.hackathon.mentor.payload.request.RatingRequest;
 import com.hackathon.mentor.payload.request.UpdateMenteeRequest;
 import com.hackathon.mentor.repository.*;
 import com.hackathon.mentor.security.services.MentorService;
@@ -43,6 +41,9 @@ public class MenteeController {
 
     @Autowired
     MentorService mentorService;
+
+    @Autowired
+    RatingRepository ratingRepository;
 
 
     @GetMapping("/mentees")
@@ -94,8 +95,36 @@ public class MenteeController {
 
 
 
-//    @PostMapping("/mentees/mentors/{id}")
-//    public ResponseEntity<?> rateMentor(@PathVariable("id") Long id, @RequestParam("rate") Double rate) {
-//        return mentorService.rateMentor(id, rate);
-//    }
+    @PostMapping("/mentees/mentors/{id}")
+    public ResponseEntity<?> rateMentor(@PathVariable("id") Long id, @RequestBody RatingRequest ratingRequest) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = userDetails.getUsername();
+        User user = userRepository.findByEmail(email).orElse(null);
+        Mentee mentee = menteeRepository.findByUser(user);
+
+        Mentor mentor = mentorRepository.findById(id).orElse(null);
+        Set<Mentee> mentees = mentor.getMentees();
+        if (!mentees.contains(mentee)) {
+            return new ResponseEntity<>("poshel Nahui!!! ne tvoi mentor", HttpStatus.CONFLICT);
+        }
+        Rating rating = mentor.getRating();
+        if (rating == null) {
+            Rating rating1 = new Rating();
+            rating1.setRating(ratingRequest.getRate());
+            rating1.setPeopleCount(1);
+            ratingRepository.save(rating1);
+            mentor.setRating(rating1);
+            mentorRepository.save(mentor);
+            return new ResponseEntity<>(mentor, HttpStatus.OK);
+        }
+        long cnt =  (rating.getPeopleCount()+1);
+        double res = (rating.getRating()+ ratingRequest.getRate())/(cnt);
+        rating.setRating(res);
+        rating.setPeopleCount(cnt);
+        ratingRepository.save(rating);
+        mentor.setRating(rating);
+        mentorRepository.save(mentor);
+        return new ResponseEntity<>(mentor, HttpStatus.OK);
+        //return mentorService.rateMentor(id, rate);
+    }
 }
