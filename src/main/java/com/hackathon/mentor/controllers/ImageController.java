@@ -28,7 +28,8 @@ public class ImageController {
     private FileNameHelper fileHelper = new FileNameHelper();
 
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadSingleFile(@RequestParam MultipartFile file) {
+    public ResponseEntity<?> uploadSingleFile(@RequestParam(value = "file",required = false) MultipartFile file) {
+        if (file == null) System.out.println("Aida send the file!");
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = userDetails.getUsername();
         User user = userRepository.findByEmail(email).orElse(null);
