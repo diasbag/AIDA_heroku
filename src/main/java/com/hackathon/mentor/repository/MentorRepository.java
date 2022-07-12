@@ -18,5 +18,7 @@ public interface MentorRepository extends JpaRepository<Mentor, Long> {
     List<Mentor> getAll();
 
     Mentor findByUser(User user);
+
+    Mentor getByUser(User user);
     Page<Mentor> findAll(Pageable pageable);
 }

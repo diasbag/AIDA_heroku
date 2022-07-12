@@ -3,8 +3,10 @@ package com.hackathon.mentor.controllers;
 import com.hackathon.mentor.models.*;
 import com.hackathon.mentor.payload.request.SignupMentorRequest;
 import com.hackathon.mentor.payload.request.UpdateMentorRequest;
+import com.hackathon.mentor.payload.response.MentorProfileResponse;
 import com.hackathon.mentor.payload.response.MessageResponse;
 import com.hackathon.mentor.repository.*;
+import com.hackathon.mentor.security.services.MentorService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,6 +46,9 @@ public class MainController {
     @Autowired
     MenteeRepository menteeRepository;
 
+    @Autowired
+    MentorService mentorService;
+
     @GetMapping("/mentors")
     public ResponseEntity<?> getMentors() {
         List<Mentor> mentors = mentorRepository.getAll();
@@ -66,7 +71,6 @@ public class MainController {
         String email = userDetails.getUsername();
         User user = userRepository.findByEmail(email).orElse(null);
         ERole role = user.getRoles().get(0).getName();
-        System.out.println("8888888888888888888   " + role.name());
         if (role.name().equals("ROLE_MENTOR") ) {
             Mentor mentor = mentorRepository.findByUser(user);
             return new ResponseEntity<>(mentor, HttpStatus.OK);
@@ -128,9 +132,7 @@ public class MainController {
         Mentor mentor = mentorRepository.findByUser(user);
         Mentee mentee = menteeRepository.findById(id).orElse(null);
         Subscribe subscribe = subscribeRepository.getByMentorAndMentee(mentor, mentee);
-        Set<Mentee> mentees = new HashSet<>();
-        mentees.add(mentee);
-        mentor.setMentees(mentees);
+        mentor.getMentees().add(mentee);
         mentorRepository.save(mentor);
         Long sid = subscribe.getId();
         subscribeRepository.deleteById(sid);

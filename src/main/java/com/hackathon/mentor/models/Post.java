@@ -26,9 +26,6 @@ public class Post {
     private Mentor mentor;
 
     @OneToOne
-    @JoinTable(name = "post_image",
-            joinColumns = @JoinColumn(name = "post_id"),
-            inverseJoinColumns = @JoinColumn(name = "image_id"))
     private Image image;
 
     public Image getImage() {

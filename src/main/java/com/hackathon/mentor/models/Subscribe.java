@@ -16,10 +16,7 @@ public class Subscribe {
     private Mentor mentor;
 
 
-    @OneToMany
-    @JoinTable(	name = "subscribers",
-            joinColumns = @JoinColumn(name = "mentor_id"),
-            inverseJoinColumns = @JoinColumn(name = "mentee_id"))
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Mentee> mentee;
 
     public Long getId() {
