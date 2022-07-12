@@ -1,32 +1,26 @@
 package com.hackathon.mentor.controllers;
 
 import com.hackathon.mentor.models.*;
-import com.hackathon.mentor.payload.request.SignupMentorRequest;
 import com.hackathon.mentor.payload.request.UpdateMentorRequest;
-import com.hackathon.mentor.payload.response.MentorProfileResponse;
-import com.hackathon.mentor.payload.response.MessageResponse;
+import com.hackathon.mentor.payload.response.MentorsResponse;
 import com.hackathon.mentor.repository.*;
 import com.hackathon.mentor.security.services.MentorService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.method.P;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.*;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @SecurityRequirement(name = "basicauth")
 @RequestMapping("/api")
-public class MainController {
+public class MentorController {
 
     @Autowired
     MentorRepository mentorRepository;
@@ -52,7 +46,23 @@ public class MainController {
     @GetMapping("/mentors")
     public ResponseEntity<?> getMentors() {
         List<Mentor> mentors = mentorRepository.getAll();
-        return new ResponseEntity<>(mentors, HttpStatus.OK);
+        List<MentorsResponse> mentorsResponseList = new ArrayList<>();
+        for (int i = 0; i < mentors.size(); i++) {
+            MentorsResponse mentorsResponse = new MentorsResponse();
+            mentorsResponse.setUser(mentors.get(i).getUser());
+            mentorsResponse.setAge(mentors.get(i).getAge());
+            mentorsResponse.setCountry(mentors.get(i).getCountry());
+            mentorsResponse.setRating(mentors.get(i).getRating());
+            mentorsResponse.setIin(mentors.get(i).getIin());
+            mentorsResponse.setMajor(mentors.get(i).getMajor());
+            mentorsResponse.setNumber(mentors.get(i).getNumber());
+            mentorsResponse.setSchool(mentors.get(i).getSchool());
+            mentorsResponse.setUniversity(mentors.get(i).getUniversity());
+            mentorsResponse.setUserInfo(mentors.get(i).getUserInfo());
+            mentorsResponse.setWork(mentors.get(i).getWork());
+            mentorsResponseList.add(mentorsResponse);
+        }
+        return new ResponseEntity<>(mentorsResponseList, HttpStatus.OK);
     }
 
 

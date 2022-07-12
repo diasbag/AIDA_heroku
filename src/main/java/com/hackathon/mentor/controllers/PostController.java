@@ -5,6 +5,7 @@ import com.hackathon.mentor.models.Mentor;
 import com.hackathon.mentor.models.Post;
 import com.hackathon.mentor.models.User;
 import com.hackathon.mentor.payload.request.PostRequest;
+import com.hackathon.mentor.payload.response.PostResponse;
 import com.hackathon.mentor.repository.MentorRepository;
 import com.hackathon.mentor.repository.PostRepository;
 import com.hackathon.mentor.repository.UserRepository;
@@ -30,6 +31,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.file.Paths;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -56,7 +58,17 @@ public class PostController {
     @GetMapping("/posts")
     public ResponseEntity<?> getPosts() {
         List<Post> posts = postRepository.getAll();
-        return new ResponseEntity<>(posts, HttpStatus.OK);
+        List<PostResponse> postResponseList = new ArrayList<>();
+        for (int i = 0; i < posts.size(); i++) {
+            PostResponse postResponse = new PostResponse();
+            postResponse.setTitle(posts.get(i).getTitle());
+            postResponse.setArticle(posts.get(i).getArticle());
+            postResponse.setDate(posts.get(i).getDate());
+            postResponse.setImage(posts.get(i).getImage());
+            postResponse.setUser(posts.get(i).getMentor().getUser());
+            postResponseList.add(postResponse);
+        }
+        return new ResponseEntity<>(postResponseList, HttpStatus.OK);
     }
 
     @PostMapping(value = "/post/create", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE} )
