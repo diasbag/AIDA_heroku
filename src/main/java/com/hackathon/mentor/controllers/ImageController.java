@@ -5,6 +5,7 @@ import com.hackathon.mentor.models.User;
 import com.hackathon.mentor.repository.UserRepository;
 import com.hackathon.mentor.security.services.ImageService;
 import com.hackathon.mentor.utils.FileNameHelper;
+import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,6 +14,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
+
+import javax.servlet.http.HttpServletRequest;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -31,6 +35,7 @@ public class ImageController {
     public ResponseEntity<?> uploadSingleFile(@RequestParam("file") MultipartFile file) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = userDetails.getUsername();
+
         User user = userRepository.findByEmail(email).orElse(null);
         Image image = Image.buildImage(file, fileHelper);
         user.setImage(image);

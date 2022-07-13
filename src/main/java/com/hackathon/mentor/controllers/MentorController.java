@@ -73,67 +73,68 @@ public class MentorController {
         return new ResponseEntity<>(mentorsResponseList, HttpStatus.OK);
     }
 
-    @PostMapping("mentors/filter")
+    @GetMapping("mentors/filter")
     public ResponseEntity<?> getMentorsByCountry(@RequestBody FilterRequest filterRequest) {
         String country = filterRequest.getCountry();
         String major = filterRequest.getMajor();
-        List<Mentor> mentors = null;
-        if (country != null && major != null) {
-            mentors = mentorRepository.findByCountryAndMajor(country , major);
-        } else if (country != null && major == null) {
-            mentors = mentorRepository.findByCountry(country);
-        } else if (country == null && major != null) {
-            mentors = mentorRepository.findByMajor(major);
-        }
-        List<MentorsResponse> mentorsResponseList = new ArrayList<>();
-        if (mentors == null) {
-            return new ResponseEntity<>("Not found", HttpStatus.NOT_FOUND);
-        }
-        for (int i = 0; i < mentors.size(); i++) {
-            MentorsResponse mentorsResponse = new MentorsResponse();
-            mentorsResponse.setUser(mentors.get(i).getUser());
-            mentorsResponse.setAge(mentors.get(i).getAge());
-            mentorsResponse.setCountry(mentors.get(i).getCountry());
-            mentorsResponse.setRating(mentors.get(i).getRating());
-            mentorsResponse.setIin(mentors.get(i).getIin());
-            mentorsResponse.setMajor(mentors.get(i).getMajor());
-            mentorsResponse.setNumber(mentors.get(i).getNumber());
-            mentorsResponse.setSchool(mentors.get(i).getSchool());
-            mentorsResponse.setUniversity(mentors.get(i).getUniversity());
-            mentorsResponse.setUserInfo(mentors.get(i).getUserInfo());
-            mentorsResponse.setWork(mentors.get(i).getWork());
-            mentorsResponseList.add(mentorsResponse);
-        }
-        return new ResponseEntity<>(mentorsResponseList, HttpStatus.OK);
-    }
+        return mentorService.filtration(country, major);
+//        List<Mentor> mentors = null;
+//        if (country != null && major != null) {
+//            mentors = mentorRepository.findByCountryAndMajor(country , major);
+//        } else if (country != null && major == null) {
+//            mentors = mentorRepository.findByCountry(country);
+//        } else if (country == null && major != null) {
+//            mentors = mentorRepository.findByMajor(major);
+//        }
+//        List<MentorsResponse> mentorsResponseList = new ArrayList<>();
+//        if (mentors == null) {
+//            return new ResponseEntity<>("Not found", HttpStatus.NOT_FOUND);
+//        }
+//        for (int i = 0; i < mentors.size(); i++) {
+//            MentorsResponse mentorsResponse = new MentorsResponse();
+//            mentorsResponse.setUser(mentors.get(i).getUser());
+//            mentorsResponse.setAge(mentors.get(i).getAge());
+//            mentorsResponse.setCountry(mentors.get(i).getCountry());
+//            mentorsResponse.setRating(mentors.get(i).getRating());
+//            mentorsResponse.setIin(mentors.get(i).getIin());
+//            mentorsResponse.setMajor(mentors.get(i).getMajor());
+//            mentorsResponse.setNumber(mentors.get(i).getNumber());
+//            mentorsResponse.setSchool(mentors.get(i).getSchool());
+//            mentorsResponse.setUniversity(mentors.get(i).getUniversity());
+//            mentorsResponse.setUserInfo(mentors.get(i).getUserInfo());
+//            mentorsResponse.setWork(mentors.get(i).getWork());
+//            mentorsResponseList.add(mentorsResponse);
+//        }
+//        return new ResponseEntity<>(mentorsResponseList, HttpStatus.OK);
+//    }
+//
+//
+//    @GetMapping("/mentors/{id}")
+//    public ResponseEntity<?> getMentorById(@PathVariable("id") Long id) {
+//        Mentor mentor = mentorRepository.findById(id).orElse(null);
+//        if (mentor == null) {
+//            return new ResponseEntity<>("Not Found!!!", HttpStatus.NOT_FOUND);
+//        }
+//        MentorProfileResponse mentorProfileResponse = new MentorProfileResponse();
+//        List<Post> posts = postRepository.getByMentor(mentor);
+//        mentorProfileResponse.setFirstname(mentor.getUser().getFirstname());
+//        mentorProfileResponse.setLastname(mentor.getUser().getLastname());
+//        mentorProfileResponse.setEmail(mentor.getUser().getEmail());
+//        mentorProfileResponse.setImage(mentor.getUser().getImage());
+//        mentorProfileResponse.setAge(mentor.getAge());
+//        mentorProfileResponse.setIin(mentor.getIin());
+//        mentorProfileResponse.setRating(mentor.getRating());
+//        mentorProfileResponse.setMenteesCount(mentor.getMentees().size());
+//        mentorProfileResponse.setNumber(mentor.getNumber());
+//        mentorProfileResponse.setMajor(mentor.getMajor());
+//        mentorProfileResponse.setCountry(mentor.getCountry());
+//        mentorProfileResponse.setSchool(mentor.getSchool());
+//        mentorProfileResponse.setPosts(posts);
+//        mentorProfileResponse.setWork(mentor.getWork());
+//        mentorProfileResponse.setUserInfo(mentor.getUserInfo());
+//        mentorProfileResponse.setUniversity(mentor.getUniversity());
 
-
-    @GetMapping("/mentors/{id}")
-    public ResponseEntity<?> getMentorById(@PathVariable("id") Long id) {
-        Mentor mentor = mentorRepository.findById(id).orElse(null);
-        if (mentor == null) {
-            return new ResponseEntity<>("Not Found!!!", HttpStatus.NOT_FOUND);
-        }
-        MentorProfileResponse mentorProfileResponse = new MentorProfileResponse();
-        List<Post> posts = postRepository.getByMentor(mentor);
-        mentorProfileResponse.setFirstname(mentor.getUser().getFirstname());
-        mentorProfileResponse.setLastname(mentor.getUser().getLastname());
-        mentorProfileResponse.setEmail(mentor.getUser().getEmail());
-        mentorProfileResponse.setImage(mentor.getUser().getImage());
-        mentorProfileResponse.setAge(mentor.getAge());
-        mentorProfileResponse.setIin(mentor.getIin());
-        mentorProfileResponse.setRating(mentor.getRating());
-        mentorProfileResponse.setMenteesCount(mentor.getMentees().size());
-        mentorProfileResponse.setNumber(mentor.getNumber());
-        mentorProfileResponse.setMajor(mentor.getMajor());
-        mentorProfileResponse.setCountry(mentor.getCountry());
-        mentorProfileResponse.setSchool(mentor.getSchool());
-        mentorProfileResponse.setPosts(posts);
-        mentorProfileResponse.setWork(mentor.getWork());
-        mentorProfileResponse.setUserInfo(mentor.getUserInfo());
-        mentorProfileResponse.setUniversity(mentor.getUniversity());
-
-        return new ResponseEntity<>(mentorProfileResponse, HttpStatus.OK);
+//        return new ResponseEntity<>(mentorProfileResponse, HttpStatus.OK);
     }
 
     @GetMapping("/user/profile")
