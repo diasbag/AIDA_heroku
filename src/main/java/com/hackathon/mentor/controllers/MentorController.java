@@ -145,38 +145,38 @@ public class MentorController {
         if (role.name().equals("ROLE_MENTOR") ) {
             Mentor mentor = mentorRepository.findByUser(user);
             List<Post> posts = postRepository.getByMentor(mentor);
-            ActiveMentorProfileDTO mentorDTO = new ActiveMentorProfileDTO();
-            mentorDTO.setFirstname(user.getFirstname());
-            mentorDTO.setLastname(user.getLastname());
-            mentorDTO.setEmail(user.getEmail());
-            mentorDTO.setImage(user.getImage());
-            mentorDTO.setMajor(mentor.getMajor());
-            mentorDTO.setAge(mentor.getAge());
-            mentorDTO.setCountry(mentor.getCountry());
-            mentorDTO.setPosts(posts);
-            mentorDTO.setRating(mentor.getRating().getRating());
-            mentorDTO.setVotes(mentor.getRating().getPeopleCount());
-            mentorDTO.setPostCount(posts.size());
-            mentorDTO.setMentees(mentor.getMentees());
-            mentorDTO.setMenteesCount(mentor.getMentees().size());
-            mentorDTO.setNumber(mentor.getNumber());
-            mentorDTO.setSchool(mentor.getSchool());
-            mentorDTO.setUniversity(mentor.getUniversity());
-            mentorDTO.setUserInfo(mentor.getUserInfo());
-            return new ResponseEntity<>(mentorDTO, HttpStatus.OK);
+//            ActiveMentorProfileDTO mentorDTO = new ActiveMentorProfileDTO();
+//            mentorDTO.setFirstname(user.getFirstname());
+//            mentorDTO.setLastname(user.getLastname());
+//            mentorDTO.setEmail(user.getEmail());
+//            mentorDTO.setImage(user.getImage());
+//            mentorDTO.setMajor(mentor.getMajor());
+//            mentorDTO.setAge(mentor.getAge());
+//            mentorDTO.setCountry(mentor.getCountry());
+//            mentorDTO.setPosts(posts);
+//            mentorDTO.setRating(mentor.getRating().getRating());
+//            mentorDTO.setVotes(mentor.getRating().getPeopleCount());
+//            mentorDTO.setPostCount(posts.size());
+//            mentorDTO.setMentees(mentor.getMentees());
+//            mentorDTO.setMenteesCount(mentor.getMentees().size());
+//            mentorDTO.setNumber(mentor.getNumber());
+//            mentorDTO.setSchool(mentor.getSchool());
+//            mentorDTO.setUniversity(mentor.getUniversity());
+//            mentorDTO.setUserInfo(mentor.getUserInfo());
+            return new ResponseEntity<>(mentor, HttpStatus.OK);
         }
        if (role.equals(ERole.ROLE_MENTEE)) {
            Mentee mentee = menteeRepository.findByUser(user);
-           ActiveMenteeProfileDTO menteeDTO = new ActiveMenteeProfileDTO();
-           menteeDTO.setFirstname(mentee.getUser().getFirstname());
-           menteeDTO.setLastname(mentee.getUser().getLastname());
-           menteeDTO.setEmail(mentee.getUser().getEmail());
-           menteeDTO.setImage(mentee.getUser().getImage());
-           menteeDTO.setGrade(mentee.getGrade());
-           menteeDTO.setAchievements(mentee.getAchievements());
-           menteeDTO.setNumber(mentee.getNumber());
-           menteeDTO.setSchool(mentee.getSchool());
-           return new ResponseEntity<>(menteeDTO, HttpStatus.OK);
+//           ActiveMenteeProfileDTO menteeDTO = new ActiveMenteeProfileDTO();
+//           menteeDTO.setFirstname(mentee.getUser().getFirstname());
+//           menteeDTO.setLastname(mentee.getUser().getLastname());
+//           menteeDTO.setEmail(mentee.getUser().getEmail());
+//           menteeDTO.setImage(mentee.getUser().getImage());
+//           menteeDTO.setGrade(mentee.getGrade());
+//           menteeDTO.setAchievements(mentee.getAchievements());
+//           menteeDTO.setNumber(mentee.getNumber());
+//           menteeDTO.setSchool(mentee.getSchool());
+           return new ResponseEntity<>(mentee, HttpStatus.OK);
        }
         return null;
     }
