@@ -14,16 +14,16 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+
     @Column(name = "title")
     private String title;
 
 
-    @NotNull
+
     @Column(name = "created_date")
     private Date date;
 
-    @NotNull
+
     @Column(name = "article")
     private String article;
 

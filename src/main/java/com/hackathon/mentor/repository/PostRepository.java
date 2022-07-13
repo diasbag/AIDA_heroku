@@ -15,4 +15,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> getAll();
 
     Post findByMentor(Mentor mentor);
+
+    List<Post> getByMentor(Mentor mentor);
+    Post findByIdAndMentor(Long id, Mentor mentor);
 }

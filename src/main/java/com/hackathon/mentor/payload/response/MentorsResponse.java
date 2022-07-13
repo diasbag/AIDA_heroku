@@ -32,6 +32,16 @@ public class MentorsResponse {
 
     private String school;
 
+    private int MenteesCount;
+
+    public int getMenteesCount() {
+        return MenteesCount;
+    }
+
+    public void setMenteesCount(int menteesCount) {
+        MenteesCount = menteesCount;
+    }
+
     public User getUser() {
         return user;
     }

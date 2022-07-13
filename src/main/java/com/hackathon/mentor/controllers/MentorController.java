@@ -3,6 +3,8 @@ package com.hackathon.mentor.controllers;
 import com.hackathon.mentor.models.*;
 import com.hackathon.mentor.payload.request.FilterRequest;
 import com.hackathon.mentor.payload.request.UpdateMentorRequest;
+import com.hackathon.mentor.payload.response.ActiveMenteeProfileDTO;
+import com.hackathon.mentor.payload.response.ActiveMentorProfileDTO;
 import com.hackathon.mentor.payload.response.MentorProfileResponse;
 import com.hackathon.mentor.payload.response.MentorsResponse;
 import com.hackathon.mentor.repository.*;
@@ -45,6 +47,9 @@ public class MentorController {
     @Autowired
     MentorService mentorService;
 
+    @Autowired
+    PostRepository postRepository;
+
     @GetMapping("/mentors")
     public ResponseEntity<?> getMentors() {
         List<Mentor> mentors = mentorRepository.getAll();
@@ -63,6 +68,7 @@ public class MentorController {
             mentorsResponse.setUserInfo(mentors.get(i).getUserInfo());
             mentorsResponse.setWork(mentors.get(i).getWork());
             mentorsResponseList.add(mentorsResponse);
+            mentorsResponse.setMenteesCount(mentors.get(i).getMentees().size());
         }
         return new ResponseEntity<>(mentorsResponseList, HttpStatus.OK);
     }
@@ -109,7 +115,7 @@ public class MentorController {
             return new ResponseEntity<>("Not Found!!!", HttpStatus.NOT_FOUND);
         }
         MentorProfileResponse mentorProfileResponse = new MentorProfileResponse();
-
+        List<Post> posts = postRepository.getByMentor(mentor);
         mentorProfileResponse.setFirstname(mentor.getUser().getFirstname());
         mentorProfileResponse.setLastname(mentor.getUser().getLastname());
         mentorProfileResponse.setEmail(mentor.getUser().getEmail());
@@ -122,10 +128,10 @@ public class MentorController {
         mentorProfileResponse.setMajor(mentor.getMajor());
         mentorProfileResponse.setCountry(mentor.getCountry());
         mentorProfileResponse.setSchool(mentor.getSchool());
+        mentorProfileResponse.setPosts(posts);
         mentorProfileResponse.setWork(mentor.getWork());
         mentorProfileResponse.setUserInfo(mentor.getUserInfo());
         mentorProfileResponse.setUniversity(mentor.getUniversity());
-
 
         return new ResponseEntity<>(mentorProfileResponse, HttpStatus.OK);
     }
@@ -138,11 +144,39 @@ public class MentorController {
         ERole role = user.getRoles().get(0).getName();
         if (role.name().equals("ROLE_MENTOR") ) {
             Mentor mentor = mentorRepository.findByUser(user);
-            return new ResponseEntity<>(mentor, HttpStatus.OK);
+            List<Post> posts = postRepository.getByMentor(mentor);
+            ActiveMentorProfileDTO mentorDTO = new ActiveMentorProfileDTO();
+            mentorDTO.setFirstname(user.getFirstname());
+            mentorDTO.setLastname(user.getLastname());
+            mentorDTO.setEmail(user.getEmail());
+            mentorDTO.setImage(user.getImage());
+            mentorDTO.setMajor(mentor.getMajor());
+            mentorDTO.setAge(mentor.getAge());
+            mentorDTO.setCountry(mentor.getCountry());
+            mentorDTO.setPosts(posts);
+            mentorDTO.setRating(mentor.getRating().getRating());
+            mentorDTO.setVotes(mentor.getRating().getPeopleCount());
+            mentorDTO.setPostCount(posts.size());
+            mentorDTO.setMentees(mentor.getMentees());
+            mentorDTO.setMenteesCount(mentor.getMentees().size());
+            mentorDTO.setNumber(mentor.getNumber());
+            mentorDTO.setSchool(mentor.getSchool());
+            mentorDTO.setUniversity(mentor.getUniversity());
+            mentorDTO.setUserInfo(mentor.getUserInfo());
+            return new ResponseEntity<>(mentorDTO, HttpStatus.OK);
         }
        if (role.equals(ERole.ROLE_MENTEE)) {
            Mentee mentee = menteeRepository.findByUser(user);
-           return new ResponseEntity<>(mentee, HttpStatus.OK);
+           ActiveMenteeProfileDTO menteeDTO = new ActiveMenteeProfileDTO();
+           menteeDTO.setFirstname(mentee.getUser().getFirstname());
+           menteeDTO.setLastname(mentee.getUser().getLastname());
+           menteeDTO.setEmail(mentee.getUser().getEmail());
+           menteeDTO.setImage(mentee.getUser().getImage());
+           menteeDTO.setGrade(mentee.getGrade());
+           menteeDTO.setAchievements(mentee.getAchievements());
+           menteeDTO.setNumber(mentee.getNumber());
+           menteeDTO.setSchool(mentee.getSchool());
+           return new ResponseEntity<>(menteeDTO, HttpStatus.OK);
        }
         return null;
     }

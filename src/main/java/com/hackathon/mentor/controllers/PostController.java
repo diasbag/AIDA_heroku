@@ -71,26 +71,75 @@ public class PostController {
         return new ResponseEntity<>(postResponseList, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/post/create", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE} )
-    public ResponseEntity<?> createPost(@Valid @RequestPart(value = "post") PostRequest postRequest,
-                                        @RequestPart(name = "file") MultipartFile file) {
+
+//    @PostMapping(value = "/post/create", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE} )
+//    public ResponseEntity<?> createPost(@Valid @RequestPart(value = "post") PostRequest postRequest,
+//                                        @RequestPart(name = "file") MultipartFile file) {
+//        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        String email = userDetails.getUsername();
+//
+//        User user = userRepository.findByEmail(email).orElse(null);
+//
+//        Mentor mentor = mentorRepository.findByUser(user);
+//        Image image = Image.buildImage(file, fileHelper);
+//        Post post = new Post();
+//        post.setDate(Date.from(Instant.now()));
+//        post.setTitle(postRequest.getTitle());
+//        post.setArticle(postRequest.getArticle());
+//        post.setMentor(mentor);
+//        post.setImage(image);
+//        postRepository.save(post);
+//        return new ResponseEntity<>("Success!!!", HttpStatus.OK);
+//    }
+
+    @PostMapping("/post/{id}/create")
+    public ResponseEntity<?> createPost (@PathVariable("id") Long id, @RequestBody PostRequest postRequest) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = userDetails.getUsername();
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Not found!!!"));
+        Mentor mentor = mentorRepository.findByUser(user);
 
+        Post post = postRepository.findByIdAndMentor(id, mentor);
+
+        post.setTitle(postRequest.getTitle());
+        post.setArticle(postRequest.getArticle());
+        post.setDate(Date.from(Instant.now()));
+
+        postRepository.save(post);
+
+        return new ResponseEntity<>(post, HttpStatus.OK);
+    }
+
+    @PostMapping("/post/uploadImage")
+    public ResponseEntity<?> uploadPostImage(@RequestParam("file") MultipartFile file) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = userDetails.getUsername();
         User user = userRepository.findByEmail(email).orElse(null);
-
         Mentor mentor = mentorRepository.findByUser(user);
         Image image = Image.buildImage(file, fileHelper);
         Post post = new Post();
-        post.setDate(Date.from(Instant.now()));
-        post.setTitle(postRequest.getTitle());
-        post.setArticle(postRequest.getArticle());
         post.setMentor(mentor);
         post.setImage(image);
         postRepository.save(post);
-        return new ResponseEntity<>("Success!!!", HttpStatus.OK);
+        return new ResponseEntity<>(post.getId(), HttpStatus.OK);
     }
 
+    @GetMapping("/mentor/{id}/posts")
+    public ResponseEntity<?> getMentorPostsById(@PathVariable("id") Long id) {
+        Mentor mentor = mentorRepository.findById(id).orElse(null);
+        List<Post> posts = postRepository.getByMentor(mentor);
+        return new ResponseEntity<>(posts, HttpStatus.OK);
+    }
+
+    @GetMapping("/user/posts")
+    public ResponseEntity<?> getMentorPosts() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = userDetails.getUsername();
+        User user = userRepository.findByEmail(email).orElse(null);
+        Mentor mentor = mentorRepository.findByUser(user);
+        List<Post> posts = postRepository.getByMentor(mentor);
+        return new ResponseEntity<>(posts, HttpStatus.OK);
+    }
 //    @PostMapping("/post/uploadImage")
 //    public ResponseEntity<?> uploadPostImage() {
 //        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

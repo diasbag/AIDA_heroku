@@ -1,71 +1,52 @@
 package com.hackathon.mentor.payload.response;
 
-import com.hackathon.mentor.models.Image;
-import com.hackathon.mentor.models.Mentee;
-import com.hackathon.mentor.models.Rating;
+import com.hackathon.mentor.models.*;
 
+import javax.persistence.Column;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
 public class MentorProfileResponse {
+
     private String firstname;
 
 
     private String lastname;
 
-    private String username;
 
     private String email;
-
-    private Image image;
-
     private int age;
 
     private String number;
 
+    private Rating rating;
+
+    private String iin;
+
+    private String major;
+
+    private String university;
+
+    private String country;
+
+    private String work;
+
+    private String userInfo;
+
+    private String school;
+
     private int menteesCount;
 
+    private List<Post> posts;
 
-    public int getMenteesCount() {
-        return menteesCount;
-    }
-
-    public void setMenteesCount(int menteesCount) {
-        this.menteesCount = menteesCount;
-    }
-
-    public String getFirstname() {
-        return firstname;
-    }
-
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    private Image image;
 
     public Image getImage() {
         return image;
@@ -73,6 +54,22 @@ public class MentorProfileResponse {
 
     public void setImage(Image image) {
         this.image = image;
+    }
+
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }
+
+    public int getMenteesCount() {
+        return menteesCount;
+    }
+
+    public void setMenteesCount(int menteesCount) {
+        this.menteesCount = menteesCount;
     }
 
     public int getAge() {
@@ -155,20 +152,29 @@ public class MentorProfileResponse {
         this.school = school;
     }
 
-    private Rating rating;
+    public String getFirstname() {
+        return firstname;
+    }
 
-    private String iin;
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
 
-    private String major;
+    public String getLastname() {
+        return lastname;
+    }
 
-    private String university;
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
 
-    private String country;
+    public String getEmail() {
+        return email;
+    }
 
-    private String work;
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-    private String userInfo;
-
-    private String school;
 
 }

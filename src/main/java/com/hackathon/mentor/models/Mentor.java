@@ -42,12 +42,6 @@ public class Mentor {
 
     private String school;
 
-//
-//    @OneToMany
-//    private List<Image> images;
-
-//    @Column(name = "mentees_count")
-//    private int menteesCount;
     @ManyToMany
     @Column(name = "mentee_id")
     private Set<Mentee> mentees = new HashSet<>();
@@ -72,13 +66,6 @@ public class Mentor {
 
     }
 
-//    public int getMenteesCount() {
-//        return menteesCount;
-//    }
-//
-//    public void setMenteesCount(int menteesCount) {
-//        this.menteesCount = menteesCount;
-//    }
 
     public Set<Mentee> getMentees() {
         return mentees;
