@@ -1,6 +1,7 @@
 package com.hackathon.mentor.controllers;
 
 import com.hackathon.mentor.models.*;
+import com.hackathon.mentor.payload.request.FilterRequest;
 import com.hackathon.mentor.payload.request.UpdateMentorRequest;
 import com.hackathon.mentor.payload.response.MentorsResponse;
 import com.hackathon.mentor.repository.*;
@@ -47,6 +48,40 @@ public class MentorController {
     public ResponseEntity<?> getMentors() {
         List<Mentor> mentors = mentorRepository.getAll();
         List<MentorsResponse> mentorsResponseList = new ArrayList<>();
+        for (int i = 0; i < mentors.size(); i++) {
+            MentorsResponse mentorsResponse = new MentorsResponse();
+            mentorsResponse.setUser(mentors.get(i).getUser());
+            mentorsResponse.setAge(mentors.get(i).getAge());
+            mentorsResponse.setCountry(mentors.get(i).getCountry());
+            mentorsResponse.setRating(mentors.get(i).getRating());
+            mentorsResponse.setIin(mentors.get(i).getIin());
+            mentorsResponse.setMajor(mentors.get(i).getMajor());
+            mentorsResponse.setNumber(mentors.get(i).getNumber());
+            mentorsResponse.setSchool(mentors.get(i).getSchool());
+            mentorsResponse.setUniversity(mentors.get(i).getUniversity());
+            mentorsResponse.setUserInfo(mentors.get(i).getUserInfo());
+            mentorsResponse.setWork(mentors.get(i).getWork());
+            mentorsResponseList.add(mentorsResponse);
+        }
+        return new ResponseEntity<>(mentorsResponseList, HttpStatus.OK);
+    }
+
+    @GetMapping("mentors/filter")
+    public ResponseEntity<?> getMentorsByCountry(@RequestBody FilterRequest filterRequest) {
+        String country = filterRequest.getCountry();
+        String major = filterRequest.getMajor();
+        List<Mentor> mentors = null;
+        if (country != null && major != null) {
+            mentors = mentorRepository.findByCountryAndMajor(country , major);
+        } else if (country != null && major == null) {
+            mentors = mentorRepository.findByCountry(country);
+        } else if (country == null && major != null) {
+            mentors = mentorRepository.findByMajor(major);
+        }
+        List<MentorsResponse> mentorsResponseList = new ArrayList<>();
+        if (mentors == null) {
+            return new ResponseEntity<>("Not found", HttpStatus.NOT_FOUND);
+        }
         for (int i = 0; i < mentors.size(); i++) {
             MentorsResponse mentorsResponse = new MentorsResponse();
             mentorsResponse.setUser(mentors.get(i).getUser());
@@ -175,5 +210,21 @@ public class MentorController {
        return new ResponseEntity<>(mentor.getMentees(), HttpStatus.OK);
     }
 
+    @PostMapping("/mentor/mentees/{id}/delete")
+    public ResponseEntity<?> deleteFollower(@PathVariable("id") Long id) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = userDetails.getUsername();
+        User user = userRepository.findByEmail(email).orElse(null);
+        Mentor mentor = mentorRepository.findByUser(user);
+
+        Mentee mentee = menteeRepository.findById(id).orElseThrow(() -> new RuntimeException("Mentee Not Found!!!!"));
+
+        mentor.getMentees().remove(mentee);
+
+        mentorRepository.save(mentor);
+        subscribeRepository.deleteByMentorAndMentee(mentor, mentee);
+
+        return new ResponseEntity<>(mentor, HttpStatus.OK);
+    }
 
 }

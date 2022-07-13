@@ -73,7 +73,7 @@ public class PostController {
 
     @PostMapping(value = "/post/create", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE} )
     public ResponseEntity<?> createPost(@Valid @RequestPart(value = "post") PostRequest postRequest,
-                                        @RequestPart(required = true) MultipartFile file) {
+                                        @RequestPart(name = "file") MultipartFile file) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = userDetails.getUsername();
 
@@ -101,4 +101,5 @@ public class PostController {
 //        Post post = postRepository.findByMentor(mentor);
 //        return new ResponseEntity<>();
 //    }
+
 }

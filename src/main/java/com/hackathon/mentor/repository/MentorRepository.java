@@ -21,4 +21,9 @@ public interface MentorRepository extends JpaRepository<Mentor, Long> {
 
     Mentor getByUser(User user);
     Page<Mentor> findAll(Pageable pageable);
+
+    List<Mentor> findByCountry(String country);
+    List<Mentor> findByMajor(String major);
+    List<Mentor> findByCountryAndMajor(String country, String major);
+
 }

@@ -20,7 +20,5 @@ public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
 
     Subscribe getByMentorAndMentee(Mentor mentor, Mentee mentee);
 
-    void deleteByMentee(Mentee mentee);
-
-    void deleteById(Long id);
+    void deleteByMentorAndMentee(Mentor mentor, Mentee mentee);
 }
