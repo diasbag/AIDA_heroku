@@ -73,7 +73,7 @@ public class MentorController {
         return new ResponseEntity<>(mentorsResponseList, HttpStatus.OK);
     }
 
-    @GetMapping("mentors/filter")
+    @PostMapping("mentors/filter")
     public ResponseEntity<?> getMentorsByCountry(@RequestBody FilterRequest filterRequest) {
         String country = filterRequest.getCountry();
         String major = filterRequest.getMajor();
