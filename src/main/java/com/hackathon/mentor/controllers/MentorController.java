@@ -3,6 +3,7 @@ package com.hackathon.mentor.controllers;
 import com.hackathon.mentor.models.*;
 import com.hackathon.mentor.payload.request.FilterRequest;
 import com.hackathon.mentor.payload.request.UpdateMentorRequest;
+import com.hackathon.mentor.payload.response.MentorProfileResponse;
 import com.hackathon.mentor.payload.response.MentorsResponse;
 import com.hackathon.mentor.repository.*;
 import com.hackathon.mentor.security.services.MentorService;
@@ -107,7 +108,26 @@ public class MentorController {
         if (mentor == null) {
             return new ResponseEntity<>("Not Found!!!", HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(mentor, HttpStatus.OK);
+        MentorProfileResponse mentorProfileResponse = new MentorProfileResponse();
+
+        mentorProfileResponse.setFirstname(mentor.getUser().getFirstname());
+        mentorProfileResponse.setLastname(mentor.getUser().getLastname());
+        mentorProfileResponse.setEmail(mentor.getUser().getEmail());
+        mentorProfileResponse.setImage(mentor.getUser().getImage());
+        mentorProfileResponse.setAge(mentor.getAge());
+        mentorProfileResponse.setIin(mentor.getIin());
+        mentorProfileResponse.setRating(mentor.getRating());
+        mentorProfileResponse.setMenteesCount(mentor.getMentees().size());
+        mentorProfileResponse.setNumber(mentor.getNumber());
+        mentorProfileResponse.setMajor(mentor.getMajor());
+        mentorProfileResponse.setCountry(mentor.getCountry());
+        mentorProfileResponse.setSchool(mentor.getSchool());
+        mentorProfileResponse.setWork(mentor.getWork());
+        mentorProfileResponse.setUserInfo(mentor.getUserInfo());
+        mentorProfileResponse.setUniversity(mentor.getUniversity());
+
+
+        return new ResponseEntity<>(mentorProfileResponse, HttpStatus.OK);
     }
 
     @GetMapping("/user/profile")
