@@ -4,6 +4,16 @@ public class FilterRequest {
     private String country;
     private String major;
 
+    private String university;
+
+    public String getUniversity() {
+        return university;
+    }
+
+    public void setUniversity(String university) {
+        this.university = university;
+    }
+
     public String getCountry() {
         return country;
     }

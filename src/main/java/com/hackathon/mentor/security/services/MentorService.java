@@ -55,14 +55,22 @@ public class MentorService {
         return new ResponseEntity<>("Some ERROR!!!!", HttpStatus.BAD_REQUEST);
     }
 
-    public ResponseEntity<?> filtration(String country, String major) {
+    public ResponseEntity<?> filtration(String country, String major, String university) {
         List<Mentor> mentors = null;
-        if (country != null && major != null) {
+        if (country != null && major != null && university == null) {
             mentors = mentorRepository.findByCountryAndMajor(country , major);
-        } else if (country != null && major == null) {
+        } else if (country != null && major == null && university == null) {
             mentors = mentorRepository.findByCountry(country);
-        } else if (country == null && major != null) {
+        } else if (country == null && major != null && university == null) {
             mentors = mentorRepository.findByMajor(major);
+        } else if (country != null && major == null && university != null) {
+            mentors = mentorRepository.findByCountryAndUniversity(country, university);
+        } else if (country == null && major != null && university != null) {
+            mentors = mentorRepository.findByMajorAndUniversity(major, university);
+        } else if (country != null && major != null && university != null) {
+            mentors = mentorRepository.findByCountryAndUniversityAndMajor(country, university, major);
+        } else if (country == null && major == null && university != null) {
+            mentors = mentorRepository.findByUniversity(university);
         }
         List<MentorsResponse> mentorsResponseList = new ArrayList<>();
         if (mentors == null) {
