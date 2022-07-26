@@ -8,7 +8,7 @@ import com.hackathon.mentor.repository.MenteeRepository;
 import com.hackathon.mentor.repository.MentorRepository;
 import com.hackathon.mentor.repository.SubscribeRepository;
 import com.hackathon.mentor.repository.UserRepository;
-import com.hackathon.mentor.security.services.MentorService;
+import com.hackathon.mentor.services.SubscribeService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,9 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -40,6 +38,9 @@ public class SubscribeController {
     @Autowired
     MentorRepository mentorRepository;
 
+    @Autowired
+    SubscribeService subscribeService;
+
     @GetMapping("/subscribes")
     public ResponseEntity<?> getSubscribes() {
         List<Subscribe> subscribeList = subscribeRepository.findAll();
@@ -50,17 +51,7 @@ public class SubscribeController {
     public ResponseEntity<?> subscribe(@PathVariable("id") Long id) {
         UserDetails userDetails = (UserDetails)  SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = userDetails.getUsername();
-        User user = userRepository.findByEmail(email).orElse(null);
-        Mentee mentee = menteeRepository.findByUser(user);
-        Mentor mentor = mentorRepository.findById(id).orElse(null);
-        Subscribe subscribe = new Subscribe();
-        List<Mentee> mentees = new ArrayList<>();
-        mentees.add(mentee);
-        subscribe.setMentee(mentees);
-        subscribe.setMentor(mentor);
-        subscribeRepository.save(subscribe);
-
-        return new ResponseEntity<>("Success!!!", HttpStatus.OK);
+       return subscribeService.subscribe(id, email);
 
     }
 }

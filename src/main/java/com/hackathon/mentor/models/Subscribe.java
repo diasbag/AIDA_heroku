@@ -1,6 +1,7 @@
 package com.hackathon.mentor.models;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -17,7 +18,7 @@ public class Subscribe {
 
 
     @ManyToMany(fetch = FetchType.EAGER)
-    private List<Mentee> mentee;
+    private Set<Mentee> mentee;
 
     public Long getId() {
         return id;
@@ -28,17 +29,18 @@ public class Subscribe {
     }
 
     public Mentee getMentee() {
-        for (int i = 0; i< mentee.size(); i++) {
-            return mentee.get(i);
+        List<Mentee> mentees = new ArrayList<>(mentee);
+        for (int i = 0; i< mentees.size(); i++) {
+            return mentees.get(i);
         }
         return null;
     }
 
-    public List<Mentee> getAllMentees() {
+    public Set<Mentee> getAllMentees() {
         return mentee;
     }
 
-    public void setMentee(List<Mentee> mentee) {
+    public void setMentee(Set<Mentee> mentee) {
         this.mentee = mentee;
     }
 

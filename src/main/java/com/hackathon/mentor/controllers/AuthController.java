@@ -2,9 +2,7 @@ package com.hackathon.mentor.controllers;
 
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -25,12 +23,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import com.hackathon.mentor.payload.request.LoginRequest;
-import com.hackathon.mentor.payload.request.SignupRequest;
 import com.hackathon.mentor.payload.response.JwtResponse;
 import com.hackathon.mentor.payload.response.MessageResponse;
 import com.hackathon.mentor.repository.RoleRepository;
 import com.hackathon.mentor.security.jwt.JwtUtils;
-import com.hackathon.mentor.security.services.UserDetailsImpl;
+import com.hackathon.mentor.services.UserDetailsImpl;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController

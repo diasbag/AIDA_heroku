@@ -16,7 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.hackathon.mentor.security.jwt.AuthEntryPointJwt;
 import com.hackathon.mentor.security.jwt.AuthTokenFilter;
-import com.hackathon.mentor.security.services.UserDetailsServiceImpl;
+import com.hackathon.mentor.services.UserDetailsServiceImpl;
 
 @Configuration
 @EnableWebSecurity
