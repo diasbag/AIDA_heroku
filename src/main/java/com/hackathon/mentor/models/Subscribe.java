@@ -30,8 +30,8 @@ public class Subscribe {
 
     public Mentee getMentee() {
         List<Mentee> mentees = new ArrayList<>(mentee);
-        for (int i = 0; i< mentees.size(); i++) {
-            return mentees.get(i);
+        for (Mentee value : mentees) {
+            return value;
         }
         return null;
     }

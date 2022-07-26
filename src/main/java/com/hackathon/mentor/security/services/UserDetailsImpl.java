@@ -1,4 +1,4 @@
-package com.hackathon.mentor.services;
+package com.hackathon.mentor.security.services;
 
 import java.util.Collection;
 import java.util.List;

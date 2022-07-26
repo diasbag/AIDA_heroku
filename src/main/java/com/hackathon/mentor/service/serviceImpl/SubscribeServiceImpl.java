@@ -16,7 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -45,7 +47,7 @@ public class SubscribeServiceImpl implements SubscribeService {
             return new ResponseEntity<>("You are already subscribed!!!!", HttpStatus.CONFLICT);
         }
         Subscribe subscribe = new Subscribe();
-        List<Mentee> mentees = new ArrayList<>();
+        Set<Mentee> mentees = new HashSet<>();
         mentees.add(mentee);
         subscribe.setMentee(mentees);
         subscribe.setMentor(mentor);

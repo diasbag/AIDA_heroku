@@ -1,4 +1,4 @@
-package com.hackathon.mentor.services;
+package com.hackathon.mentor.security.services;
 
 import com.hackathon.mentor.models.User;
 import com.hackathon.mentor.repository.UserRepository;
