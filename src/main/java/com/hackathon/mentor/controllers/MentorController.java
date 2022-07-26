@@ -1,63 +1,36 @@
 package com.hackathon.mentor.controllers;
 
-import com.hackathon.mentor.models.*;
 import com.hackathon.mentor.payload.request.FilterRequest;
 import com.hackathon.mentor.payload.request.UpdateMentorRequest;
-import com.hackathon.mentor.payload.response.MentorProfileResponse;
-import com.hackathon.mentor.payload.response.MentorsResponse;
-import com.hackathon.mentor.repository.*;
-import com.hackathon.mentor.services.MentorService;
-import com.hackathon.mentor.services.UserService;
+import com.hackathon.mentor.service.serviceImpl.MentorServiceImpl;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
-
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @SecurityRequirement(name = "basicauth")
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class MentorController {
 
-    @Autowired
-    MentorRepository mentorRepository;
 
-    @Autowired
-    UserRepository userRepository;
+    private final PasswordEncoder encoder;
 
-    @Autowired
-    UserService userService;
+    private final MentorServiceImpl mentorService;
 
-    @Autowired
-    PasswordEncoder encoder;
 
-    @Autowired
-    RoleRepository roleRepository;
-
-    @Autowired
-    SubscribeRepository subscribeRepository;
-
-    @Autowired
-    MenteeRepository menteeRepository;
-
-    @Autowired
-    MentorService mentorService;
-
-    @Autowired
-    PostRepository postRepository;
 
     @GetMapping("/mentors")
     public ResponseEntity<?> getMentors() {
-       return mentorService.getMentors();
+        return mentorService.getMentors();
     }
 
-    @PostMapping("mentors/filter")
+    @PostMapping("/mentors/filter")
     public ResponseEntity<?> getMentorsByCountry(@RequestBody FilterRequest filterRequest) {
         String country = filterRequest.getCountry();
         String major = filterRequest.getMajor();
@@ -67,20 +40,20 @@ public class MentorController {
 
     @GetMapping("/mentors/{id}")
     public ResponseEntity<?> getMentorById(@PathVariable("id") Long id) {
-       return mentorService.getMentorById(id);
+        return mentorService.getMentorById(id);
     }
 
     @GetMapping("/user/profile")
     public ResponseEntity<?> getProfile() {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = userDetails.getUsername();
-        return userService.getUserProfile(email);
+        return mentorService.getProfile(email);
     }
     @PutMapping("/mentor/profile/edit")
     public ResponseEntity<?> updateMentor(@RequestBody  UpdateMentorRequest signupMentorRequest) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = userDetails.getUsername();
-        return userService.editUserProfile(email, signupMentorRequest);
+        return mentorService.updateMentor(email, signupMentorRequest);
     }
 
     @GetMapping("/mentor/subscribers")
@@ -94,14 +67,14 @@ public class MentorController {
     public ResponseEntity<?> confirm(@PathVariable("id") Long id) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = userDetails.getUsername();
-        return mentorService.confirm(email, id);
+        return mentorService.confirm(id, email);
     }
 
     @PostMapping("/mentor/mentee/{id}/reject")
     public ResponseEntity<?> reject(@PathVariable("id") Long id) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = userDetails.getUsername();
-       return mentorService.reject(email, id);
+        return mentorService.reject(id, email);
     }
 
     @GetMapping("/mentor/mentees")
@@ -115,7 +88,7 @@ public class MentorController {
     public ResponseEntity<?> deleteFollower(@PathVariable("id") Long id) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = userDetails.getUsername();
-        return mentorService.deleteFollower(email, id);
+        return mentorService.deleteFollower(id, email);
     }
 
 }

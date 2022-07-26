@@ -8,8 +8,9 @@ import com.hackathon.mentor.repository.MenteeRepository;
 import com.hackathon.mentor.repository.MentorRepository;
 import com.hackathon.mentor.repository.SubscribeRepository;
 import com.hackathon.mentor.repository.UserRepository;
-import com.hackathon.mentor.services.SubscribeService;
+import com.hackathon.mentor.service.SubscribeService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,34 +25,23 @@ import java.util.List;
 @RestController
 @SecurityRequirement(name = "basicauth")
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class SubscribeController {
 
-    @Autowired
-    SubscribeRepository subscribeRepository;
 
-    @Autowired
-    MenteeRepository menteeRepository;
 
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    MentorRepository mentorRepository;
-
-    @Autowired
-    SubscribeService subscribeService;
+    private final SubscribeService subscribeService;
 
     @GetMapping("/subscribes")
-    public ResponseEntity<?> getSubscribes() {
-        List<Subscribe> subscribeList = subscribeRepository.findAll();
-        return new ResponseEntity<>(subscribeList , HttpStatus.OK);
+    public ResponseEntity<?> getSubscribers() {
+        return subscribeService.getSubscribers();
     }
 
     @PostMapping("/mentor/{id}/subscribe")
     public ResponseEntity<?> subscribe(@PathVariable("id") Long id) {
         UserDetails userDetails = (UserDetails)  SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = userDetails.getUsername();
-       return subscribeService.subscribe(id, email);
+        return subscribeService.subscribe(id, email);
 
     }
 }

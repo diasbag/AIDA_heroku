@@ -7,7 +7,7 @@ public class UpdateMentorRequest {
     private String email;
 
     private String firstname;
-    @NotBlank
+    private String middlename;
     @Size(min = 3, max = 20)
     private String lastname;
 
@@ -45,6 +45,14 @@ public class UpdateMentorRequest {
 
     public void setLastname(String lastname) {
         this.lastname = lastname;
+    }
+
+    public String getMiddlename() {
+        return middlename;
+    }
+
+    public void setMiddlename(String middlename) {
+        this.middlename = middlename;
     }
 
     public int getAge() {
