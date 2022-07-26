@@ -4,12 +4,15 @@ import com.hackathon.mentor.models.Image;
 import com.hackathon.mentor.models.Mentor;
 import com.hackathon.mentor.models.Post;
 import com.hackathon.mentor.models.User;
+import com.hackathon.mentor.payload.request.PostEditRequest;
 import com.hackathon.mentor.payload.request.PostRequest;
 import com.hackathon.mentor.payload.response.PostResponse;
 import com.hackathon.mentor.repository.MentorRepository;
 import com.hackathon.mentor.repository.PostRepository;
 import com.hackathon.mentor.repository.UserRepository;
+import com.hackathon.mentor.service.PostService;
 import com.hackathon.mentor.utils.FileNameHelper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,117 +29,49 @@ import java.util.List;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class PostController {
-
-    @Autowired
-    PostRepository postRepository;
-
-    @Autowired
-    MentorRepository mentorRepository;
-
-    @Autowired
-    UserRepository userRepository;
-
-    private FileNameHelper fileHelper = new FileNameHelper();
-
-    private String uploadFolder = "/resources";
-
+    private final PostService postService;
 
     @GetMapping("/posts")
     public ResponseEntity<?> getPosts() {
-        List<Post> posts = postRepository.getAll();
-        List<PostResponse> postResponseList = new ArrayList<>();
-        for (int i = 0; i < posts.size(); i++) {
-            PostResponse postResponse = new PostResponse();
-            postResponse.setTitle(posts.get(i).getTitle());
-            postResponse.setArticle(posts.get(i).getArticle());
-            postResponse.setDate(posts.get(i).getDate());
-            postResponse.setImage(posts.get(i).getImage());
-            postResponse.setUser(posts.get(i).getMentor().getUser());
-            postResponseList.add(postResponse);
-        }
-        return new ResponseEntity<>(postResponseList, HttpStatus.OK);
+        List<PostResponse> postResponseList = postService.getPosts();
+        return ResponseEntity.ok(postResponseList);
     }
 
-
-//    @PostMapping(value = "/post/create", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE} )
-//    public ResponseEntity<?> createPost(@Valid @RequestPart(value = "post") PostRequest postRequest,
-//                                        @RequestPart(name = "file") MultipartFile file) {
-//        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        String email = userDetails.getUsername();
-//
-//        User user = userRepository.findByEmail(email).orElse(null);
-//
-//        Mentor mentor = mentorRepository.findByUser(user);
-//        Image image = Image.buildImage(file, fileHelper);
-//        Post post = new Post();
-//        post.setDate(Date.from(Instant.now()));
-//        post.setTitle(postRequest.getTitle());
-//        post.setArticle(postRequest.getArticle());
-//        post.setMentor(mentor);
-//        post.setImage(image);
-//        postRepository.save(post);
-//        return new ResponseEntity<>("Success!!!", HttpStatus.OK);
-//    }
-
-    @PostMapping("/post/{id}/create")
-    public ResponseEntity<?> createPost (@PathVariable("id") Long id, @RequestBody PostRequest postRequest) {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String email = userDetails.getUsername();
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Not found!!!"));
-        Mentor mentor = mentorRepository.findByUser(user);
-
-        Post post = postRepository.findByIdAndMentor(id, mentor);
-
-        post.setTitle(postRequest.getTitle());
-        post.setArticle(postRequest.getArticle());
-        post.setDate(Date.from(Instant.now()));
-
-        postRepository.save(post);
-
+    @PostMapping("/post/create")
+    public ResponseEntity<?> createPost (@RequestBody PostRequest postRequest,
+                                         @RequestParam("file") MultipartFile file) {
+        Post post = postService.createPost(postRequest, file);
         return new ResponseEntity<>(post, HttpStatus.OK);
     }
 
-    @PostMapping("/post/uploadImage")
-    public ResponseEntity<?> uploadPostImage(@RequestParam("file") MultipartFile file) {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String email = userDetails.getUsername();
-        User user = userRepository.findByEmail(email).orElse(null);
-        Mentor mentor = mentorRepository.findByUser(user);
-        Image image = Image.buildImage(file, fileHelper);
-        Post post = new Post();
-        post.setMentor(mentor);
-        post.setImage(image);
-        postRepository.save(post);
-        return new ResponseEntity<>(post.getId(), HttpStatus.OK);
-    }
+//    @PostMapping("/post/uploadImage")
+//    public ResponseEntity<?> uploadPostImage(@RequestParam("file") MultipartFile file) {
+//        Post post = postService.uploadPostImage(file);
+//        return new ResponseEntity<>(post.getId(), HttpStatus.OK);
+//    }
 
     @GetMapping("/mentor/{id}/posts")
     public ResponseEntity<?> getMentorPostsById(@PathVariable("id") Long id) {
-        Mentor mentor = mentorRepository.findById(id).orElse(null);
-        List<Post> posts = postRepository.getByMentor(mentor);
+        List<Post> posts = postService.getByID(id);
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
 
     @GetMapping("/user/posts")
     public ResponseEntity<?> getMentorPosts() {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String email = userDetails.getUsername();
-        User user = userRepository.findByEmail(email).orElse(null);
-        Mentor mentor = mentorRepository.findByUser(user);
-        List<Post> posts = postRepository.getByMentor(mentor);
+        List<Post> posts = postService.getAllByMentor();
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
-//    dcsdcsdc
-//    @PostMapping("/post/uploadImage")
-//    public ResponseEntity<?> uploadPostImage() {
-//        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        String email = userDetails.getUsername();
-//        User user = userRepository.findByEmail(email).orElse(null);
-//
-//        Mentor mentor = mentorRepository.findByUser(user);
-//        Post post = postRepository.findByMentor(mentor);
-//        return new ResponseEntity<>();
-//    }
-
+    @PostMapping("/post/edit_post")
+    public ResponseEntity<?> editPost(@RequestBody PostEditRequest postEditRequest,
+                                      @RequestParam("file") MultipartFile file) {
+        Post post = postService.editPost(postEditRequest, file);
+        return new ResponseEntity<>(post.getId(), HttpStatus.OK);
+    }
+    @DeleteMapping("/post/delete_post")
+    public ResponseEntity<?> deletePost(@RequestParam Long id) {
+        postService.deletePost(id);
+        return new ResponseEntity<>("post with was deleted", HttpStatus.OK);
+    }
 }

@@ -19,13 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class MenteeController {
 
-    private final MenteeRepository menteeRepository;
     private final MenteeService menteeService;
-
-    private final PasswordEncoder encoder;
-
-
-
 
     @GetMapping("/mentees")
     public ResponseEntity<?> getAllMentees() {
@@ -44,8 +38,6 @@ public class MenteeController {
         String email = userDetails.getUsername();
         return menteeService.editProfile(email, updateMenteeRequest);
     }
-
-
 
     @PostMapping("/mentees/mentors/{id}/rate")
     public ResponseEntity<?> rateMentor(@PathVariable("id") Long id, @RequestBody RatingRequest ratingRequest) {

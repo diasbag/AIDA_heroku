@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
@@ -14,8 +15,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query(value = "select * from posts", nativeQuery = true)
     List<Post> getAll();
 
-    Post findByMentor(Mentor mentor);
 
     List<Post> getByMentor(Mentor mentor);
-    Post findByIdAndMentor(Long id, Mentor mentor);
+    Optional<Post> findByIdAndMentor(Long id, Mentor mentor);
 }

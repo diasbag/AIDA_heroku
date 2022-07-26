@@ -16,10 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -46,7 +43,8 @@ public class SubscribeServiceImpl implements SubscribeService {
         User user = userRepository.findByEmail(email).orElse(null);
         Mentee mentee = menteeRepository.findByUser(user);
         Mentor mentor = mentorRepository.findById(id).orElse(null);
-        if (subscribeRepository.findByMentorAndMentee(mentor, mentee).orElse(null) != null || mentor.getMentees().contains(mentee)) {
+        if (subscribeRepository.findByMentorAndMentee(mentor, mentee).orElse(null) != null ||
+                Objects.requireNonNull(mentor).getMentees().contains(mentee)) {
             return new ResponseEntity<>("You are already subscribed!!!!", HttpStatus.CONFLICT);
         }
         Subscribe subscribe = new Subscribe();

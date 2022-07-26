@@ -1,4 +1,4 @@
-package com.hackathon.mentor.service;
+package com.hackathon.mentor.service.serviceImpl;
 
 import com.hackathon.mentor.exceptions.AccountNotFound;
 import com.hackathon.mentor.models.Report;
@@ -6,6 +6,8 @@ import com.hackathon.mentor.models.User;
 import com.hackathon.mentor.payload.request.ReportRequest;
 import com.hackathon.mentor.repository.ReportRepository;
 import com.hackathon.mentor.repository.UserRepository;
+import com.hackathon.mentor.service.AdminService;
+import com.hackathon.mentor.service.ReportsService;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,11 +32,11 @@ import java.util.List;
 @Slf4j
 //@RequiredArgsConstructor
 @EnableAsync
-public class ReportsServiceImpl implements ReportsService{
+public class ReportsServiceImpl implements ReportsService {
 
     private  JavaMailSender mailSender;
     @Autowired
-    private  AdminService adminService;
+    private AdminService adminService;
     @Autowired
     private  UserRepository userRepository;
     @Autowired
