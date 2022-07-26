@@ -1,7 +1,9 @@
 package com.hackathon.mentor.repository;
 
+import java.util.List;
 import java.util.Optional;
 
+import com.hackathon.mentor.models.ERole;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,4 +16,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
   Optional<User> findById(Long id);
   User getByEmail(String email);
   Boolean existsByEmail(String email);
+  List<User> findUsersByRolesContaining(ERole eRole);
 }

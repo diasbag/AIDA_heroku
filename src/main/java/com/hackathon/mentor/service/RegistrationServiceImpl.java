@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import javax.transaction.Transactional;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +30,10 @@ public class RegistrationServiceImpl implements RegistrationService {
     private final RoleRepository roleRepository;
     private final MentorRepository mentorRepository;
     private final MenteeRepository menteeRepository;
+    @Transactional
     @Override
     public MessageResponse regMentor(SignupMentorRequest signupMentorRequest) {
+        log.info("registering mentor ...");
         if (userRepository.existsByEmail(signupMentorRequest.getEmail())) {
             throw new AccountBadRequest("Email is already in use!");
         }
@@ -38,14 +41,13 @@ public class RegistrationServiceImpl implements RegistrationService {
                 signupMentorRequest.getLastname(),
                 signupMentorRequest.getEmail(),
                 encoder.encode(signupMentorRequest.getPassword()));
+        user.setStatus(true);
         Role role = roleRepository.findByName(ERole.ROLE_MENTOR).orElseThrow(() ->
-                new AccountNotFound("Error: Role is not found."));;
+                new AccountNotFound("Error: Role is not found"));
         List<Role> roles = new ArrayList<>();
         roles.add(role);
         user.setRoles(roles);
-
         userRepository.save(user);
-
         Mentor mentor = new Mentor();
         mentor.setAge(signupMentorRequest.getAge());
         mentor.setIin(signupMentorRequest.getIin());
@@ -58,11 +60,13 @@ public class RegistrationServiceImpl implements RegistrationService {
         mentor.setSchool(signupMentorRequest.getSchool());
         mentor.setUser(user);
         mentorRepository.save(mentor);
+        log.info("mentor was registered <<<");
         return new MessageResponse("User registered successfully!");
     }
 
     @Override
     public MessageResponse regMentee(SignupMenteeRequest signupMenteeRequest) {
+        log.info("registering mentee ...");
         if (userRepository.existsByEmail(signupMenteeRequest.getEmail())) {
             throw new AccountBadRequest("Email is already in use!");
         }
@@ -70,8 +74,9 @@ public class RegistrationServiceImpl implements RegistrationService {
                 signupMenteeRequest.getLastname(),
                 signupMenteeRequest.getEmail(),
                 encoder.encode(signupMenteeRequest.getPassword()));
+        user.setStatus(true);
         Role role = roleRepository.findByName(ERole.ROLE_MENTEE).orElseThrow(() ->
-                new AccountNotFound("Role is not found."));;
+                new AccountNotFound("Role is not found"));;
         List<Role> roles = new ArrayList<>();
         roles.add(role);
         user.setRoles(roles);
@@ -86,6 +91,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         mentee.setUser(user);
 
         menteeRepository.save(mentee);
+        log.info("mentee was registered <<<");
         return new MessageResponse("User registered successfully!");
     }
 
