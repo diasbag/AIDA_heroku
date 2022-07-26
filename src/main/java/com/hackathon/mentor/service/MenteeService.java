@@ -1,26 +1,16 @@
 package com.hackathon.mentor.service;
 
-import com.hackathon.mentor.models.Mentor;
-import com.hackathon.mentor.repository.MenteeRepository;
-import com.hackathon.mentor.repository.MentorRepository;
-import org.springframework.http.HttpStatus;
+import com.hackathon.mentor.payload.request.RatingRequest;
+import com.hackathon.mentor.payload.request.UpdateMenteeRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 
-@Service
-public class MenteeService {
+public interface MenteeService {
 
-    private MentorRepository mentorRepository;
+    ResponseEntity<?> getAllMentees();
 
-    private MenteeRepository menteeRepository;
+    ResponseEntity<?> getMenteeById(Long id);
 
-//    public ResponseEntity<?> rateMentor(Long id, double rate) {
-//        Mentor mentor = mentorRepository.findById(id).orElse(null);
-//        long count  = mentor.getPeopleCount() +1;
-//        double res = (rate + mentor.getRating())/count;
-//        mentor.setRating(res);
-//        mentor.setPeopleCount(count);
-//        mentorRepository.save(mentor);
-//        return new ResponseEntity<>(mentor, HttpStatus.OK);
-//    }
+    ResponseEntity<?> editProfile(String email, UpdateMenteeRequest updateMenteeRequest);
+
+    ResponseEntity<?> rateMentor(Long id, String email, RatingRequest ratingRequest);
 }

@@ -1,9 +1,10 @@
 package com.hackathon.mentor.service;
 
-import org.springframework.stereotype.Service;
+import org.springframework.http.ResponseEntity;
 
-@Service
-public class SubscribeService {
+public interface SubscribeService {
 
+    ResponseEntity<?> getSubscribers();
 
+    ResponseEntity<?> subscribe(Long id, String email);
 }

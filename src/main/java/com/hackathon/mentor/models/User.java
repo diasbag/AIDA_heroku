@@ -26,6 +26,11 @@ public class User {
 	@Size(max = 20)
 	@Column(name = "lastname")
 	private String lastname;
+
+	@NotBlank
+	@Size(max = 20)
+	@Column(name = "middlename")
+	private String middlename;
 	@NotBlank
 	@Size(max = 20)
 	private String username;
