@@ -127,6 +127,7 @@ public class PostController {
         List<Post> posts = postRepository.getByMentor(mentor);
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
+//    dcsdcsdc
 //    @PostMapping("/post/uploadImage")
 //    public ResponseEntity<?> uploadPostImage() {
 //        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

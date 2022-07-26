@@ -1,11 +1,13 @@
 package com.hackathon.mentor;
 
+import com.hackathon.mentor.service.AdminService;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 
 //@EnableSwagger2
 @SpringBootApplication
@@ -13,10 +15,16 @@ import org.springframework.context.annotation.Bean;
 		type = SecuritySchemeType.HTTP, in =
 		SecuritySchemeIn.HEADER)
 //@EnableSwagger2
-public class HackathonApp {
+@RequiredArgsConstructor
+public class HackathonApp implements CommandLineRunner {
+	private final AdminService adminService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(HackathonApp.class, args);
+	}
+	@Override
+	public void run(String... arg0) {
+		adminService.createAdmin();
 	}
 
 
