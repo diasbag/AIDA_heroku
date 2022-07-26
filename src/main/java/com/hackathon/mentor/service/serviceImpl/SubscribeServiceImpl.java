@@ -37,7 +37,6 @@ public class SubscribeServiceImpl implements SubscribeService {
     @Override
     public ResponseEntity<?> getSubscribers() {
         List<Subscribe> subscribeList = subscribeRepository.findAll();
-        log.info("mentors list");
         return new ResponseEntity<>(subscribeList , HttpStatus.OK);
 
     }
