@@ -6,8 +6,10 @@ import com.hackathon.mentor.models.User;
 import com.hackathon.mentor.payload.request.ReportRequest;
 import com.hackathon.mentor.repository.ReportRepository;
 import com.hackathon.mentor.repository.UserRepository;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -16,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.transaction.Transactional;
@@ -25,13 +28,18 @@ import java.util.List;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 @EnableAsync
 public class ReportsServiceImpl implements ReportsService{
-    private final JavaMailSender mailSender;
-    private final AdminService adminService;
-    private final UserRepository userRepository;
-    private final ReportRepository reportRepository;
+
+    private  JavaMailSender mailSender;
+    @Autowired
+    private  AdminService adminService;
+    @Autowired
+    private  UserRepository userRepository;
+    @Autowired
+    private  ReportRepository reportRepository;
+
 
     @Override
     @Transactional

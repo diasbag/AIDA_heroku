@@ -46,7 +46,7 @@ public class SubscribeServiceImpl implements SubscribeService {
         User user = userRepository.findByEmail(email).orElse(null);
         Mentee mentee = menteeRepository.findByUser(user);
         Mentor mentor = mentorRepository.findById(id).orElse(null);
-        if (subscribeRepository.findByMentorAndMentee(mentor, mentee).orElse(null) != null) {
+        if (subscribeRepository.findByMentorAndMentee(mentor, mentee).orElse(null) != null || mentor.getMentees().contains(mentee)) {
             return new ResponseEntity<>("You are already subscribed!!!!", HttpStatus.CONFLICT);
         }
         Subscribe subscribe = new Subscribe();
