@@ -17,9 +17,6 @@ public class PostRequest {
 
     @NotNull
     private String article;
-//
-//    @OneToOne
-//    private Image image;
 
 
     public String getTitle() {

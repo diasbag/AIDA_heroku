@@ -11,6 +11,8 @@ public interface ImageService {
 
     ResponseEntity<?> uploadSingleFile(String email, MultipartFile file);
 
-    ResponseEntity<byte[]> getImage(String email);
+    Image getImage(String email);
     Image findByUuid(String uuid);
+
+    Image getImageByID(Long id);
 }
