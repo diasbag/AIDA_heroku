@@ -10,16 +10,20 @@ import com.hackathon.mentor.repository.SubscribeRepository;
 import com.hackathon.mentor.repository.UserRepository;
 import com.hackathon.mentor.service.SubscribeService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SubscribeServiceImpl implements SubscribeService {
 
     private final SubscribeRepository subscribeRepository;
@@ -33,7 +37,9 @@ public class SubscribeServiceImpl implements SubscribeService {
     @Override
     public ResponseEntity<?> getSubscribers() {
         List<Subscribe> subscribeList = subscribeRepository.findAll();
+        log.info("mentors list");
         return new ResponseEntity<>(subscribeList , HttpStatus.OK);
+
     }
 
     @Override
@@ -45,7 +51,7 @@ public class SubscribeServiceImpl implements SubscribeService {
             return new ResponseEntity<>("You are already subscribed!!!!", HttpStatus.CONFLICT);
         }
         Subscribe subscribe = new Subscribe();
-        List<Mentee> mentees = new ArrayList<>();
+        Set<Mentee> mentees = new HashSet<>();
         mentees.add(mentee);
         subscribe.setMentee(mentees);
         subscribe.setMentor(mentor);
