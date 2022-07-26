@@ -1,4 +1,4 @@
-package com.hackathon.mentor.security.services;
+package com.hackathon.mentor.service;
 
 import org.springframework.stereotype.Service;
 

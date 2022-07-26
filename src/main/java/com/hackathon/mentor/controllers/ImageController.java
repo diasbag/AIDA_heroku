@@ -1,11 +1,11 @@
 package com.hackathon.mentor.controllers;
 
+import com.hackathon.mentor.exceptions.AccountNotFound;
 import com.hackathon.mentor.models.Image;
 import com.hackathon.mentor.models.User;
 import com.hackathon.mentor.repository.UserRepository;
-import com.hackathon.mentor.security.services.ImageService;
+import com.hackathon.mentor.service.ImageServiceImpl;
 import com.hackathon.mentor.utils.FileNameHelper;
-import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,9 +14,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
-
-import javax.servlet.http.HttpServletRequest;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -24,19 +21,19 @@ import javax.servlet.http.HttpServletRequest;
 public class ImageController {
 
     @Autowired
-    private ImageService imageService;
+    private ImageServiceImpl imageServiceImpl;
 
     @Autowired
     UserRepository userRepository;
 
-    private FileNameHelper fileHelper = new FileNameHelper();
+    private final FileNameHelper fileHelper = new FileNameHelper();
 
     @PostMapping("/upload")
     public ResponseEntity<?> uploadSingleFile(@RequestParam("file") MultipartFile file) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = userDetails.getUsername();
 
-        User user = userRepository.findByEmail(email).orElse(null);
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new AccountNotFound("image not found"));
         Image image = Image.buildImage(file, fileHelper);
         user.setImage(image);
         userRepository.save(user);
@@ -49,7 +46,7 @@ public class ImageController {
         String email = userDetails.getUsername();
         User user = userRepository.getByEmail(email);
         String fileName = user.getImage().getFileName();
-        Image image = imageService.findByFileName(fileName);
+        Image image = imageServiceImpl.findByFileName(fileName);
         return ResponseEntity.ok().contentType(MediaType.valueOf(image.getFileType())).body(image.getData());
     }
 }

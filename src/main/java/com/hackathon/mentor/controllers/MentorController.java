@@ -3,12 +3,10 @@ package com.hackathon.mentor.controllers;
 import com.hackathon.mentor.models.*;
 import com.hackathon.mentor.payload.request.FilterRequest;
 import com.hackathon.mentor.payload.request.UpdateMentorRequest;
-import com.hackathon.mentor.payload.response.ActiveMenteeProfileDTO;
-import com.hackathon.mentor.payload.response.ActiveMentorProfileDTO;
 import com.hackathon.mentor.payload.response.MentorProfileResponse;
 import com.hackathon.mentor.payload.response.MentorsResponse;
 import com.hackathon.mentor.repository.*;
-import com.hackathon.mentor.security.services.MentorService;
+import com.hackathon.mentor.service.MentorServiceImpl;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -45,7 +43,7 @@ public class MentorController {
     MenteeRepository menteeRepository;
 
     @Autowired
-    MentorService mentorService;
+    MentorServiceImpl mentorService;
 
     @Autowired
     PostRepository postRepository;
