@@ -1,4 +1,4 @@
-package com.hackathon.mentor.service;
+package com.hackathon.mentor.service.serviceImpl;
 
 import com.hackathon.mentor.exceptions.AccountNotFound;
 import com.hackathon.mentor.models.*;
@@ -6,16 +6,20 @@ import com.hackathon.mentor.payload.request.UpdateMentorRequest;
 import com.hackathon.mentor.payload.response.MentorProfileResponse;
 import com.hackathon.mentor.payload.response.MentorsResponse;
 import com.hackathon.mentor.repository.*;
+import com.hackathon.mentor.service.MentorService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MentorServiceImpl implements MentorService {
 
     private final MentorRepository mentorRepository;
@@ -112,6 +116,7 @@ public class MentorServiceImpl implements MentorService {
         MentorProfileResponse mentorProfileResponse = new MentorProfileResponse();
         mentorProfileResponse.setFirstname(mentor.getUser().getFirstname());
         mentorProfileResponse.setLastname(mentor.getUser().getLastname());
+        mentorProfileResponse.setMiddlename(mentor.getUser().getMiddlename());
         mentorProfileResponse.setEmail(mentor.getUser().getEmail());
         mentorProfileResponse.setImage(mentor.getUser().getImage());
         mentorProfileResponse.setAge(mentor.getAge());
@@ -125,7 +130,7 @@ public class MentorServiceImpl implements MentorService {
         mentorProfileResponse.setWork(mentor.getWork());
         mentorProfileResponse.setUserInfo(mentor.getUserInfo());
         mentorProfileResponse.setUniversity(mentor.getUniversity());
-
+        log.info("Get mentor by id" + mentorProfileResponse);
         return new ResponseEntity<>(mentorProfileResponse, HttpStatus.OK);
     }
 
@@ -148,11 +153,10 @@ public class MentorServiceImpl implements MentorService {
     public ResponseEntity<?> updateMentor(String email, UpdateMentorRequest signupMentorRequest) {
         User user = userRepository.getByEmail(email);
         Mentor mentor = mentorRepository.findByUser(user);
-
         user.setEmail(signupMentorRequest.getEmail());
         user.setFirstname(signupMentorRequest.getFirstname());
         user.setLastname(signupMentorRequest.getLastname());
-
+        user.setMiddlename(signupMentorRequest.getMiddlename());
         userRepository.save(user);
 
         mentor.setAge(signupMentorRequest.getAge());

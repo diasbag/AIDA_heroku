@@ -38,17 +38,13 @@ public class User {
 	@Size(max = 50)
 	@Email
 	private String email;
-
 	@NotBlank
 	@Size(max = 120)
 	private String password;
-
 	@OneToOne(cascade=CascadeType.PERSIST)
 	private Image image;
 	@ManyToMany(fetch = FetchType.EAGER)
 	private List<Role> roles = new ArrayList<>();
-
-
 
 	public User() {
 	}
@@ -77,7 +73,13 @@ public class User {
 		this.username = username;
 	}
 
+	public String getMiddlename() {
+		return middlename;
+	}
 
+	public void setMiddlename(String middlename) {
+		this.middlename = middlename;
+	}
 	public String getFirstname() {
 		return firstname;
 	}

@@ -1,14 +1,9 @@
 package com.hackathon.mentor.controllers;
 
-import com.hackathon.mentor.exceptions.AccountNotFound;
-import com.hackathon.mentor.models.Image;
-import com.hackathon.mentor.models.User;
 import com.hackathon.mentor.repository.UserRepository;
-import com.hackathon.mentor.service.ImageServiceImpl;
+import com.hackathon.mentor.service.serviceImpl.ImageServiceImpl;
 import com.hackathon.mentor.utils.FileNameHelper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;

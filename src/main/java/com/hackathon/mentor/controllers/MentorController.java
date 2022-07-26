@@ -1,23 +1,15 @@
 package com.hackathon.mentor.controllers;
 
-import com.hackathon.mentor.models.*;
 import com.hackathon.mentor.payload.request.FilterRequest;
 import com.hackathon.mentor.payload.request.UpdateMentorRequest;
-import com.hackathon.mentor.payload.response.MentorProfileResponse;
-import com.hackathon.mentor.payload.response.MentorsResponse;
-import com.hackathon.mentor.repository.*;
-import com.hackathon.mentor.service.MentorServiceImpl;
+import com.hackathon.mentor.service.serviceImpl.MentorServiceImpl;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.*;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController

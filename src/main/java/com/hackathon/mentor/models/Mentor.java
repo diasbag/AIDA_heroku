@@ -63,7 +63,6 @@ public class Mentor {
     @Column(name = "mentee_id")
     private Set<Mentee> mentees = new HashSet<>();
 
-
     public Mentor(
                   int age, String iin, String number,
                   String major, String university,
@@ -82,7 +81,6 @@ public class Mentor {
     public Mentor() {
 
     }
-
 
     public Set<Mentee> getMentees() {
         return mentees;
@@ -104,13 +102,6 @@ public class Mentor {
         this.rating = rating;
     }
 
-//    public List<Image> getImages() {
-//        return images;
-//    }
-//
-//    public void setImages(List<Image> images) {
-//        this.images = images;
-//    }
     public void setMentees(Set<Mentee> mentees) {
         this.mentees = mentees;
     }
@@ -123,8 +114,6 @@ public class Mentor {
         this.school = school;
     }
 
-
-
     public Long getId() {
         return id;
     }
@@ -132,9 +121,6 @@ public class Mentor {
     public void setId(Long id) {
         this.id = id;
     }
-
-
-
 
     public int getAge() {
         return age;

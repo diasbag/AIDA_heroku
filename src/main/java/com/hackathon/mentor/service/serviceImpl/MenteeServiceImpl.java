@@ -1,4 +1,4 @@
-package com.hackathon.mentor.service;
+package com.hackathon.mentor.service.serviceImpl;
 
 import com.hackathon.mentor.models.Mentee;
 import com.hackathon.mentor.models.Mentor;
@@ -10,6 +10,7 @@ import com.hackathon.mentor.repository.MenteeRepository;
 import com.hackathon.mentor.repository.MentorRepository;
 import com.hackathon.mentor.repository.RatingRepository;
 import com.hackathon.mentor.repository.UserRepository;
+import com.hackathon.mentor.service.MenteeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,10 +1,11 @@
-package com.hackathon.mentor.service;
+package com.hackathon.mentor.service.serviceImpl;
 
 import com.hackathon.mentor.exceptions.AccountNotFound;
 import com.hackathon.mentor.models.Image;
 import com.hackathon.mentor.models.User;
 import com.hackathon.mentor.repository.ImageRepository;
 import com.hackathon.mentor.repository.UserRepository;
+import com.hackathon.mentor.service.ImageService;
 import com.hackathon.mentor.utils.FileNameHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
