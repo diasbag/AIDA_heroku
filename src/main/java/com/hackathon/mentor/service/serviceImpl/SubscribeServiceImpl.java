@@ -55,7 +55,7 @@ public class SubscribeServiceImpl implements SubscribeService {
         subscribe.setMentee(mentees);
         subscribe.setMentor(mentor);
         subscribeRepository.save(subscribe);
-
+        log.info("Successfully subscribed!!!");
         return new ResponseEntity<>("Success!!!", HttpStatus.OK);
     }
 }
