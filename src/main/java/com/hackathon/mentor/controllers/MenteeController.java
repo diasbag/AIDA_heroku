@@ -4,7 +4,7 @@ import com.hackathon.mentor.models.*;
 import com.hackathon.mentor.payload.request.RatingRequest;
 import com.hackathon.mentor.payload.request.UpdateMenteeRequest;
 import com.hackathon.mentor.repository.*;
-import com.hackathon.mentor.security.services.MentorService;
+import com.hackathon.mentor.service.MentorServiceImpl;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -40,7 +39,7 @@ public class MenteeController {
     RoleRepository roleRepository;
 
     @Autowired
-    MentorService mentorService;
+    MentorServiceImpl mentorService;
 
     @Autowired
     RatingRepository ratingRepository;
