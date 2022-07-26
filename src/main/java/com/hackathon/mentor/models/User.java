@@ -11,9 +11,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(	name = "users", 
+@Table(    name = "users",
 		uniqueConstraints = {
-			@UniqueConstraint(columnNames = "email") 
+				@UniqueConstraint(columnNames = "email")
 		})
 @Getter
 @Setter
@@ -31,6 +31,10 @@ public class User {
 	@Size(max = 20)
 	@Column(name = "lastname")
 	private String lastname;
+	@NotBlank
+	@Size(max = 20)
+	@Column(name = "middlename")
+	private String middlename;
 	@NotBlank
 	@Size(max = 20)
 	private String username;
@@ -66,12 +70,12 @@ public class User {
 	public String toString() {
 		return "User{" +
 				"id=" + id +
-				", firstname='" + firstname + '\'' +
-				", lastname='" + lastname + '\'' +
-				", username='" + username + '\'' +
-				", email='" + email + '\'' +
-				", roles=" + roles + '\'' +
-				", status=" + status +
-		'}';
+				", firstname='" + firstname +
+		", lastname='" + lastname +
+		", username='" + username +
+		", email='" + email +
+		", roles=" + roles +
+		", status=" + status +
+				'}';
 	}
 }

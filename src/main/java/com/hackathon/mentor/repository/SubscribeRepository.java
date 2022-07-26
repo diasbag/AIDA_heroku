@@ -20,5 +20,7 @@ public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
 
     Subscribe getByMentorAndMentee(Mentor mentor, Mentee mentee);
 
+    Optional<Subscribe> findByMentorAndMentee(Mentor mentor, Mentee mentee);
+
     void deleteByMentorAndMentee(Mentor mentor, Mentee mentee);
 }

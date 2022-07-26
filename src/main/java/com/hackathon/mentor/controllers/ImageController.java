@@ -1,14 +1,9 @@
 package com.hackathon.mentor.controllers;
 
-import com.hackathon.mentor.exceptions.AccountNotFound;
-import com.hackathon.mentor.models.Image;
-import com.hackathon.mentor.models.User;
 import com.hackathon.mentor.repository.UserRepository;
-import com.hackathon.mentor.service.ImageServiceImpl;
+import com.hackathon.mentor.service.serviceImpl.ImageServiceImpl;
 import com.hackathon.mentor.utils.FileNameHelper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,21 +27,13 @@ public class ImageController {
     public ResponseEntity<?> uploadSingleFile(@RequestParam("file") MultipartFile file) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = userDetails.getUsername();
-
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new AccountNotFound("image not found"));
-        Image image = Image.buildImage(file, fileHelper);
-        user.setImage(image);
-        userRepository.save(user);
-        return new ResponseEntity<>("success" , HttpStatus.OK);
+        return imageServiceImpl.uploadSingleFile(email, file);
     }
 
     @GetMapping("/show/user/avatar")
     public ResponseEntity<byte[]> getImage() throws Exception {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = userDetails.getUsername();
-        User user = userRepository.getByEmail(email);
-        String fileName = user.getImage().getFileName();
-        Image image = imageServiceImpl.findByFileName(fileName);
-        return ResponseEntity.ok().contentType(MediaType.valueOf(image.getFileType())).body(image.getData());
+        return imageServiceImpl.getImage(email);
     }
 }

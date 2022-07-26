@@ -1,9 +1,10 @@
-package com.hackathon.mentor.service;
+package com.hackathon.mentor.service.serviceImpl;
 
 import com.hackathon.mentor.payload.request.LoginRequest;
 import com.hackathon.mentor.payload.response.JwtResponse;
 import com.hackathon.mentor.security.jwt.JwtUtils;
 import com.hackathon.mentor.security.services.UserDetailsImpl;
+import com.hackathon.mentor.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;

@@ -28,6 +28,12 @@ public class Mentee {
     @Column(name = "school")
     private String school;
 
+    @Column(name = "subject1")
+    private String subject1;
+
+    @Column(name = "subject2")
+    private String subject2;
+
     @Column(name = "achievements")
     private String achievements;
 

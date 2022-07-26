@@ -8,7 +8,9 @@ import com.hackathon.mentor.repository.MenteeRepository;
 import com.hackathon.mentor.repository.MentorRepository;
 import com.hackathon.mentor.repository.SubscribeRepository;
 import com.hackathon.mentor.repository.UserRepository;
+import com.hackathon.mentor.service.SubscribeService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,41 +25,23 @@ import java.util.List;
 @RestController
 @SecurityRequirement(name = "basicauth")
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class SubscribeController {
 
-    @Autowired
-    SubscribeRepository subscribeRepository;
 
-    @Autowired
-    MenteeRepository menteeRepository;
 
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    MentorRepository mentorRepository;
+    private final SubscribeService subscribeService;
 
     @GetMapping("/subscribes")
-    public ResponseEntity<?> getSubscribes() {
-        List<Subscribe> subscribeList = subscribeRepository.findAll();
-        return new ResponseEntity<>(subscribeList , HttpStatus.OK);
+    public ResponseEntity<?> getSubscribers() {
+        return subscribeService.getSubscribers();
     }
 
     @PostMapping("/mentor/{id}/subscribe")
     public ResponseEntity<?> subscribe(@PathVariable("id") Long id) {
         UserDetails userDetails = (UserDetails)  SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = userDetails.getUsername();
-        User user = userRepository.findByEmail(email).orElse(null);
-        Mentee mentee = menteeRepository.findByUser(user);
-        Mentor mentor = mentorRepository.findById(id).orElse(null);
-        Subscribe subscribe = new Subscribe();
-        List<Mentee> mentees = new ArrayList<>();
-        mentees.add(mentee);
-        subscribe.setMentee(mentees);
-        subscribe.setMentor(mentor);
-        subscribeRepository.save(subscribe);
-
-        return new ResponseEntity<>("Success!!!", HttpStatus.OK);
+        return subscribeService.subscribe(id, email);
 
     }
 }

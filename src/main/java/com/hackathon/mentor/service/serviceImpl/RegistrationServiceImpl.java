@@ -1,4 +1,4 @@
-package com.hackathon.mentor.service;
+package com.hackathon.mentor.service.serviceImpl;
 
 import com.hackathon.mentor.exceptions.AccountBadRequest;
 import com.hackathon.mentor.exceptions.AccountNotFound;
@@ -10,6 +10,7 @@ import com.hackathon.mentor.repository.MenteeRepository;
 import com.hackathon.mentor.repository.MentorRepository;
 import com.hackathon.mentor.repository.RoleRepository;
 import com.hackathon.mentor.repository.UserRepository;
+import com.hackathon.mentor.service.RegistrationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

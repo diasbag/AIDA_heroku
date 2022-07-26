@@ -22,30 +22,46 @@ public class Mentor {
     @Max(100)
     private int age;
 
+    @Column(name = "phone_number")
     private String number;
 
     @OneToOne
     @JoinColumn(name = "rating_id")
     private Rating rating;
 
+    @Column(name = "iin")
     private String iin;
 
+    @Column(name = "major")
     private String major;
 
+    @Column(name = "university")
     private String university;
 
+    @Column(name = "country")
     private String country;
 
+    @Column(name = "work")
     private String work;
 
+    @Column(name = "userInfo")
     private String userInfo;
 
+    @Column(name = "school")
     private String school;
+
+    @Column(name = "finish_year")
+    private Integer year;
+
+    @Column(name = "subject1")
+    private String subject1;
+
+    @Column(name = "subject2")
+    private String subject2;
 
     @ManyToMany
     @Column(name = "mentee_id")
     private Set<Mentee> mentees = new HashSet<>();
-
 
     public Mentor(
                   int age, String iin, String number,
@@ -65,7 +81,6 @@ public class Mentor {
     public Mentor() {
 
     }
-
 
     public Set<Mentee> getMentees() {
         return mentees;
@@ -87,13 +102,6 @@ public class Mentor {
         this.rating = rating;
     }
 
-//    public List<Image> getImages() {
-//        return images;
-//    }
-//
-//    public void setImages(List<Image> images) {
-//        this.images = images;
-//    }
     public void setMentees(Set<Mentee> mentees) {
         this.mentees = mentees;
     }
@@ -106,8 +114,6 @@ public class Mentor {
         this.school = school;
     }
 
-
-
     public Long getId() {
         return id;
     }
@@ -115,9 +121,6 @@ public class Mentor {
     public void setId(Long id) {
         this.id = id;
     }
-
-
-
 
     public int getAge() {
         return age;
