@@ -52,8 +52,6 @@ public class RegistrationServiceImpl implements RegistrationService {
         Mentor mentor = new Mentor();
         mentor.setAge(signupMentorRequest.getAge());
         mentor.setIin(signupMentorRequest.getIin());
-        mentor.setMajor(signupMentorRequest.getMajor());
-        mentor.setUniversity(signupMentorRequest.getUniversity());
         mentor.setCountry(signupMentorRequest.getCountry());
         mentor.setNumber(signupMentorRequest.getNumber());
         mentor.setWork(signupMentorRequest.getWork());
@@ -63,6 +61,10 @@ public class RegistrationServiceImpl implements RegistrationService {
         mentor.setYear(signupMentorRequest.getYearOfGraduation());
         mentor.setSubject1(signupMentorRequest.getFirstSubject());
         mentor.setSubject2(signupMentorRequest.getSecondSubject());
+        mentor.setCountryOfBachelorsUniversity(signupMentorRequest.getCountryOfBachelorsUniversity());
+        mentor.setCountryOfMastersUniversity(signupMentorRequest.getCountryOfMastersUniversity());
+        mentor.setBachelorsMajor(signupMentorRequest.getBachelorsMajor());
+        mentor.setMastersMajor(signupMentorRequest.getMastersMajor());
         mentorRepository.save(mentor);
         log.info("mentor was registered <<<");
         return new MessageResponse("User registered successfully!");
@@ -93,6 +95,8 @@ public class RegistrationServiceImpl implements RegistrationService {
         mentee.setAchievements(signupMenteeRequest.getAchievements());
         mentee.setSchool(signupMenteeRequest.getSchool());
         mentee.setUser(user);
+        mentee.setSubject1(signupMenteeRequest.getSubjectOfInterest1());
+        mentee.setSubject2(signupMenteeRequest.getSubjectOfInterest2());
 
         menteeRepository.save(mentee);
         log.info("mentee was registered <<<");

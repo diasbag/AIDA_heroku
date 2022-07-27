@@ -27,9 +27,13 @@ public class SignupMentorRequest {
 
     private String iin;
 
-    private String major;
+    private String bachelorsMajor;
+    private String mastersMajor;
 
-    private String university;
+    private String bachelorsUniversity;
+    private String countryOfBachelorsUniversity;
+    private String mastersUniversity;
+    private String countryOfMastersUniversity;
 
     private String country;
 
@@ -41,7 +45,6 @@ public class SignupMentorRequest {
     private String firstSubject;
     private String secondSubject;
     private Integer yearOfGraduation;
-
 
     @NotBlank
     @Size(max = 50)

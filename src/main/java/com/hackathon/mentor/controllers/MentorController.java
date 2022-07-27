@@ -18,25 +18,22 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class MentorController {
 
-
     private final PasswordEncoder encoder;
 
     private final MentorServiceImpl mentorService;
-
-
 
     @GetMapping("/mentors")
     public ResponseEntity<?> getMentors() {
         return mentorService.getMentors();
     }
 
-    @PostMapping("/mentors/filter")
-    public ResponseEntity<?> getMentorsByCountry(@RequestBody FilterRequest filterRequest) {
-        String country = filterRequest.getCountry();
-        String major = filterRequest.getMajor();
-        String university = filterRequest.getUniversity();
-        return mentorService.filtration(country, major, university);
-    }
+//    @PostMapping("/mentors/filter")
+//    public ResponseEntity<?> getMentorsByCountry(@RequestBody FilterRequest filterRequest) {
+//        String country = filterRequest.getCountry();
+//        String major = filterRequest.getMajor();
+//        String university = filterRequest.getUniversity();
+//        return mentorService.filtration(country, major, university);
+//    }
 
     @GetMapping("/mentors/{id}")
     public ResponseEntity<?> getMentorById(@PathVariable("id") Long id) {
@@ -49,6 +46,7 @@ public class MentorController {
         String email = userDetails.getUsername();
         return mentorService.getProfile(email);
     }
+
     @PutMapping("/mentor/profile/edit")
     public ResponseEntity<?> updateMentor(@RequestBody  UpdateMentorRequest signupMentorRequest) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

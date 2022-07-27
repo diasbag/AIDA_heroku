@@ -2,6 +2,9 @@ package com.hackathon.mentor.payload.response;
 
 import com.hackathon.mentor.models.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.JoinColumn;
@@ -14,39 +17,14 @@ import java.util.List;
 import java.util.Set;
 
 
-@Data
-public class MentorProfileResponse {
+@Getter
+@Setter
+@ToString
+public class MentorProfileResponse extends MentorResponseSuper{
 
     private String firstname;
     private String lastname;
-    private String middlename;
+    private String middleName;
     private String email;
-    private int age;
-
-    private String number;
-
-    private Rating rating;
-
-    private String iin;
-
-    private String major;
-
-    private String university;
-
-    private String country;
-
-    private String work;
-
-    private String userInfo;
-
-    private String school;
-
-    private int menteesCount;
-
-    private List<Post> posts;
-
     private Image image;
-
-
-
 }

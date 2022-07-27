@@ -65,6 +65,8 @@ public class MenteeServiceImpl implements MenteeService {
         mentee.setGrade(updateMenteeRequest.getGrade());
         mentee.setIin(updateMenteeRequest.getIin());
         mentee.setNumber(updateMenteeRequest.getNumber());
+        mentee.setSubject1(updateMenteeRequest.getFirstSubject());
+        mentee.setSubject2(updateMenteeRequest.getSecondSubject());
         menteeRepository.save(mentee);
         log.info("Mentee profile Updated!!!");
         return new ResponseEntity<>(mentee, HttpStatus.OK);

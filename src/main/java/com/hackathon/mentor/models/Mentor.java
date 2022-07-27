@@ -1,5 +1,7 @@
 package com.hackathon.mentor.models;
 
+import lombok.*;
+
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.util.ArrayList;
@@ -8,6 +10,11 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 @Table(	name = "mentors")
 public class Mentor {
     @Id
@@ -32,11 +39,13 @@ public class Mentor {
     @Column(name = "iin")
     private String iin;
 
-    @Column(name = "major")
-    private String major;
+    private String bachelorsMajor;
+    private String mastersMajor;
 
-    @Column(name = "university")
-    private String university;
+    private String bachelorsUniversity;
+    private String countryOfBachelorsUniversity;
+    private String mastersUniversity;
+    private String countryOfMastersUniversity;
 
     @Column(name = "country")
     private String country;
@@ -65,158 +74,5 @@ public class Mentor {
     @Column(name = "mentee_id")
     private Set<Mentee> mentees = new HashSet<>();
 
-    public Mentor(
-                  int age, String iin, String number,
-                  String major, String university,
-                  String country, String work, String userInfo) {
-
-        this.age = age;
-        this.number = number;
-        this.iin = iin;
-        this.major = major;
-        this.university = university;
-        this.country = country;
-        this.work = work;
-        this.userInfo = userInfo;
-    }
-
-    public Mentor() {
-
-    }
-
-    public Set<Mentee> getMentees() {
-        return mentees;
-    }
-
-    public Mentee getMentee() {
-        List<Mentee> menteeList = new ArrayList<>(mentees);
-        for (Mentee mentee : menteeList) {
-            return mentee;
-        }
-        return null;
-    }
-
-    public Rating getRating() {
-        return rating;
-    }
-
-    public void setRating(Rating rating) {
-        this.rating = rating;
-    }
-
-    public void setMentees(Set<Mentee> mentees) {
-        this.mentees = mentees;
-    }
-
-    public String getSchool() {
-        return school;
-    }
-
-    public void setSchool(String school) {
-        this.school = school;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public String getNumber() {
-        return number;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
-    }
-
-    public String getIin() {
-        return iin;
-    }
-
-    public void setIin(String iin) {
-        this.iin = iin;
-    }
-
-    public String getMajor() {
-        return major;
-    }
-
-    public void setMajor(String major) {
-        this.major = major;
-    }
-
-    public String getUniversity() {
-        return university;
-    }
-
-    public void setUniversity(String university) {
-        this.university = university;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getWork() {
-        return work;
-    }
-
-    public void setWork(String work) {
-        this.work = work;
-    }
-
-    public String getUserInfo() {
-        return userInfo;
-    }
-
-    public void setUserInfo(String userInfo) {
-        this.userInfo = userInfo;
-    }
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Integer getYear() {
-        return year;
-    }
-
-    public void setYear(Integer year) {
-        this.year = year;
-    }
-
-    public String getSubject1() {
-        return subject1;
-    }
-
-    public void setSubject1(String subject1) {
-        this.subject1 = subject1;
-    }
-
-    public String getSubject2() {
-        return subject2;
-    }
-
-    public void setSubject2(String subject2) {
-        this.subject2 = subject2;
-    }
 
 }
