@@ -61,12 +61,12 @@ public class PostController {
 //        List<Post> posts = postService.getAllByMentor();
 //        return new ResponseEntity<>(posts, HttpStatus.OK);
 //    }
-    @PostMapping("/post/edit_post_text")
+    @PutMapping("/post/edit_post_text")
     public ResponseEntity<?> editPostText(@RequestBody PostRequest postRequest) {
         Post post = postService.editPostText(postRequest);
         return new ResponseEntity<>(post.getId(), HttpStatus.OK);
     }
-    @PostMapping("/post/edit_post_image/{id}")
+    @PutMapping("/post/edit_post_image/{id}")
     public ResponseEntity<?> editPostImage(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
         Post post = postService.editPostImage(id, file);
         return new ResponseEntity<>(post.getId(), HttpStatus.OK);
