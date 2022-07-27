@@ -53,60 +53,77 @@ public class MentorServiceImpl implements MentorService {
             mentorsResponse.setId(mentor.getId());
             mentorsResponse.setUser(mentor.getUser());
             mentorsResponse.setAge(mentor.getAge());
-            mentorsResponse.setCountry(mentor.getCountry());
+            mentorsResponse.setNumber(mentor.getNumber());
             mentorsResponse.setRating(mentor.getRating());
             mentorsResponse.setIin(mentor.getIin());
-            mentorsResponse.setMajor(mentor.getMajor());
-            mentorsResponse.setNumber(mentor.getNumber());
-            mentorsResponse.setSchool(mentor.getSchool());
-            mentorsResponse.setUniversity(mentor.getUniversity());
-            mentorsResponse.setUserInfo(mentor.getUserInfo());
+            mentorsResponse.setBachelorsMajor(mentor.getBachelorsMajor());
+            mentorsResponse.setMastersMajor(mentor.getMastersMajor());
+            mentorsResponse.setBachelorsUniversity(mentorsResponse.getBachelorsUniversity());
+            mentorsResponse.setCountryOfBachelorsUniversity(mentor.getCountryOfBachelorsUniversity());
+            mentorsResponse.setMastersUniversity(mentor.getMastersUniversity());
+            mentorsResponse.setCountryOfMastersUniversity(mentor.getCountryOfMastersUniversity());
+            mentorsResponse.setCountry(mentor.getCountry());
             mentorsResponse.setWork(mentor.getWork());
+            mentorsResponse.setUserInfo(mentor.getUserInfo());
+            mentorsResponse.setSchool(mentor.getSchool());
+            mentorsResponse.setYearOfGraduation(mentorsResponse.getYearOfGraduation());
+            mentorsResponse.setSubject1(mentorsResponse.getSubject1());
+            mentorsResponse.setSubject2(mentor.getSubject2());
+
             mentorsResponseList.add(mentorsResponse);
             mentorsResponse.setMenteesCount(mentor.getMentees().size());
         }
         return new ResponseEntity<>(mentorsResponseList, HttpStatus.OK);
     }
 
-    @Override
-    public ResponseEntity<?> filtration(String country, String major, String university) {
-        List<Mentor> mentors = null;
-        if (country != null && major != null && university == null) {
-            mentors = mentorRepository.findByCountryAndMajor(country , major);
-        } else if (country != null && major == null && university == null) {
-            mentors = mentorRepository.findByCountry(country);
-        } else if (country == null && major != null && university == null) {
-            mentors = mentorRepository.findByMajor(major);
-        } else if (country != null && major == null) {
-            mentors = mentorRepository.findByCountryAndUniversity(country, university);
-        } else if (country == null && major != null) {
-            mentors = mentorRepository.findByMajorAndUniversity(major, university);
-        } else if (country != null) {
-            mentors = mentorRepository.findByCountryAndUniversityAndMajor(country, university, major);
-        } else if (university != null) {
-            mentors = mentorRepository.findByUniversity(university);
-        }
-        List<MentorsResponse> mentorsResponseList = new ArrayList<>();
-        if (mentors == null) {
-            return new ResponseEntity<>("Not found", HttpStatus.NOT_FOUND);
-        }
-        for (Mentor mentor : mentors) {
-            MentorsResponse mentorsResponse = new MentorsResponse();
-            mentorsResponse.setUser(mentor.getUser());
-            mentorsResponse.setAge(mentor.getAge());
-            mentorsResponse.setCountry(mentor.getCountry());
-            mentorsResponse.setRating(mentor.getRating());
-            mentorsResponse.setIin(mentor.getIin());
-            mentorsResponse.setMajor(mentor.getMajor());
-            mentorsResponse.setNumber(mentor.getNumber());
-            mentorsResponse.setSchool(mentor.getSchool());
-            mentorsResponse.setUniversity(mentor.getUniversity());
-            mentorsResponse.setUserInfo(mentor.getUserInfo());
-            mentorsResponse.setWork(mentor.getWork());
-            mentorsResponseList.add(mentorsResponse);
-        }
-        return new ResponseEntity<>(mentorsResponseList, HttpStatus.OK);
-    }
+//    @Override
+//    public ResponseEntity<?> filtration(String country, String major, String university) {
+//        List<Mentor> mentors = null;
+//        if (country != null && major != null && university == null) {
+//            mentors = mentorRepository.findByCountryAndMajor(country , major);
+//        } else if (country != null && major == null && university == null) {
+//            mentors = mentorRepository.findByCountry(country);
+//        } else if (country == null && major != null && university == null) {
+//            mentors = mentorRepository.findByMajor(major);
+//        } else if (country != null && major == null) {
+//            mentors = mentorRepository.findByCountryAndUniversity(country, university);
+//        } else if (country == null && major != null) {
+//            mentors = mentorRepository.findByMajorAndUniversity(major, university);
+//        } else if (country != null) {
+//            mentors = mentorRepository.findByCountryAndUniversityAndMajor(country, university, major);
+//        } else if (university != null) {
+//            mentors = mentorRepository.findByUniversity(university);
+//        }
+//        List<MentorsResponse> mentorsResponseList = new ArrayList<>();
+//        if (mentors == null) {
+//            return new ResponseEntity<>("Not found", HttpStatus.NOT_FOUND);
+//        }
+//        for (Mentor mentor : mentors) {
+//            MentorsResponse mentorsResponse = new MentorsResponse();
+//            mentorsResponse.setId(mentor.getId());
+//            mentorsResponse.setUser(mentor.getUser());
+//            mentorsResponse.setAge(mentor.getAge());
+//            mentorsResponse.setNumber(mentor.getNumber());
+//            mentorsResponse.setRating(mentor.getRating());
+//            mentorsResponse.setIin(mentor.getIin());
+//            mentorsResponse.setBachelorsMajor(mentor.getBachelorsMajor());
+//            mentorsResponse.setMastersMajor(mentor.getMastersMajor());
+//            mentorsResponse.setBachelorsUniversity(mentorsResponse.getBachelorsUniversity());
+//            mentorsResponse.setCountryOfBachelorsUniversity(mentor.getCountryOfBachelorsUniversity());
+//            mentorsResponse.setMastersUniversity(mentor.getMastersUniversity());
+//            mentorsResponse.setCountryOfMastersUniversity(mentor.getCountryOfMastersUniversity());
+//            mentorsResponse.setCountry(mentor.getCountry());
+//            mentorsResponse.setWork(mentor.getWork());
+//            mentorsResponse.setUserInfo(mentor.getUserInfo());
+//            mentorsResponse.setSchool(mentor.getSchool());
+//            mentorsResponse.setYearOfGraduation(mentorsResponse.getYearOfGraduation());
+//            mentorsResponse.setSubject1(mentorsResponse.getSubject1());
+//            mentorsResponse.setSubject2(mentor.getSubject2());
+//
+//            mentorsResponseList.add(mentorsResponse);
+//        }
+//        return new ResponseEntity<>(mentorsResponseList, HttpStatus.OK);
+//    }
 
     @Override
     public ResponseEntity<?> getMentorById(Long id) {
@@ -118,27 +135,34 @@ public class MentorServiceImpl implements MentorService {
         MentorProfileResponse mentorProfileResponse = new MentorProfileResponse();
         mentorProfileResponse.setFirstname(mentor.getUser().getFirstname());
         mentorProfileResponse.setLastname(mentor.getUser().getLastname());
-        mentorProfileResponse.setMiddlename(mentor.getUser().getMiddlename());
+        mentorProfileResponse.setMiddleName(mentor.getUser().getMiddlename());
         mentorProfileResponse.setEmail(mentor.getUser().getEmail());
         mentorProfileResponse.setImage(mentor.getUser().getImage());
         mentorProfileResponse.setAge(mentor.getAge());
-        mentorProfileResponse.setIin(mentor.getIin());
-        mentorProfileResponse.setRating(mentor.getRating());
-        mentorProfileResponse.setMenteesCount(mentor.getMentees().size());
         mentorProfileResponse.setNumber(mentor.getNumber());
-        mentorProfileResponse.setMajor(mentor.getMajor());
+        mentorProfileResponse.setRating(mentor.getRating());
+        mentorProfileResponse.setIin(mentor.getIin());
+        mentorProfileResponse.setBachelorsMajor(mentor.getBachelorsMajor());
+        mentorProfileResponse.setCountryOfBachelorsUniversity(mentor.getCountryOfBachelorsUniversity());
+        mentorProfileResponse.setMastersUniversity(mentor.getMastersUniversity());
+        mentorProfileResponse.setCountryOfMastersUniversity(mentor.getCountryOfMastersUniversity());
         mentorProfileResponse.setCountry(mentor.getCountry());
-        mentorProfileResponse.setSchool(mentor.getSchool());
+        mentorProfileResponse.setMenteesCount(mentor.getMentees().size());
         mentorProfileResponse.setWork(mentor.getWork());
         mentorProfileResponse.setUserInfo(mentor.getUserInfo());
-        mentorProfileResponse.setUniversity(mentor.getUniversity());
+        mentorProfileResponse.setSchool(mentor.getSchool());
+        mentorProfileResponse.setYearOfGraduation(mentor.getYear());
+        mentorProfileResponse.setSubject1(mentor.getSubject1());
+        mentorProfileResponse.setSubject2(mentor.getSubject2());
+        mentorProfileResponse.setMenteesCount(mentor.getMentees().size());
         log.info("Get mentor by id" + mentorProfileResponse);
         return new ResponseEntity<>(mentorProfileResponse, HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<?> getProfile(String email) {
-        User user = userRepository.findByEmail(email).orElse(null);
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new AccountNotFound("user with email " + email));
         ERole role = user.getRoles().get(0).getName();
         log.info("get active user profile ...");
         if (role.name().equals("ROLE_MENTOR") ) {
@@ -166,13 +190,22 @@ public class MentorServiceImpl implements MentorService {
 
         mentor.setAge(signupMentorRequest.getAge());
         mentor.setIin(signupMentorRequest.getIin());
-        mentor.setMajor(signupMentorRequest.getMajor());
-        mentor.setUniversity(signupMentorRequest.getUniversity());
+        mentor.setBachelorsUniversity(signupMentorRequest.getBachelorsUniversity());
         mentor.setCountry(signupMentorRequest.getCountry());
         mentor.setNumber(signupMentorRequest.getNumber());
         mentor.setWork(signupMentorRequest.getWork());
         mentor.setUserInfo(signupMentorRequest.getUserInfo());
         mentor.setSchool(signupMentorRequest.getSchool());
+        mentor.setSubject1(signupMentorRequest.getFirstSubject());
+        mentor.setSubject2(signupMentorRequest.getSecondSubject());
+        mentor.setBachelorsUniversity(signupMentorRequest.getBachelorsUniversity());
+        mentor.setMastersUniversity(signupMentorRequest.getCountryOfMastersUniversity());
+        mentor.setYear(signupMentorRequest.getYearOfGraduation());
+        mentor.setCountryOfBachelorsUniversity(signupMentorRequest.getCountryOfBachelorsUniversity());
+        mentor.setCountryOfMastersUniversity(signupMentorRequest.getCountryOfMastersUniversity());
+        mentor.setBachelorsMajor(signupMentorRequest.getBachelorsMajor());
+        mentor.setMastersMajor(signupMentorRequest.getMastersMajor());
+
         mentorRepository.save(mentor);
         log.info("mentor successfully updated!!!");
         return ResponseEntity.ok("User updated successfully!");

@@ -9,7 +9,7 @@ public interface MentorService {
     ResponseEntity<?> getUserProfile(User user);
 
     ResponseEntity<?> getMentors();
-    ResponseEntity<?> filtration(String country, String major, String university);
+//    ResponseEntity<?> filtration(String country, String major, String university);
 
     ResponseEntity<?> getMentorById(Long id);
 
