@@ -38,7 +38,7 @@ public class PostController {
         return ResponseEntity.ok(postResponseList);
     }
 
-    @PostMapping("/post/create_post_2")
+    @PostMapping("/post/upload_text_2")
     public ResponseEntity<?> createPost (@RequestBody PostRequest postRequest) {
         Post post = postService.createPost(postRequest);
         return new ResponseEntity<>(post, HttpStatus.OK);
@@ -74,6 +74,6 @@ public class PostController {
     @DeleteMapping("/post/delete_post/{id}")
     public ResponseEntity<?> deletePost(@PathVariable Long id) {
         postService.deletePost(id);
-        return new ResponseEntity<>("post with was deleted", HttpStatus.OK);
+        return new ResponseEntity<>("post with id " + id + " was deleted", HttpStatus.OK);
     }
 }

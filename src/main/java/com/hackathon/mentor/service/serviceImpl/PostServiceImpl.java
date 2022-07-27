@@ -5,6 +5,7 @@ import com.hackathon.mentor.models.Image;
 import com.hackathon.mentor.models.Post;
 import com.hackathon.mentor.payload.request.PostRequest;
 import com.hackathon.mentor.payload.response.PostResponse;
+import com.hackathon.mentor.repository.ImageRepository;
 import com.hackathon.mentor.repository.PostRepository;
 import com.hackathon.mentor.service.PostService;
 import com.hackathon.mentor.utils.FileNameHelper;
@@ -24,6 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
+    private final ImageRepository imageRepository;
     private final FileNameHelper fileHelper = new FileNameHelper();
     @Override
     public List<PostResponse> getPosts() {
@@ -99,9 +101,11 @@ public class PostServiceImpl implements PostService {
     public Post editPostImage(Long id, MultipartFile file) {
         log.info("editing post image ...");
         Post post = postRepository.findById(id).orElseThrow(() -> new AccountNotFound("post with id " + id));
+        Long imageID = post.getImage().getId();
         Image image = Image.buildImage(file, fileHelper);
         post.setImage(image);
         postRepository.save(post);
+        imageRepository.deleteById(imageID);
         log.info("post image was edited " + post + " <<<");
         return post;
     }
@@ -109,8 +113,8 @@ public class PostServiceImpl implements PostService {
     @Override
     public void deletePost(Long id) {
         log.info("deleting post ...");
-        Post post = postRepository.findById(id).orElseThrow(() -> new AccountNotFound("post with id" + id));
-        postRepository.delete(post);
+        Post post = postRepository.findById(id).orElseThrow(() -> new AccountNotFound("post with id " + id));
+        postRepository.deleteById(post.getId());
         log.info("post was deleted: " + post + " <<<");
     }
 }
