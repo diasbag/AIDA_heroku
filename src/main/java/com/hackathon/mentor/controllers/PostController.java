@@ -54,8 +54,8 @@ public class PostController {
 
     @GetMapping("/mentor/{id}/posts")
     public ResponseEntity<?> getMentorPostsById(@PathVariable("id") Long id) {
-        List<Post> posts = postService.getByID(id);
-        return new ResponseEntity<>(posts, HttpStatus.OK);
+        Post post = postService.getByID(id);
+        return new ResponseEntity<>(post, HttpStatus.OK);
     }
 
     @GetMapping("/user/posts")
