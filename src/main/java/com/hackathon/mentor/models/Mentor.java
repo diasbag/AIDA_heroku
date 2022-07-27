@@ -56,6 +56,8 @@ public class Mentor {
     @Column(name = "subject1")
     private String subject1;
 
+
+
     @Column(name = "subject2")
     private String subject2;
 
@@ -88,8 +90,8 @@ public class Mentor {
 
     public Mentee getMentee() {
         List<Mentee> menteeList = new ArrayList<>(mentees);
-        for (int i = 0; i < menteeList.size(); i++) {
-            return menteeList.get(i);
+        for (Mentee mentee : menteeList) {
+            return mentee;
         }
         return null;
     }
@@ -191,6 +193,30 @@ public class Mentor {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
+    }
+
+    public String getSubject1() {
+        return subject1;
+    }
+
+    public void setSubject1(String subject1) {
+        this.subject1 = subject1;
+    }
+
+    public String getSubject2() {
+        return subject2;
+    }
+
+    public void setSubject2(String subject2) {
+        this.subject2 = subject2;
     }
 
 }
