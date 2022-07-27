@@ -4,7 +4,6 @@ import com.hackathon.mentor.models.Image;
 import com.hackathon.mentor.models.Mentor;
 import com.hackathon.mentor.models.Post;
 import com.hackathon.mentor.models.User;
-import com.hackathon.mentor.payload.request.PostEditRequest;
 import com.hackathon.mentor.payload.request.PostRequest;
 import com.hackathon.mentor.payload.response.PostResponse;
 import com.hackathon.mentor.repository.MentorRepository;
@@ -39,38 +38,41 @@ public class PostController {
         return ResponseEntity.ok(postResponseList);
     }
 
-    @PostMapping("/post/create")
-    public ResponseEntity<?> createPost (@RequestBody PostRequest postRequest,
-                                         @RequestParam("file") MultipartFile file) {
-        Post post = postService.createPost(postRequest, file);
+    @PostMapping("/post/create_post_2")
+    public ResponseEntity<?> createPost (@RequestBody PostRequest postRequest) {
+        Post post = postService.createPost(postRequest);
         return new ResponseEntity<>(post, HttpStatus.OK);
     }
 
-//    @PostMapping("/post/uploadImage")
-//    public ResponseEntity<?> uploadPostImage(@RequestParam("file") MultipartFile file) {
-//        Post post = postService.uploadPostImage(file);
-//        return new ResponseEntity<>(post.getId(), HttpStatus.OK);
-//    }
+    @PostMapping("/post/upload_image_1")
+    public ResponseEntity<?> uploadPostImage(@RequestParam("file") MultipartFile file) {
+        Post post = postService.uploadPostImage(file);
+        return new ResponseEntity<>(post.getId(), HttpStatus.OK);
+    }
 
-    @GetMapping("/mentor/{id}/posts")
+    @GetMapping("/mentor/posts/{id}")
     public ResponseEntity<?> getMentorPostsById(@PathVariable("id") Long id) {
         Post post = postService.getByID(id);
         return new ResponseEntity<>(post, HttpStatus.OK);
     }
 
-    @GetMapping("/user/posts")
-    public ResponseEntity<?> getMentorPosts() {
-        List<Post> posts = postService.getAllByMentor();
-        return new ResponseEntity<>(posts, HttpStatus.OK);
-    }
-    @PostMapping("/post/edit_post")
-    public ResponseEntity<?> editPost(@RequestBody PostEditRequest postEditRequest,
-                                      @RequestParam("file") MultipartFile file) {
-        Post post = postService.editPost(postEditRequest, file);
+//    @GetMapping("/user/posts")
+//    public ResponseEntity<?> getMentorPosts() {
+//        List<Post> posts = postService.getAllByMentor();
+//        return new ResponseEntity<>(posts, HttpStatus.OK);
+//    }
+    @PostMapping("/post/edit_post_text")
+    public ResponseEntity<?> editPostText(@RequestBody PostRequest postRequest) {
+        Post post = postService.editPostText(postRequest);
         return new ResponseEntity<>(post.getId(), HttpStatus.OK);
     }
-    @DeleteMapping("/post/delete_post")
-    public ResponseEntity<?> deletePost(@RequestParam Long id) {
+    @PostMapping("/post/edit_post_image/{id}")
+    public ResponseEntity<?> editPostImage(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
+        Post post = postService.editPostImage(id, file);
+        return new ResponseEntity<>(post.getId(), HttpStatus.OK);
+    }
+    @DeleteMapping("/post/delete_post/{id}")
+    public ResponseEntity<?> deletePost(@PathVariable Long id) {
         postService.deletePost(id);
         return new ResponseEntity<>("post with was deleted", HttpStatus.OK);
     }
