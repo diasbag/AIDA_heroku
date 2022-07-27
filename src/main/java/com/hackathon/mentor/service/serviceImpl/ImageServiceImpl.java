@@ -63,9 +63,7 @@ public class ImageServiceImpl implements ImageService {
         log.info("show image...");
         String fileName = user.getImage().getFileName();
         Image image = findByFileName(fileName);
-        return ResponseEntity.ok().contentType(MediaType.valueOf(image.getFileType())).body(image.getData());
-        return findByFileName(fileName);
-
+        return image;
     }
 
     @Override
