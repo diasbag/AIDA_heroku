@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import java.util.List;
 import java.util.Set;
@@ -71,10 +72,10 @@ public class MenteeServiceImpl implements MenteeService {
 
     @Override
     public ResponseEntity<?> rateMentor(Long id, String email, RatingRequest ratingRequest) {
-        User user = userRepository.findByEmail(email).orElse(null);
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User not Found!!!!"));
         Mentee mentee = menteeRepository.findByUser(user);
         log.info("rate mentor ...");
-        Mentor mentor = mentorRepository.findById(id).orElseThrow(() -> new RuntimeException("Mentor not found!!!"));
+        Mentor mentor = mentorRepository.findById(id).orElseThrow(() -> new NotFoundException("Mentor not found!!!"));
         Set<Mentee> mentees = mentor.getMentees();
         if (!mentees.contains(mentee)) {
             return new ResponseEntity<>("Not your mentor!!!!!!! 4ert", HttpStatus.CONFLICT);
@@ -90,7 +91,7 @@ public class MenteeServiceImpl implements MenteeService {
             return new ResponseEntity<>(mentor, HttpStatus.OK);
         }
         long cnt =  (rating.getPeopleCount()+1);
-        double res = (rating.getRating()+ ratingRequest.getRate())/(cnt);
+        double res = ((rating.getRating()* rating.getPeopleCount()) + ratingRequest.getRate())/(cnt);
         rating.setRating(res);
         rating.setPeopleCount(cnt);
         ratingRepository.save(rating);
