@@ -15,7 +15,7 @@ public interface PostService {
 
 //    Post uploadPostImage(MultipartFile file);
 
-    List<Post> getByID(Long id);
+    Post getByID(Long id);
 
     List<Post> getAllByMentor();
 

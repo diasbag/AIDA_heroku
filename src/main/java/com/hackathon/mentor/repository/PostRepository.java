@@ -15,7 +15,4 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query(value = "select * from posts", nativeQuery = true)
     List<Post> getAll();
 
-
-    List<Post> getByMentor(Mentor mentor);
-    Optional<Post> findByIdAndMentor(Long id, Mentor mentor);
 }

@@ -77,23 +77,19 @@ public class PostServiceImpl implements PostService {
 //    }
 
     @Override
-    public List<Post> getByID(Long id) {
+    public Post getByID(Long id) {
         log.info("getting post by mentor id ...");
-        Mentor mentor = mentorRepository.findById(id).orElseThrow(() -> new AccountNotFound(" user with id " + id));
+        Post post = postRepository.findById(id).orElseThrow(() -> new AccountNotFound(" user with id " + id));
         log.info("all posts by mentor id were retrieved <<<");
-        return postRepository.getByMentor(mentor);
+        return post;
     }
 
     @Override
     public List<Post> getAllByMentor() {
         log.info("getting all mentor posts ...");
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String email = userDetails.getUsername();
-        User user = userRepository.findByEmail(email).orElseThrow(() ->
-                new AccountNotFound("user with email " + email));
-        Mentor mentor = mentorRepository.findByUser(user);
+        List<Post> posts = postRepository.findAll();
         log.info("all mentor posts were retrieved <<<");
-        return postRepository.getByMentor(mentor);
+        return posts;
     }
 
     @Override
