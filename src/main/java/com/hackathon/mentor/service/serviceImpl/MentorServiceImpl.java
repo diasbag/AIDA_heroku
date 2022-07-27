@@ -196,7 +196,13 @@ public class MentorServiceImpl implements MentorService {
     public ResponseEntity<?> confirm(Long id, String email) {
         User user = userRepository.findByEmail(email).orElse(null);
         Mentor mentor = mentorRepository.findByUser(user);
+
+        if (mentor.getMentees().size() == 3) {
+            return new ResponseEntity<>("You have 3 mentees" , HttpStatus.I_AM_A_TEAPOT);
+        }
+
         Mentee mentee = menteeRepository.findById(id).orElse(null);
+
         Subscribe subscribe = subscribeRepository.getByMentorAndMentee(mentor, mentee);
         mentor.getMentees().add(mentee);
         mentorRepository.save(mentor);
