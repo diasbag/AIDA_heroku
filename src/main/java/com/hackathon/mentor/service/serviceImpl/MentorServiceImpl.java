@@ -50,6 +50,7 @@ public class MentorServiceImpl implements MentorService {
         List<MentorsResponse> mentorsResponseList = new ArrayList<>();
         for (Mentor mentor : mentors) {
             MentorsResponse mentorsResponse = new MentorsResponse();
+            mentorsResponse.setId(mentor.getId());
             mentorsResponse.setUser(mentor.getUser());
             mentorsResponse.setAge(mentor.getAge());
             mentorsResponse.setCountry(mentor.getCountry());
