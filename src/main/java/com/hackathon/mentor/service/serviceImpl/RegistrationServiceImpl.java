@@ -60,9 +60,9 @@ public class RegistrationServiceImpl implements RegistrationService {
         mentor.setUserInfo(signupMentorRequest.getUserInfo());
         mentor.setSchool(signupMentorRequest.getSchool());
         mentor.setUser(user);
-        mentor.setYear(signupMentorRequest.getYear());
-        mentor.setSubject1(signupMentorRequest.getSubject1());
-        mentor.setSubject2(signupMentorRequest.getSubject2());
+        mentor.setYear(signupMentorRequest.getYearOfGraduation());
+        mentor.setSubject1(signupMentorRequest.getFirstSubject());
+        mentor.setSubject2(signupMentorRequest.getSecondSubject());
         mentorRepository.save(mentor);
         log.info("mentor was registered <<<");
         return new MessageResponse("User registered successfully!");
