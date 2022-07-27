@@ -29,7 +29,6 @@ public class ImageServiceImpl implements ImageService {
     public ResponseEntity<?> save(Image image) {
         if (image == null) {
             throw new NullPointerException("Image data NULL!!!!");
-
         }
         imageRepository.save(image);
         return new ResponseEntity<>("image", HttpStatus.OK);
@@ -43,7 +42,6 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public ResponseEntity<?> uploadSingleFile(String email, MultipartFile file) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new AccountNotFound("image not found"));
-        log.info("uploading image...");
         Image image = Image.buildImage(file, fileHelper);
         user.setImage(image);
         userRepository.save(user);
@@ -57,7 +55,6 @@ public class ImageServiceImpl implements ImageService {
         log.info("show image...");
         String fileName = user.getImage().getFileName();
         Image image = findByFileName(fileName);
-        log.info("success");
         return ResponseEntity.ok().contentType(MediaType.valueOf(image.getFileType())).body(image.getData());
     }
 
