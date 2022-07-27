@@ -48,21 +48,21 @@ public class MentorServiceImpl implements MentorService {
     public ResponseEntity<?> getMentors() {
         List<Mentor> mentors = mentorRepository.getAll();
         List<MentorsResponse> mentorsResponseList = new ArrayList<>();
-        for (int i = 0; i < mentors.size(); i++) {
+        for (Mentor mentor : mentors) {
             MentorsResponse mentorsResponse = new MentorsResponse();
-            mentorsResponse.setUser(mentors.get(i).getUser());
-            mentorsResponse.setAge(mentors.get(i).getAge());
-            mentorsResponse.setCountry(mentors.get(i).getCountry());
-            mentorsResponse.setRating(mentors.get(i).getRating());
-            mentorsResponse.setIin(mentors.get(i).getIin());
-            mentorsResponse.setMajor(mentors.get(i).getMajor());
-            mentorsResponse.setNumber(mentors.get(i).getNumber());
-            mentorsResponse.setSchool(mentors.get(i).getSchool());
-            mentorsResponse.setUniversity(mentors.get(i).getUniversity());
-            mentorsResponse.setUserInfo(mentors.get(i).getUserInfo());
-            mentorsResponse.setWork(mentors.get(i).getWork());
+            mentorsResponse.setUser(mentor.getUser());
+            mentorsResponse.setAge(mentor.getAge());
+            mentorsResponse.setCountry(mentor.getCountry());
+            mentorsResponse.setRating(mentor.getRating());
+            mentorsResponse.setIin(mentor.getIin());
+            mentorsResponse.setMajor(mentor.getMajor());
+            mentorsResponse.setNumber(mentor.getNumber());
+            mentorsResponse.setSchool(mentor.getSchool());
+            mentorsResponse.setUniversity(mentor.getUniversity());
+            mentorsResponse.setUserInfo(mentor.getUserInfo());
+            mentorsResponse.setWork(mentor.getWork());
             mentorsResponseList.add(mentorsResponse);
-            mentorsResponse.setMenteesCount(mentors.get(i).getMentees().size());
+            mentorsResponse.setMenteesCount(mentor.getMentees().size());
         }
         return new ResponseEntity<>(mentorsResponseList, HttpStatus.OK);
     }
@@ -113,6 +113,7 @@ public class MentorServiceImpl implements MentorService {
         if (mentor == null) {
             return new ResponseEntity<>("Not Found!!!", HttpStatus.NOT_FOUND);
         }
+        log.info("get mentor...");
         MentorProfileResponse mentorProfileResponse = new MentorProfileResponse();
         mentorProfileResponse.setFirstname(mentor.getUser().getFirstname());
         mentorProfileResponse.setLastname(mentor.getUser().getLastname());
@@ -138,6 +139,7 @@ public class MentorServiceImpl implements MentorService {
     public ResponseEntity<?> getProfile(String email) {
         User user = userRepository.findByEmail(email).orElse(null);
         ERole role = user.getRoles().get(0).getName();
+        log.info("get active user profile ...");
         if (role.name().equals("ROLE_MENTOR") ) {
             Mentor mentor = mentorRepository.findByUser(user);
             return new ResponseEntity<>(mentor, HttpStatus.OK);
@@ -146,6 +148,7 @@ public class MentorServiceImpl implements MentorService {
             Mentee mentee = menteeRepository.findByUser(user);
             return new ResponseEntity<>(mentee, HttpStatus.OK);
         }
+        log.info("Active user profile" + user);
         return null;
     }
 
@@ -153,6 +156,7 @@ public class MentorServiceImpl implements MentorService {
     public ResponseEntity<?> updateMentor(String email, UpdateMentorRequest signupMentorRequest) {
         User user = userRepository.getByEmail(email);
         Mentor mentor = mentorRepository.findByUser(user);
+        log.info("updating mentor profile....");
         user.setEmail(signupMentorRequest.getEmail());
         user.setFirstname(signupMentorRequest.getFirstname());
         user.setLastname(signupMentorRequest.getLastname());
@@ -169,6 +173,7 @@ public class MentorServiceImpl implements MentorService {
         mentor.setUserInfo(signupMentorRequest.getUserInfo());
         mentor.setSchool(signupMentorRequest.getSchool());
         mentorRepository.save(mentor);
+        log.info("mentor successfully updated!!!");
         return ResponseEntity.ok("User updated successfully!");
     }
 
@@ -176,12 +181,12 @@ public class MentorServiceImpl implements MentorService {
     public ResponseEntity<?> getMySubscribers(String email) {
         User user = userRepository.findByEmail(email).orElse(null);
         Mentor mentor = mentorRepository.findByUser(user);
-
+        log.info("get mentor wait list...");
         List<Subscribe> subscribes = subscribeRepository.findByMentor(mentor);
 
         List<Mentee> mentees = new ArrayList<>();
-        for(int i = 0; i < subscribes.size(); i++) {
-            mentees.add(subscribes.get(i).getMentee());
+        for (Subscribe subscribe : subscribes) {
+            mentees.add(subscribe.getMentee());
         }
         return new ResponseEntity<>(mentees, HttpStatus.OK);
     }
@@ -196,6 +201,7 @@ public class MentorServiceImpl implements MentorService {
         mentorRepository.save(mentor);
         Long sid = subscribe.getId();
         subscribeRepository.deleteById(sid);
+        log.info("Mentor confirmed mentee!!!");
         return new ResponseEntity<>("Success!!!", HttpStatus.OK);
     }
 
@@ -206,9 +212,8 @@ public class MentorServiceImpl implements MentorService {
         Mentee mentee = menteeRepository.findById(id).orElse(null);
         Subscribe subscribe = subscribeRepository.getByMentorAndMentee(mentor, mentee);
         Long sid = subscribe.getId();
-        System.out.println("qwerqwerqwerqwerqwer   " + subscribe.getId());
         subscribeRepository.deleteById(sid);
-
+        log.info("Mentor rejected mentee!!!");
         return new ResponseEntity<>("Success" , HttpStatus.OK);
     }
 
@@ -216,6 +221,7 @@ public class MentorServiceImpl implements MentorService {
     public ResponseEntity<?> getMentorMentees(String email) {
         User user = userRepository.findByEmail(email).orElse(null);
         Mentor mentor = mentorRepository.findByUser(user);
+        log.info("Mentor menteeList!!!");
         return new ResponseEntity<>(mentor.getMentees(), HttpStatus.OK);
     }
 
@@ -230,7 +236,7 @@ public class MentorServiceImpl implements MentorService {
 
         mentorRepository.save(mentor);
         subscribeRepository.deleteByMentorAndMentee(mentor, mentee);
-
+        log.info("Mentee has been removed!!!");
         return new ResponseEntity<>(mentor, HttpStatus.OK);
     }
 }

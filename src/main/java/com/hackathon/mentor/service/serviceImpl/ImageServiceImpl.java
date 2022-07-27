@@ -48,10 +48,12 @@ public class ImageServiceImpl implements ImageService {
     public ResponseEntity<?> uploadSingleFile(String email, MultipartFile file) {
         log.info("uploading image ...");
         User user = userRepository.findByEmail(email).orElseThrow(() -> new AccountNotFound("image not found"));
+        log.info("uploading image...");
         Image image = Image.buildImage(file, fileHelper);
         user.setImage(image);
         userRepository.save(user);
-        log.info("image was saved <<<");
+        log.info("image successfully uploaded");
+        log.info("image saved");
         return new ResponseEntity<>("success" , HttpStatus.OK);
     }
 
@@ -59,9 +61,13 @@ public class ImageServiceImpl implements ImageService {
     public Image getImage(String email) {
         log.info("getting image ...");
         User user = userRepository.getByEmail(email);
+        log.info("show image...");
         String fileName = user.getImage().getFileName();
-        log.info("image was found <<<");
+        Image image = findByFileName(fileName);
+        log.info("success");
+        return ResponseEntity.ok().contentType(MediaType.valueOf(image.getFileType())).body(image.getData());
         return findByFileName(fileName);
+
     }
 
     @Override

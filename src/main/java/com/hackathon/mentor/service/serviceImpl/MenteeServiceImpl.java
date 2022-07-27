@@ -12,6 +12,7 @@ import com.hackathon.mentor.repository.RatingRepository;
 import com.hackathon.mentor.repository.UserRepository;
 import com.hackathon.mentor.service.MenteeService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MenteeServiceImpl implements MenteeService {
 
     private final MentorRepository mentorRepository;
@@ -50,7 +52,7 @@ public class MenteeServiceImpl implements MenteeService {
     public ResponseEntity<?> editProfile(String email, UpdateMenteeRequest updateMenteeRequest) {
         User user = userRepository.getByEmail(email);
         Mentee mentee = menteeRepository.findByUser(user);
-
+        log.info("Loading mentee profile...");
         user.setFirstname(updateMenteeRequest.getFirstname());
         user.setLastname(updateMenteeRequest.getLastname());
         user.setEmail(updateMenteeRequest.getEmail());
@@ -63,6 +65,7 @@ public class MenteeServiceImpl implements MenteeService {
         mentee.setIin(updateMenteeRequest.getIin());
         mentee.setNumber(updateMenteeRequest.getNumber());
         menteeRepository.save(mentee);
+        log.info("Mentee profile Updated!!!");
         return new ResponseEntity<>(mentee, HttpStatus.OK);
     }
 
@@ -70,8 +73,8 @@ public class MenteeServiceImpl implements MenteeService {
     public ResponseEntity<?> rateMentor(Long id, String email, RatingRequest ratingRequest) {
         User user = userRepository.findByEmail(email).orElse(null);
         Mentee mentee = menteeRepository.findByUser(user);
-
-        Mentor mentor = mentorRepository.findById(id).orElse(null);
+        log.info("rate mentor ...");
+        Mentor mentor = mentorRepository.findById(id).orElseThrow(() -> new RuntimeException("Mentor not found!!!"));
         Set<Mentee> mentees = mentor.getMentees();
         if (!mentees.contains(mentee)) {
             return new ResponseEntity<>("Not your mentor!!!!!!! 4ert", HttpStatus.CONFLICT);
@@ -93,6 +96,7 @@ public class MenteeServiceImpl implements MenteeService {
         ratingRepository.save(rating);
         mentor.setRating(rating);
         mentorRepository.save(mentor);
+        log.info("Mentor was rated!!!");
         return new ResponseEntity<>(mentor, HttpStatus.OK);
     }
 
