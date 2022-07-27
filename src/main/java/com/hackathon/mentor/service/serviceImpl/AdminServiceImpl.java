@@ -1,4 +1,4 @@
-package com.hackathon.mentor.service;
+package com.hackathon.mentor.service.serviceImpl;
 
 import com.hackathon.mentor.exceptions.AccountBadRequest;
 import com.hackathon.mentor.exceptions.AccountNotFound;
@@ -7,6 +7,7 @@ import com.hackathon.mentor.models.Role;
 import com.hackathon.mentor.models.User;
 import com.hackathon.mentor.repository.RoleRepository;
 import com.hackathon.mentor.repository.UserRepository;
+import com.hackathon.mentor.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;

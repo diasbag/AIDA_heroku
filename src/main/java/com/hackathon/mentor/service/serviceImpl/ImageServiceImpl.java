@@ -27,42 +27,60 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public ResponseEntity<?> save(Image image) {
+        log.info("saving image ...");
         if (image == null) {
             throw new NullPointerException("Image data NULL!!!!");
-
         }
         imageRepository.save(image);
+        log.info("image was saved <<<");
         return new ResponseEntity<>("image", HttpStatus.OK);
     }
 
     @Override
     public Image findByFileName(String fileName) {
-        return this.imageRepository.findByFileName(fileName);
+        log.info("finding image by filename ...");
+        Image image = imageRepository.findByFileName(fileName).orElseThrow(() -> new AccountNotFound("image"));
+        log.info("image was found <<<");
+        return image;
     }
 
     @Override
     public ResponseEntity<?> uploadSingleFile(String email, MultipartFile file) {
+        log.info("uploading image ...");
         User user = userRepository.findByEmail(email).orElseThrow(() -> new AccountNotFound("image not found"));
         log.info("uploading image...");
         Image image = Image.buildImage(file, fileHelper);
         user.setImage(image);
         userRepository.save(user);
         log.info("image successfully uploaded");
+        log.info("image saved");
         return new ResponseEntity<>("success" , HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<byte[]> getImage(String email) {
+    public Image getImage(String email) {
+        log.info("getting image ...");
         User user = userRepository.getByEmail(email);
         log.info("show image...");
         String fileName = user.getImage().getFileName();
         Image image = findByFileName(fileName);
         log.info("success");
         return ResponseEntity.ok().contentType(MediaType.valueOf(image.getFileType())).body(image.getData());
+        return findByFileName(fileName);
+
     }
 
     @Override
     public Image findByUuid(String uuid) {
         return this.imageRepository.findByUuid(uuid);
+    }
+
+    @Override
+    public Image getImageByID(Long id) {
+        log.info("getting image by id ...");
+        User user = userRepository.findById(id).orElseThrow(() -> new AccountNotFound("user with id" + id));
+        String fileName = user.getImage().getFileName();
+        log.info("image search by id was completed <<<");
+        return findByFileName(fileName);
     }
 }
