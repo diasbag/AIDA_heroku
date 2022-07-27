@@ -60,6 +60,9 @@ public class RegistrationServiceImpl implements RegistrationService {
         mentor.setUserInfo(signupMentorRequest.getUserInfo());
         mentor.setSchool(signupMentorRequest.getSchool());
         mentor.setUser(user);
+        mentor.setYear(signupMentorRequest.getYear());
+        mentor.setSubject1(signupMentorRequest.getSubject1());
+        mentor.setSubject2(signupMentorRequest.getSubject2());
         mentorRepository.save(mentor);
         log.info("mentor was registered <<<");
         return new MessageResponse("User registered successfully!");
@@ -77,7 +80,7 @@ public class RegistrationServiceImpl implements RegistrationService {
                 encoder.encode(signupMenteeRequest.getPassword()));
         user.setStatus(true);
         Role role = roleRepository.findByName(ERole.ROLE_MENTEE).orElseThrow(() ->
-                new AccountNotFound("Role is not found"));;
+                new AccountNotFound("Role is not found"));
         List<Role> roles = new ArrayList<>();
         roles.add(role);
         user.setRoles(roles);
