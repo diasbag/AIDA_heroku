@@ -52,7 +52,16 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public List<User> findAllAdmins() {
-        return userRepository.findUsersByRolesContaining(ERole.ROLE_ADMIN);
+        log.info("finding all admins ...");
+         List<User> userList = userRepository.findAll();
+         List<User> out = new ArrayList<>();
+         for (User user: userList) {
+             if (user.getRoles().get(0).getName().name().equals("ROLE_ADMIN")) {
+                 out.add(user);
+             }
+         }
+         log.info("all admins were retrieved <<<");
+         return out;
     }
 
     @Override

@@ -2,10 +2,14 @@ package com.hackathon.mentor.payload.request;
 
 import lombok.Data;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.Column;
 import javax.validation.constraints.*;
 import java.util.Set;
-
+@Getter
+@Setter
 @Data
 public class SignupMentorRequest {
     @NotBlank
@@ -34,12 +38,10 @@ public class SignupMentorRequest {
     private String userInfo;
 
     private String school;
+    private String firstSubject;
+    private String secondSubject;
+    private Integer yearOfGraduation;
 
-    private Integer year;
-
-    private String subject1;
-
-    private String subject2;
 
     @NotBlank
     @Size(max = 50)

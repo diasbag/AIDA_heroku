@@ -5,6 +5,7 @@ import com.hackathon.mentor.payload.request.SignupAdminRequest;
 import com.hackathon.mentor.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -18,6 +19,7 @@ public class AdminController {
     private final AdminService adminService;
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> createNewAdmin(@RequestBody @Valid SignupAdminRequest signupAdminRequest) {
         adminService.createNewAdmin(signupAdminRequest.getFirstname(), signupAdminRequest.getLastname(),
                 signupAdminRequest.getEmail(), signupAdminRequest.getPassword());
@@ -25,11 +27,13 @@ public class AdminController {
     }
 
     @GetMapping("/all")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<User> getAllAdmins() {
         return adminService.findAllAdmins();
     }
 
     @PostMapping("/deactivate_account_by_email")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deactivateAccountByEmail(@RequestParam String email){
         adminService.deactivateAccount(email);
         return ResponseEntity.ok("Account "+ email + "is deactivated");
