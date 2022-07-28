@@ -32,9 +32,6 @@ public class Mentor {
     @Column(name = "phone_number")
     private String number;
 
-    @OneToOne
-    @JoinColumn(name = "rating_id")
-    private Rating rating;
 
     @Column(name = "iin")
     private String iin;

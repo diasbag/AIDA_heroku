@@ -72,35 +72,5 @@ public class MenteeServiceImpl implements MenteeService {
         return new ResponseEntity<>(mentee, HttpStatus.OK);
     }
 
-    @Override
-    public ResponseEntity<?> rateMentor(Long id, String email, RatingRequest ratingRequest) {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User not Found!!!!"));
-        Mentee mentee = menteeRepository.findByUser(user);
-        log.info("rate mentor ...");
-        Mentor mentor = mentorRepository.findById(id).orElseThrow(() -> new NotFoundException("Mentor not found!!!"));
-        Set<Mentee> mentees = mentor.getMentees();
-        if (!mentees.contains(mentee)) {
-            return new ResponseEntity<>("Not your mentor!!!!!!! 4ert", HttpStatus.CONFLICT);
-        }
-        Rating rating = mentor.getRating();
-        if (rating == null) {
-            Rating rating1 = new Rating();
-            rating1.setRating(ratingRequest.getRate());
-            rating1.setPeopleCount(1);
-            ratingRepository.save(rating1);
-            mentor.setRating(rating1);
-            mentorRepository.save(mentor);
-            return new ResponseEntity<>(mentor, HttpStatus.OK);
-        }
-        long cnt =  (rating.getPeopleCount()+1);
-        double res = ((rating.getRating()* rating.getPeopleCount()) + ratingRequest.getRate())/(cnt);
-        rating.setRating(res);
-        rating.setPeopleCount(cnt);
-        ratingRepository.save(rating);
-        mentor.setRating(rating);
-        mentorRepository.save(mentor);
-        log.info("Mentor was rated!!!");
-        return new ResponseEntity<>(mentor, HttpStatus.OK);
-    }
 
 }

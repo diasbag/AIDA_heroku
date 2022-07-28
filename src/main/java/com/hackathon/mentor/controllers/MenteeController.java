@@ -39,10 +39,4 @@ public class MenteeController {
         return menteeService.editProfile(email, updateMenteeRequest);
     }
 
-    @PostMapping("/mentees/mentors/{id}/rate")
-    public ResponseEntity<?> rateMentor(@PathVariable("id") Long id, @RequestBody RatingRequest ratingRequest) {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String email = userDetails.getUsername();
-        return menteeService.rateMentor(id, email, ratingRequest);
-    }
 }

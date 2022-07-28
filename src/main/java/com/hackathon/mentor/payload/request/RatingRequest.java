@@ -1,14 +1,12 @@
 package com.hackathon.mentor.payload.request;
 
+import lombok.Data;
+
+@Data
 public class RatingRequest {
 
     private double rate;
 
-    public double getRate() {
-        return rate;
-    }
+    private String comment;
 
-    public void setRate(double rate) {
-        this.rate = rate;
-    }
 }
