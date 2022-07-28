@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface MentorRepository extends JpaRepository<Mentor, Long> {
@@ -23,6 +24,12 @@ public interface MentorRepository extends JpaRepository<Mentor, Long> {
 
     Mentor getByUser(User user);
     Page<Mentor> findAll(Pageable pageable);
+    List<Mentor> findBySubjectOfInterest1(String subjectOfInterest1);
+    List<Mentor> findBySubjectOfInterest2(String subjectOfInterest2);
 
+    Set<Mentor> findByBachelorsMajorOrMastersMajor(String bachelorsMajor, String MastersMajor);
+    Set<Mentor> findByBachelorsUniversityOrMastersUniversity(String bachelorsUniversity, String mastersUniversity);
+    Set<Mentor> findByBachelorsUniversity(String bachelorsUniversity);
+    Set<Mentor> findByBachelorsMajor(String bachelorsMajor);
 
 }
