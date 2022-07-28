@@ -1,9 +1,16 @@
 package com.hackathon.mentor.models;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "ratings")
+@Getter
+@Setter
 public class Rating {
 
     @Id
@@ -16,27 +23,8 @@ public class Rating {
     @Column(name = "peopleCount")
     private long peopleCount = 0;
 
-    public Long getId() {
-        return id;
-    }
+    @OneToMany
+    private List<Comment> comments = new ArrayList<>();
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public double getRating() {
-        return rating;
-    }
-
-    public void setRating(double rating) {
-        this.rating = rating;
-    }
-
-    public long getPeopleCount() {
-        return peopleCount;
-    }
-
-    public void setPeopleCount(long peopleCount) {
-        this.peopleCount = peopleCount;
-    }
 }

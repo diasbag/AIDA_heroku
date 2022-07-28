@@ -54,7 +54,7 @@ public class MentorServiceImpl implements MentorService {
             mentorsResponse.setUser(mentor.getUser());
             mentorsResponse.setAge(mentor.getAge());
             mentorsResponse.setNumber(mentor.getNumber());
-            mentorsResponse.setRating(mentor.getRating());
+//            mentorsResponse.setRating(mentor.getRating());
             mentorsResponse.setIin(mentor.getIin());
             mentorsResponse.setBachelorsMajor(mentor.getBachelorsMajor());
             mentorsResponse.setMastersMajor(mentor.getMastersMajor());
@@ -140,7 +140,7 @@ public class MentorServiceImpl implements MentorService {
         mentorProfileResponse.setImage(mentor.getUser().getImage());
         mentorProfileResponse.setAge(mentor.getAge());
         mentorProfileResponse.setNumber(mentor.getNumber());
-        mentorProfileResponse.setRating(mentor.getRating());
+//        mentorProfileResponse.setRating(mentor.getRating());
         mentorProfileResponse.setIin(mentor.getIin());
         mentorProfileResponse.setBachelorsMajor(mentor.getBachelorsMajor());
         mentorProfileResponse.setCountryOfBachelorsUniversity(mentor.getCountryOfBachelorsUniversity());

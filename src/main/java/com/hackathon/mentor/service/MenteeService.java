@@ -12,5 +12,4 @@ public interface MenteeService {
 
     ResponseEntity<?> editProfile(String email, UpdateMenteeRequest updateMenteeRequest);
 
-    ResponseEntity<?> rateMentor(Long id, String email, RatingRequest ratingRequest);
 }

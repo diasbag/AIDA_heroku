@@ -56,6 +56,10 @@ public class User {
 	@Column(name = "status")
 	private Boolean status;
 
+	@OneToOne
+	@JoinColumn(name = "rating_id")
+	private Rating rating;
+
 	public User() {
 	}
 
