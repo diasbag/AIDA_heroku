@@ -5,14 +5,13 @@ import java.security.Principal;
 import javax.validation.Valid;
 
 import com.hackathon.mentor.models.*;
-import com.hackathon.mentor.payload.request.SignupMenteeRequest;
-import com.hackathon.mentor.payload.request.SignupMentorRequest;
+import com.hackathon.mentor.payload.request.SignupUpdateMenteeRequest;
+import com.hackathon.mentor.payload.request.SignupUpdateMentorRequest;
 import com.hackathon.mentor.repository.UserRepository;
 import com.hackathon.mentor.service.AuthenticationService;
 import com.hackathon.mentor.service.RegistrationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
 import com.hackathon.mentor.payload.request.LoginRequest;
@@ -37,14 +36,14 @@ public class AuthController {
 
 
 	@PostMapping("/mentor/signup")
-	public ResponseEntity<?> registerMentor(@Valid @RequestBody SignupMentorRequest signupMentorRequest) {
-		MessageResponse messageResponse = registrationService.regMentor(signupMentorRequest);
+	public ResponseEntity<?> registerMentor(@Valid @RequestBody SignupUpdateMentorRequest signupUpdateMentorRequest) {
+		MessageResponse messageResponse = registrationService.regMentor(signupUpdateMentorRequest);
 		return ResponseEntity.ok(messageResponse);
 	}
 
 	@PostMapping("/mentee/signup")
-	public ResponseEntity<?> registerMentee(@Valid @RequestBody SignupMenteeRequest signupMenteeRequest) {
-		MessageResponse messageResponse = registrationService.regMentee(signupMenteeRequest);
+	public ResponseEntity<?> registerMentee(@Valid @RequestBody SignupUpdateMenteeRequest signupUpdateMenteeRequest) {
+		MessageResponse messageResponse = registrationService.regMentee(signupUpdateMenteeRequest);
 		return ResponseEntity.ok(messageResponse);
 	}
 	@GetMapping("/user/role")

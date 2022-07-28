@@ -1,7 +1,6 @@
 package com.hackathon.mentor.controllers;
 
-import com.hackathon.mentor.payload.request.FilterRequest;
-import com.hackathon.mentor.payload.request.UpdateMentorRequest;
+import com.hackathon.mentor.payload.request.SignupUpdateMentorRequest;
 import com.hackathon.mentor.service.serviceImpl.MentorServiceImpl;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +47,7 @@ public class MentorController {
     }
 
     @PutMapping("/mentor/profile/edit")
-    public ResponseEntity<?> updateMentor(@RequestBody  UpdateMentorRequest signupMentorRequest) {
+    public ResponseEntity<?> updateMentor(@RequestBody SignupUpdateMentorRequest signupMentorRequest) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = userDetails.getUsername();
         return mentorService.updateMentor(email, signupMentorRequest);

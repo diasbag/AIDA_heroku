@@ -1,7 +1,7 @@
 package com.hackathon.mentor.service;
 
 import com.hackathon.mentor.models.User;
-import com.hackathon.mentor.payload.request.UpdateMentorRequest;
+import com.hackathon.mentor.payload.request.SignupUpdateMentorRequest;
 import org.springframework.http.ResponseEntity;
 
 public interface MentorService {
@@ -15,7 +15,7 @@ public interface MentorService {
 
     ResponseEntity<?> getProfile(String email);
 
-    ResponseEntity<?> updateMentor(String email, UpdateMentorRequest updateMentorRequest);
+    ResponseEntity<?> updateMentor(String email, SignupUpdateMentorRequest updateMentorRequest);
 
     ResponseEntity<?> getMySubscribers(String email);
 

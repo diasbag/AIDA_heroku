@@ -2,7 +2,7 @@ package com.hackathon.mentor.service.serviceImpl;
 
 import com.hackathon.mentor.exceptions.AccountNotFound;
 import com.hackathon.mentor.models.*;
-import com.hackathon.mentor.payload.request.UpdateMentorRequest;
+import com.hackathon.mentor.payload.request.SignupUpdateMentorRequest;
 import com.hackathon.mentor.payload.response.MentorProfileResponse;
 import com.hackathon.mentor.payload.response.MentorsResponse;
 import com.hackathon.mentor.repository.*;
@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,17 +57,17 @@ public class MentorServiceImpl implements MentorService {
             mentorsResponse.setIin(mentor.getIin());
             mentorsResponse.setBachelorsMajor(mentor.getBachelorsMajor());
             mentorsResponse.setMastersMajor(mentor.getMastersMajor());
-            mentorsResponse.setBachelorsUniversity(mentorsResponse.getBachelorsUniversity());
+            mentorsResponse.setBachelorsUniversity(mentor.getBachelorsUniversity());
             mentorsResponse.setCountryOfBachelorsUniversity(mentor.getCountryOfBachelorsUniversity());
             mentorsResponse.setMastersUniversity(mentor.getMastersUniversity());
             mentorsResponse.setCountryOfMastersUniversity(mentor.getCountryOfMastersUniversity());
-            mentorsResponse.setCountry(mentor.getCountry());
+            mentorsResponse.setCountryOfResidence(mentor.getCountry());
             mentorsResponse.setWork(mentor.getWork());
             mentorsResponse.setUserInfo(mentor.getUserInfo());
             mentorsResponse.setSchool(mentor.getSchool());
-            mentorsResponse.setYearOfGraduation(mentorsResponse.getYearOfGraduation());
-            mentorsResponse.setSubject1(mentorsResponse.getSubject1());
-            mentorsResponse.setSubject2(mentor.getSubject2());
+            mentorsResponse.setYearOfGraduation(mentor.getYearOfGraduation());
+            mentorsResponse.setSubjectOfInterest1(mentor.getSubjectOfInterest1());
+            mentorsResponse.setSubjectOfInterest2(mentor.getSubjectOfInterest2());
 
             mentorsResponseList.add(mentorsResponse);
             mentorsResponse.setMenteesCount(mentor.getMentees().size());
@@ -135,7 +134,7 @@ public class MentorServiceImpl implements MentorService {
         MentorProfileResponse mentorProfileResponse = new MentorProfileResponse();
         mentorProfileResponse.setFirstname(mentor.getUser().getFirstname());
         mentorProfileResponse.setLastname(mentor.getUser().getLastname());
-        mentorProfileResponse.setMiddleName(mentor.getUser().getMiddlename());
+        mentorProfileResponse.setMiddlename(mentor.getUser().getMiddlename());
         mentorProfileResponse.setEmail(mentor.getUser().getEmail());
         mentorProfileResponse.setImage(mentor.getUser().getImage());
         mentorProfileResponse.setAge(mentor.getAge());
@@ -146,14 +145,14 @@ public class MentorServiceImpl implements MentorService {
         mentorProfileResponse.setCountryOfBachelorsUniversity(mentor.getCountryOfBachelorsUniversity());
         mentorProfileResponse.setMastersUniversity(mentor.getMastersUniversity());
         mentorProfileResponse.setCountryOfMastersUniversity(mentor.getCountryOfMastersUniversity());
-        mentorProfileResponse.setCountry(mentor.getCountry());
+        mentorProfileResponse.setCountryOfResidence(mentor.getCountry());
         mentorProfileResponse.setMenteesCount(mentor.getMentees().size());
         mentorProfileResponse.setWork(mentor.getWork());
         mentorProfileResponse.setUserInfo(mentor.getUserInfo());
         mentorProfileResponse.setSchool(mentor.getSchool());
-        mentorProfileResponse.setYearOfGraduation(mentor.getYear());
-        mentorProfileResponse.setSubject1(mentor.getSubject1());
-        mentorProfileResponse.setSubject2(mentor.getSubject2());
+        mentorProfileResponse.setYearOfGraduation(mentor.getYearOfGraduation());
+        mentorProfileResponse.setSubjectOfInterest1(mentor.getSubjectOfInterest1());
+        mentorProfileResponse.setSubjectOfInterest2(mentor.getSubjectOfInterest2());
         mentorProfileResponse.setMenteesCount(mentor.getMentees().size());
         log.info("Get mentor by id" + mentorProfileResponse);
         return new ResponseEntity<>(mentorProfileResponse, HttpStatus.OK);
@@ -178,7 +177,7 @@ public class MentorServiceImpl implements MentorService {
     }
 
     @Override
-    public ResponseEntity<?> updateMentor(String email, UpdateMentorRequest signupMentorRequest) {
+    public ResponseEntity<?> updateMentor(String email, SignupUpdateMentorRequest signupMentorRequest) {
         User user = userRepository.getByEmail(email);
         Mentor mentor = mentorRepository.findByUser(user);
         log.info("updating mentor profile....");
@@ -191,16 +190,16 @@ public class MentorServiceImpl implements MentorService {
         mentor.setAge(signupMentorRequest.getAge());
         mentor.setIin(signupMentorRequest.getIin());
         mentor.setBachelorsUniversity(signupMentorRequest.getBachelorsUniversity());
-        mentor.setCountry(signupMentorRequest.getCountry());
+        mentor.setCountry(signupMentorRequest.getCountryOfResidence());
         mentor.setNumber(signupMentorRequest.getNumber());
         mentor.setWork(signupMentorRequest.getWork());
         mentor.setUserInfo(signupMentorRequest.getUserInfo());
         mentor.setSchool(signupMentorRequest.getSchool());
-        mentor.setSubject1(signupMentorRequest.getFirstSubject());
-        mentor.setSubject2(signupMentorRequest.getSecondSubject());
+        mentor.setSubjectOfInterest1(signupMentorRequest.getSubjectOfInterest1());
+        mentor.setSubjectOfInterest2(signupMentorRequest.getSubjectOfInterest2());
         mentor.setBachelorsUniversity(signupMentorRequest.getBachelorsUniversity());
         mentor.setMastersUniversity(signupMentorRequest.getCountryOfMastersUniversity());
-        mentor.setYear(signupMentorRequest.getYearOfGraduation());
+        mentor.setYearOfGraduation(signupMentorRequest.getYearOfGraduation());
         mentor.setCountryOfBachelorsUniversity(signupMentorRequest.getCountryOfBachelorsUniversity());
         mentor.setCountryOfMastersUniversity(signupMentorRequest.getCountryOfMastersUniversity());
         mentor.setBachelorsMajor(signupMentorRequest.getBachelorsMajor());

@@ -27,20 +27,14 @@ public class Mentee {
     @NotNull
     private String iin;
 
-    @Column(name = "grade")
-    private int grade;
-
     @Column(name = "school")
     private String school;
 
     @Column(name = "subject1")
-    private String subject1;
+    private String subjectOfInterest1;
 
     @Column(name = "subject2")
-    private String subject2;
-
-    @Column(name = "achievements")
-    private String achievements;
+    private String subjectOfInterest2;
 
 
 }

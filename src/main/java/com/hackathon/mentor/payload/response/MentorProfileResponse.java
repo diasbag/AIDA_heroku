@@ -22,9 +22,5 @@ import java.util.Set;
 @ToString
 public class MentorProfileResponse extends MentorResponseSuper{
 
-    private String firstname;
-    private String lastname;
-    private String middleName;
-    private String email;
     private Image image;
 }

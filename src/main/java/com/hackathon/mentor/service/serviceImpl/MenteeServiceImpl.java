@@ -1,11 +1,8 @@
 package com.hackathon.mentor.service.serviceImpl;
 
 import com.hackathon.mentor.models.Mentee;
-import com.hackathon.mentor.models.Mentor;
-import com.hackathon.mentor.models.Rating;
 import com.hackathon.mentor.models.User;
-import com.hackathon.mentor.payload.request.RatingRequest;
-import com.hackathon.mentor.payload.request.UpdateMenteeRequest;
+import com.hackathon.mentor.payload.request.SignupUpdateMenteeRequest;
 import com.hackathon.mentor.repository.MenteeRepository;
 import com.hackathon.mentor.repository.MentorRepository;
 import com.hackathon.mentor.repository.RatingRepository;
@@ -16,10 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.webjars.NotFoundException;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -50,7 +45,7 @@ public class MenteeServiceImpl implements MenteeService {
     }
 
     @Override
-    public ResponseEntity<?> editProfile(String email, UpdateMenteeRequest updateMenteeRequest) {
+    public ResponseEntity<?> editProfile(String email, SignupUpdateMenteeRequest updateMenteeRequest) {
         User user = userRepository.getByEmail(email);
         Mentee mentee = menteeRepository.findByUser(user);
         log.info("Loading mentee profile...");
@@ -61,12 +56,10 @@ public class MenteeServiceImpl implements MenteeService {
         userRepository.save(user);
 
         mentee.setSchool(updateMenteeRequest.getSchool());
-        mentee.setAchievements(updateMenteeRequest.getAchievements());
-        mentee.setGrade(updateMenteeRequest.getGrade());
         mentee.setIin(updateMenteeRequest.getIin());
         mentee.setNumber(updateMenteeRequest.getNumber());
-        mentee.setSubject1(updateMenteeRequest.getFirstSubject());
-        mentee.setSubject2(updateMenteeRequest.getSecondSubject());
+        mentee.setSubjectOfInterest1(updateMenteeRequest.getSubjectOfInterest1());
+        mentee.setSubjectOfInterest2(updateMenteeRequest.getSubjectOfInterest2());
         menteeRepository.save(mentee);
         log.info("Mentee profile Updated!!!");
         return new ResponseEntity<>(mentee, HttpStatus.OK);

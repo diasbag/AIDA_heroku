@@ -57,15 +57,13 @@ public class Mentor {
     private String school;
 
     @Column(name = "finish_year")
-    private Integer year;
+    private Integer yearOfGraduation;
 
     @Column(name = "subject1")
-    private String subject1;
-
-
+    private String subjectOfInterest1;
 
     @Column(name = "subject2")
-    private String subject2;
+    private String subjectOfInterest2;
 
     @ManyToMany
     @Column(name = "mentee_id")
