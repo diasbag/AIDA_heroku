@@ -71,8 +71,31 @@ public class RecommendationsServiceImpl implements RecommendationsService {
         allSet.addAll(majorsSet);
         allSet.addAll(majorsUniversity);
         allSet.addAll(subjectsSet);
-
+        List<Mentor> out = new ArrayList<>(allSet);
+        out.addAll(subjectsSet);
+        if (subjectsSet.size() > 3 && majorsSet.size() > 3 && majorsUniversity.size() > 3) {
+            out.add(subjectsSet.iterator().next());
+            out.add(subjectsSet.iterator().next());
+            out.add(majorsSet.iterator().next());
+            out.add(majorsSet.iterator().next());
+            for (int i = 0; i < 6; i++){
+                out.add(majorsUniversity.iterator().next());
+            }
+        } else if (subjectsSet.size() > 9){
+            for (int i = 0; i < 10; i++){
+                out.add(subjectsSet.iterator().next());
+            }
+        } else if (majorsSet.size() > 9){
+            for (int i = 0; i < 10; i++){
+                out.add(majorsSet.iterator().next());
+            }
+        } else if (majorsUniversity.size() > 9){
+            for (int i = 0; i < 10; i++){
+                out.add(majorsUniversity.iterator().next());
+            }
+        }
+        out.subList(0, 10);
         log.info("recommendations by subject is done <<<");
-        return new ArrayList<>(allSet);
+        return out;
     }
 }
