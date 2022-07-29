@@ -220,7 +220,6 @@ public class MentorServiceImpl implements MentorService {
                 new AccountNotFound("user with email " + email));
         log.info("get mentor wait list...");
         List<Subscribe> subscribes = subscribeRepository.findByMentor(mentor);
-
         List<Mentee> mentees = new ArrayList<>();
         for (Subscribe subscribe : subscribes) {
             mentees.add(subscribe.getMentee());

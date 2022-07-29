@@ -9,6 +9,7 @@ import lombok.Getter;
 import java.util.Date;
 @Data
 public class PostResponse {
+    private Long id;
     private String title;
     private String article;
     private Date date;

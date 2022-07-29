@@ -34,6 +34,7 @@ public class PostServiceImpl implements PostService {
         List<PostResponse> postResponseList = new ArrayList<>();
         for (Post post : posts) {
             PostResponse postResponse = new PostResponse();
+            postResponse.setId(post.getId());
             postResponse.setTitle(post.getTitle());
             postResponse.setArticle(post.getArticle());
             postResponse.setDate(post.getDate());
@@ -48,7 +49,7 @@ public class PostServiceImpl implements PostService {
     public Post createPost(PostRequest postRequest) {
         log.info("creating post ...");
         Post post;
-        if (postRepository.findById(postRequest.getId()).isPresent()) {
+        if (postRequest.getId() != null && postRepository.findById(postRequest.getId()).isPresent()) {
             post = postRepository.findById(postRequest.getId()).orElseThrow(() ->
                     new AccountNotFound("post with id " + postRequest.getId()));
         } else {
