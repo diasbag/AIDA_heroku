@@ -41,7 +41,7 @@ public class PostController {
     @PostMapping("/post/upload_text_2")
     public ResponseEntity<?> createPost (@RequestBody PostRequest postRequest) {
         Post post = postService.createPost(postRequest);
-        return new ResponseEntity<>(post, HttpStatus.OK);
+        return new ResponseEntity<>(post.getId(), HttpStatus.OK);
     }
 
     @PostMapping("/post/upload_image_1")
