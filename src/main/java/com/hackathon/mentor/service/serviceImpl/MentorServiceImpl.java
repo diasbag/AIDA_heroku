@@ -227,21 +227,23 @@ public class MentorServiceImpl implements MentorService {
 
     @Override
     public ResponseEntity<?> confirm(Long id, String email) {
-        User user = userRepository.findByEmail(email).orElse(null);
+        log.info("mentor confirmation started ...");
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new AccountNotFound("user with id " + id));
         Mentor mentor = mentorRepository.findByUser(user);
         if (mentor.getMentees().size() == 3) {
             return new ResponseEntity<>("You have 3 mentees" , HttpStatus.I_AM_A_TEAPOT);
         }
         Mentee mentee = menteeRepository.findById(id).orElseThrow(() -> new AccountNotFound("mentee with id " + id));
 
-        Subscribe subscribe = subscribeRepository.getByMentorAndMentee(mentor, mentee);
+        Subscribe subscribe = subscribeRepository.getByMentorAndMentee(mentor, mentee).orElseThrow(() ->
+                new AccountNotFound(" subscribe: " + mentor + " and " + mentee));
         mentor.getMentees().add(mentee);
         mentee.setMentor(mentor);
         menteeRepository.save(mentee);
         mentorRepository.save(mentor);
         Long sid = subscribe.getId();
         subscribeRepository.deleteById(sid);
-        log.info("Mentor confirmed mentee!!!");
+        log.info("Mentor confirmed mentee <<<");
         return new ResponseEntity<>("Success!!!", HttpStatus.OK);
     }
 
@@ -250,7 +252,8 @@ public class MentorServiceImpl implements MentorService {
         User user = userRepository.findByEmail(email).orElse(null);
         Mentor mentor = mentorRepository.findByUser(user);
         Mentee mentee = menteeRepository.findById(id).orElse(null);
-        Subscribe subscribe = subscribeRepository.getByMentorAndMentee(mentor, mentee);
+        Subscribe subscribe = subscribeRepository.getByMentorAndMentee(mentor, mentee).orElseThrow(() ->
+                new AccountNotFound(" subscribe: " + mentor + " and " + mentee));
         Long sid = subscribe.getId();
         subscribeRepository.deleteById(sid);
         log.info("Mentor rejected mentee!!!");
