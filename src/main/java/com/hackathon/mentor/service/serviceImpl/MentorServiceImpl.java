@@ -166,7 +166,8 @@ public class MentorServiceImpl implements MentorService {
         ERole role = user.getRoles().get(0).getName();
         log.info("get active user profile ...");
         if (role.name().equals("ROLE_MENTOR") ) {
-            Mentor mentor = mentorRepository.findByUser(user);
+            Mentor mentor = mentorRepository.findByUser(user).orElseThrow(() ->
+                    new AccountNotFound("user with email " + email));
             return new ResponseEntity<>(mentor, HttpStatus.OK);
         }
         if (role.equals(ERole.ROLE_MENTEE)) {
@@ -180,7 +181,8 @@ public class MentorServiceImpl implements MentorService {
     @Override
     public ResponseEntity<?> updateMentor(String email, SignupUpdateMentorRequest signupMentorRequest) {
         User user = userRepository.getByEmail(email);
-        Mentor mentor = mentorRepository.findByUser(user);
+        Mentor mentor = mentorRepository.findByUser(user).orElseThrow(() ->
+                new AccountNotFound("user with email " + email));
         log.info("updating mentor profile....");
         user.setEmail(signupMentorRequest.getEmail());
         user.setFirstname(signupMentorRequest.getFirstname());
@@ -214,7 +216,8 @@ public class MentorServiceImpl implements MentorService {
     @Override
     public ResponseEntity<?> getMySubscribers(String email) {
         User user = userRepository.findByEmail(email).orElse(null);
-        Mentor mentor = mentorRepository.findByUser(user);
+        Mentor mentor = mentorRepository.findByUser(user).orElseThrow(() ->
+                new AccountNotFound("user with email " + email));
         log.info("get mentor wait list...");
         List<Subscribe> subscribes = subscribeRepository.findByMentor(mentor);
 
@@ -229,7 +232,8 @@ public class MentorServiceImpl implements MentorService {
     public ResponseEntity<?> confirm(Long id, String email) {
         log.info("mentor confirmation started ...");
         User user = userRepository.findByEmail(email).orElseThrow(() -> new AccountNotFound("user with id " + id));
-        Mentor mentor = mentorRepository.findByUser(user);
+        Mentor mentor = mentorRepository.findByUser(user).orElseThrow(() ->
+                new AccountNotFound("user with email " + email));
         if (mentor.getMentees().size() == 3) {
             return new ResponseEntity<>("You have 3 mentees" , HttpStatus.I_AM_A_TEAPOT);
         }
@@ -250,7 +254,8 @@ public class MentorServiceImpl implements MentorService {
     @Override
     public ResponseEntity<?> reject(Long id, String email) {
         User user = userRepository.findByEmail(email).orElse(null);
-        Mentor mentor = mentorRepository.findByUser(user);
+        Mentor mentor = mentorRepository.findByUser(user).orElseThrow(() ->
+                new AccountNotFound("user with email " + email));
         Mentee mentee = menteeRepository.findById(id).orElse(null);
         Subscribe subscribe = subscribeRepository.getByMentorAndMentee(mentor, mentee).orElseThrow(() ->
                 new AccountNotFound(" subscribe: " + mentor + " and " + mentee));
@@ -263,16 +268,17 @@ public class MentorServiceImpl implements MentorService {
     @Override
     public ResponseEntity<?> getMentorMentees(String email) {
         User user = userRepository.findByEmail(email).orElse(null);
-        Mentor mentor = mentorRepository.findByUser(user);
+        Mentor mentor = mentorRepository.findByUser(user).orElseThrow(() ->
+                new AccountNotFound("user with email " + email));
         log.info("Mentor menteeList!!!");
         return new ResponseEntity<>(mentor.getMentees(), HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<?> deleteFollower(Long id, String email) {
-        User user = userRepository.findByEmail(email).orElse(null);
-        Mentor mentor = mentorRepository.findByUser(user);
-
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new AccountNotFound("user - " + email));
+        Mentor mentor = mentorRepository.findByUser(user).orElseThrow(() ->
+                new AccountNotFound("user with email " + email));
         Mentee mentee = menteeRepository.findById(id).orElseThrow(() -> new RuntimeException("Mentee Not Found!!!!"));
 
         mentor.getMentees().remove(mentee);
