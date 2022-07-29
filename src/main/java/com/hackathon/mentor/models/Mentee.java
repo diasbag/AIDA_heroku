@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -21,6 +23,9 @@ public class Mentee {
     @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "user_id")
     private  User user;
+    @Min(value = 0, message = "Age < 0")
+    @Max(100)
+    private int age;
 
 //    @NotBlank
 //    @NotNull

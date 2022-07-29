@@ -43,11 +43,16 @@ public class SignupUpdateMenteeRequest {
     @NotNull
     @NotBlank
     private String school;
+    @NotNull
     @Min(value = 0, message = "Age < 0")
     @Max(100)
     private int age;
     private String userInfo;
+    @NotNull
+    @NotBlank
     private String subjectOfInterest1;
+    @NotNull
+    @NotBlank
     private String subjectOfInterest2;
 
 }
