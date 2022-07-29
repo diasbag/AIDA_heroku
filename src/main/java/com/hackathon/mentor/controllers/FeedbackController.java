@@ -1,10 +1,12 @@
 package com.hackathon.mentor.controllers;
 
+import com.hackathon.mentor.payload.request.FeedbackRequest;
+import com.hackathon.mentor.service.FeedbackService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.Email;
+import javax.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
 
 @RestController
 @CrossOrigin(value = "*", maxAge = 3600)
@@ -12,8 +14,10 @@ import javax.validation.constraints.Email;
 @RequestMapping("/feedback")
 public class FeedbackController {
 
+    private final FeedbackService feedbackService;
     @PostMapping()
-    public void leaveFeedback(@RequestParam @Email String email) {
-
+    public void leaveFeedback(@RequestBody FeedbackRequest feedbackRequest)
+            throws MessagingException, UnsupportedEncodingException {
+        feedbackService.createFeedback(feedbackRequest);
     }
 }

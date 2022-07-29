@@ -54,7 +54,7 @@ public class MentorServiceImpl implements MentorService {
             mentorsResponse.setAge(mentor.getAge());
             mentorsResponse.setFirstname(mentor.getUser().getFirstname());
             mentorsResponse.setMiddlename(mentor.getUser().getMiddlename());
-            mentorsResponse.setMiddlename(mentor.getUser().getLastname());
+            mentorsResponse.setLastname(mentor.getUser().getLastname());
 //            mentorsResponse.setNumber(mentor.getNumber());
 //            mentorsResponse.setRating(mentor.getRating());
             mentorsResponse.setIin(mentor.getIin());
