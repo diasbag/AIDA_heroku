@@ -11,4 +11,5 @@ public interface MenteeService {
 
     ResponseEntity<?> editProfile(String email, SignupUpdateMenteeRequest updateMenteeRequest);
 
+    ResponseEntity<?> deleteMentor(Long id, String email);
 }

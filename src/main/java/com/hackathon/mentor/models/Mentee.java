@@ -36,5 +36,9 @@ public class Mentee {
     @Column(name = "subject2")
     private String subjectOfInterest2;
 
+    @ManyToOne
+    @JoinColumn(name = "mentor_id")
+    private Mentor mentor;
+
 
 }
