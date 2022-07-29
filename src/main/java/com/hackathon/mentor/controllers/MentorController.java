@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class MentorController {
 
-    private final PasswordEncoder encoder;
-
     private final MentorServiceImpl mentorService;
 
     @GetMapping("/mentors")

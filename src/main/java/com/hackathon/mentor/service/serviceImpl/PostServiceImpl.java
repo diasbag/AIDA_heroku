@@ -34,6 +34,7 @@ public class PostServiceImpl implements PostService {
         List<PostResponse> postResponseList = new ArrayList<>();
         for (Post post : posts) {
             PostResponse postResponse = new PostResponse();
+            postResponse.setId(post.getId());
             postResponse.setTitle(post.getTitle());
             postResponse.setArticle(post.getArticle());
             postResponse.setDate(post.getDate());
