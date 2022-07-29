@@ -6,10 +6,7 @@ import com.hackathon.mentor.models.Rating;
 import com.hackathon.mentor.models.User;
 import com.hackathon.mentor.payload.request.RatingRequest;
 import com.hackathon.mentor.payload.request.UpdateMenteeRequest;
-import com.hackathon.mentor.repository.MenteeRepository;
-import com.hackathon.mentor.repository.MentorRepository;
-import com.hackathon.mentor.repository.RatingRepository;
-import com.hackathon.mentor.repository.UserRepository;
+import com.hackathon.mentor.repository.*;
 import com.hackathon.mentor.service.MenteeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +31,7 @@ public class MenteeServiceImpl implements MenteeService {
 
     private final RatingRepository ratingRepository;
 
+    private final SubscribeRepository subscribeRepository;
     @Override
     public ResponseEntity<?> getAllMentees() {
         List<Mentee> mentees = menteeRepository.getAll();
@@ -70,6 +68,20 @@ public class MenteeServiceImpl implements MenteeService {
         menteeRepository.save(mentee);
         log.info("Mentee profile Updated!!!");
         return new ResponseEntity<>(mentee, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<?> deleteMentor(Long id, String email) {
+        User user = userRepository.findByEmail(email).orElse(null);
+        Mentee mentee = menteeRepository.findByUser(user);
+        Mentor mentor = mentorRepository.findById(id).orElseThrow(() -> new RuntimeException("Mentee Not Found!!!!"));
+        mentor.getMentees().remove(mentee);
+        mentee.setMentor(null);
+        menteeRepository.save(mentee);
+        mentorRepository.save(mentor);
+        subscribeRepository.deleteByMentorAndMentee(mentor, mentee);
+        log.info("Mentee has been removed!!!");
+        return new ResponseEntity<>(mentor, HttpStatus.OK);
     }
 
 
