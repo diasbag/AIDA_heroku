@@ -1,9 +1,11 @@
 package com.hackathon.mentor.controllers;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hackathon.mentor.payload.request.SignupUpdateMentorRequest;
 import com.hackathon.mentor.service.serviceImpl.MentorServiceImpl;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -39,7 +41,7 @@ public class MentorController {
         return mentorService.getMentorById(id);
     }
 
-    @GetMapping("/user/profile")
+    @GetMapping(value = "/user/profile", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getProfile() {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = userDetails.getUsername();
@@ -53,7 +55,7 @@ public class MentorController {
         return mentorService.updateMentor(email, signupMentorRequest);
     }
 
-    @GetMapping("/mentor/subscribers")
+    @GetMapping(value = "/mentor/subscribers", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getMySubscribers() {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = userDetails.getUsername();

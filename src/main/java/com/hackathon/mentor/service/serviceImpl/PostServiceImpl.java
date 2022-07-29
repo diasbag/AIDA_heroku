@@ -47,9 +47,13 @@ public class PostServiceImpl implements PostService {
     @Override
     public Post createPost(PostRequest postRequest) {
         log.info("creating post ...");
-
-        Post post = postRepository.findById(postRequest.getId()).orElseThrow(() ->
-                new AccountNotFound("post with id " + postRequest.getId()));
+        Post post;
+        if (postRepository.findById(postRequest.getId()).isPresent()) {
+            post = postRepository.findById(postRequest.getId()).orElseThrow(() ->
+                    new AccountNotFound("post with id " + postRequest.getId()));
+        } else {
+            post = new Post();
+        }
         post.setTitle(postRequest.getTitle());
         post.setArticle(postRequest.getArticle());
         post.setDate(Date.from(Instant.now()));

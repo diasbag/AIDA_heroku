@@ -1,5 +1,6 @@
 package com.hackathon.mentor.service.serviceImpl;
 
+import com.hackathon.mentor.exceptions.AccountNotFound;
 import com.hackathon.mentor.models.*;
 import com.hackathon.mentor.payload.request.RatingRequest;
 import com.hackathon.mentor.repository.*;
@@ -36,7 +37,8 @@ public class RatingServiceImpl implements RatingService {
         ERole role = user.getRoles().get(0).getName();
         Set<Mentee> mentees;
         if (role.equals(ERole.ROLE_MENTOR)) {
-            Mentor mentor = mentorRepository.findByUser(user);
+            Mentor mentor = mentorRepository.findByUser(user).orElseThrow(() ->
+                    new AccountNotFound("user with email " + email));
             Mentee mentee = menteeRepository.findById(id).orElseThrow(() -> new NotFoundException("Mentee Not Found!!!"));
 
             mentees = mentor.getMentees();

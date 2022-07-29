@@ -1,5 +1,6 @@
 package com.hackathon.mentor.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -42,7 +43,7 @@ public class Mentee {
 
     @Column(name = "subject2")
     private String subjectOfInterest2;
-
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "mentor_id")
     private Mentor mentor;
