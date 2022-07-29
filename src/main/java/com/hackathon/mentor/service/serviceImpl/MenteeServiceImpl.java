@@ -1,6 +1,7 @@
 package com.hackathon.mentor.service.serviceImpl;
 
 import com.hackathon.mentor.models.Mentee;
+import com.hackathon.mentor.models.Mentor;
 import com.hackathon.mentor.models.User;
 import com.hackathon.mentor.payload.request.SignupUpdateMenteeRequest;
 import com.hackathon.mentor.payload.request.RatingRequest;
