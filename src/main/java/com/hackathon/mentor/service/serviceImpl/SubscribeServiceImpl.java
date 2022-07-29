@@ -54,6 +54,7 @@ public class SubscribeServiceImpl implements SubscribeService {
         mentees.add(mentee);
         subscribe.setMentee(mentees);
         subscribe.setMentor(mentor);
+        menteeRepository.save(mentee);
         subscribeRepository.save(subscribe);
         mailService.sendSubscribeMail(mentor.getUser().getEmail(), mentee.getUser().getFirstname(), mentee.getUser().getLastname());
         mailService.sendSubscribeMailToMentee(mentee.getUser().getEmail(), mentor.getUser().getFirstname(), mentor.getUser().getLastname());

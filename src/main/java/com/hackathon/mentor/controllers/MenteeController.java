@@ -43,5 +43,10 @@ public class MenteeController {
         return menteeService.deleteMentor(id, email);
     }
 
-
+    @GetMapping("/mentee/waitlist")
+    public ResponseEntity<?> getSubscribeList() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = userDetails.getUsername();
+        return menteeService.getWaitList(email);
+    }
 }

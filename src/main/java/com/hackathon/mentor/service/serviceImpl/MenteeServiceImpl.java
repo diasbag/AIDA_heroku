@@ -2,6 +2,7 @@ package com.hackathon.mentor.service.serviceImpl;
 
 import com.hackathon.mentor.models.Mentee;
 import com.hackathon.mentor.models.Mentor;
+import com.hackathon.mentor.models.Subscribe;
 import com.hackathon.mentor.models.User;
 import com.hackathon.mentor.payload.request.SignupUpdateMenteeRequest;
 import com.hackathon.mentor.payload.request.RatingRequest;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -77,6 +79,19 @@ public class MenteeServiceImpl implements MenteeService {
         subscribeRepository.deleteByMentorAndMentee(mentor, mentee);
         log.info("Mentee has been removed!!!");
         return new ResponseEntity<>(mentor, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<?> getWaitList(String email) {
+        User user = userRepository.findByEmail(email).orElse(null);
+        Mentee mentee = menteeRepository.findByUser(user);
+        log.info("get mentee wait list...");
+        List<Subscribe> subscribes = subscribeRepository.findByMentee(mentee);
+        List<Mentor> mentors = new ArrayList<>();
+        for (Subscribe subscribe : subscribes) {
+            mentors.add(subscribe.getMentor());
+        }
+        return new ResponseEntity<>(mentors, HttpStatus.OK);
     }
 
 
