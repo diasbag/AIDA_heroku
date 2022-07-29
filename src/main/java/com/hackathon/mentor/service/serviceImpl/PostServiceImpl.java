@@ -49,7 +49,7 @@ public class PostServiceImpl implements PostService {
     public Post createPost(PostRequest postRequest) {
         log.info("creating post ...");
         Post post;
-        if (postRepository.findById(postRequest.getId()).isPresent()) {
+        if (postRepository.findById(postRequest.getId()).isPresent() || postRequest.getId() == null) {
             post = postRepository.findById(postRequest.getId()).orElseThrow(() ->
                     new AccountNotFound("post with id " + postRequest.getId()));
         } else {
