@@ -41,8 +41,6 @@ public class User {
 	@Column(name = "middlename")
 	private String middlename;
 
-	@NotNull
-	@Column(name = "telegram")
 	private String telegram;
 //	@NotBlank
 //	@Size(max = 20)
