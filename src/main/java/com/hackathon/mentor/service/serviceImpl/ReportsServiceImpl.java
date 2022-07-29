@@ -30,17 +30,14 @@ import java.util.List;
 
 @Service
 @Slf4j
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 @EnableAsync
 public class ReportsServiceImpl implements ReportsService {
 
-    private  JavaMailSender mailSender;
-    @Autowired
-    private AdminService adminService;
-    @Autowired
-    private  UserRepository userRepository;
-    @Autowired
-    private  ReportRepository reportRepository;
+    private final  JavaMailSender mailSender;
+    private final AdminService adminService;
+    private final  UserRepository userRepository;
+    private final  ReportRepository reportRepository;
 
 
     @Override
@@ -66,8 +63,7 @@ public class ReportsServiceImpl implements ReportsService {
     @Override
     @Transactional
     @Async
-    public void sendingNotificationReport()
-            throws MessagingException, UnsupportedEncodingException {
+    public void sendingNotificationReport() throws MessagingException, UnsupportedEncodingException {
         log.info("sending email started ...");
         List<User> listOfAdmins = adminService.findAllAdmins();
         String fromAddress = "test.spring.test@mail.ru";
