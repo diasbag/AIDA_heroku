@@ -39,4 +39,12 @@ public class MenteeController {
         return menteeService.editProfile(email, updateMenteeRequest);
     }
 
+    @PostMapping("/mentor/{id}/delete")
+    public ResponseEntity<?> deleteMentor(@PathVariable("id") Long id) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = userDetails.getUsername();
+        return menteeService.deleteMentor(id, email);
+    }
+
+
 }

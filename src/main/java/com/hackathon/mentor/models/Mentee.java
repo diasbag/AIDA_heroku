@@ -42,5 +42,9 @@ public class Mentee {
     @Column(name = "achievements")
     private String achievements;
 
+    @ManyToOne
+    @JoinColumn(name = "mentor_id")
+    private Mentor mentor;
+
 
 }

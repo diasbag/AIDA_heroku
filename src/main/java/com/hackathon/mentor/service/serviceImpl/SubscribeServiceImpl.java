@@ -9,6 +9,7 @@ import com.hackathon.mentor.repository.MentorRepository;
 import com.hackathon.mentor.repository.SubscribeRepository;
 import com.hackathon.mentor.repository.UserRepository;
 import com.hackathon.mentor.service.SubscribeService;
+import com.hackathon.mentor.utils.MailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ public class SubscribeServiceImpl implements SubscribeService {
 
     private final MentorRepository mentorRepository;
 
+    private final MailService mailService;
     @Override
     public ResponseEntity<?> getSubscribers() {
         List<Subscribe> subscribeList = subscribeRepository.findAll();
@@ -53,6 +55,8 @@ public class SubscribeServiceImpl implements SubscribeService {
         subscribe.setMentee(mentees);
         subscribe.setMentor(mentor);
         subscribeRepository.save(subscribe);
+        mailService.sendSubscribeMail(mentor.getUser().getEmail(), mentee.getUser().getFirstname(), mentee.getUser().getLastname());
+        mailService.sendSubscribeMailToMentee(mentee.getUser().getEmail(), mentor.getUser().getFirstname(), mentor.getUser().getLastname());
         log.info("Successfully subscribed!!!");
         return new ResponseEntity<>("Success!!!", HttpStatus.OK);
     }

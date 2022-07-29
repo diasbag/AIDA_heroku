@@ -82,7 +82,7 @@ public class MentorController {
        return mentorService.getMentorMentees(email);
     }
 
-    @PostMapping("/mentor/mentees/{id}/delete")
+    @PostMapping("/mentee/{id}/delete")
     public ResponseEntity<?> deleteFollower(@PathVariable("id") Long id) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = userDetails.getUsername();
