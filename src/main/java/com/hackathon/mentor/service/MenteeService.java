@@ -1,7 +1,6 @@
 package com.hackathon.mentor.service;
 
-import com.hackathon.mentor.payload.request.RatingRequest;
-import com.hackathon.mentor.payload.request.UpdateMenteeRequest;
+import com.hackathon.mentor.payload.request.SignupUpdateMenteeRequest;
 import org.springframework.http.ResponseEntity;
 
 public interface MenteeService {
@@ -10,7 +9,7 @@ public interface MenteeService {
 
     ResponseEntity<?> getMenteeById(Long id);
 
-    ResponseEntity<?> editProfile(String email, UpdateMenteeRequest updateMenteeRequest);
+    ResponseEntity<?> editProfile(String email, SignupUpdateMenteeRequest updateMenteeRequest);
 
     ResponseEntity<?> deleteMentor(Long id, String email);
 }

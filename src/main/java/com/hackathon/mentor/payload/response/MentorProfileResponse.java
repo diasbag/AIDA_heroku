@@ -1,5 +1,6 @@
 package com.hackathon.mentor.payload.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.hackathon.mentor.models.*;
 import lombok.Data;
 import lombok.Getter;
@@ -20,11 +21,8 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
+@JsonIgnoreProperties()
 public class MentorProfileResponse extends MentorResponseSuper{
 
-    private String firstname;
-    private String lastname;
-    private String middleName;
-    private String email;
     private Image image;
 }
