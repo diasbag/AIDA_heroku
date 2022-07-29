@@ -52,6 +52,9 @@ public class MentorServiceImpl implements MentorService {
             mentorsResponse.setId(mentor.getId());
             mentorsResponse.setUser(mentor.getUser());
             mentorsResponse.setAge(mentor.getAge());
+            mentorsResponse.setFirstname(mentor.getUser().getFirstname());
+            mentorsResponse.setMiddlename(mentor.getUser().getMiddlename());
+            mentorsResponse.setMiddlename(mentor.getUser().getLastname());
 //            mentorsResponse.setNumber(mentor.getNumber());
 //            mentorsResponse.setRating(mentor.getRating());
             mentorsResponse.setIin(mentor.getIin());
@@ -228,7 +231,7 @@ public class MentorServiceImpl implements MentorService {
         if (mentor.getMentees().size() == 3) {
             return new ResponseEntity<>("You have 3 mentees" , HttpStatus.I_AM_A_TEAPOT);
         }
-        Mentee mentee = menteeRepository.findById(id).orElse(null);
+        Mentee mentee = menteeRepository.findById(id).orElseThrow(() -> new AccountNotFound("mentee with id " + id));
 
         Subscribe subscribe = subscribeRepository.getByMentorAndMentee(mentor, mentee);
         mentor.getMentees().add(mentee);

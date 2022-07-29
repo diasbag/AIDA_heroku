@@ -21,7 +21,7 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
-@JsonIgnoreProperties()
+
 public class MentorProfileResponse extends MentorResponseSuper{
 
     private Image image;
