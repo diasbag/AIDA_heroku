@@ -11,8 +11,6 @@ import com.hackathon.mentor.service.PostService;
 import com.hackathon.mentor.utils.FileNameHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -58,6 +56,19 @@ public class PostServiceImpl implements PostService {
         post.setTitle(postRequest.getTitle());
         post.setArticle(postRequest.getArticle());
         post.setDate(Date.from(Instant.now()));
+        postRepository.save(post);
+        log.info("post was created <<<");
+        return post;
+    }
+    @Override
+    public Post createPostWithImage(PostRequest postRequest, MultipartFile file) {
+        log.info("creating post ...");
+        Post post = new Post();
+        post.setTitle(postRequest.getTitle());
+        post.setArticle(postRequest.getArticle());
+        post.setDate(Date.from(Instant.now()));
+        Image image =Image.buildImage(file, fileHelper);
+        post.setImage(image);
         postRepository.save(post);
         log.info("post was created <<<");
         return post;
