@@ -58,6 +58,7 @@ public class MentorServiceImpl implements MentorService {
 //            mentorsResponse.setNumber(mentor.getNumber());
 //            mentorsResponse.setRating(mentor.getRating());
             mentorsResponse.setIin(mentor.getIin());
+            mentorsResponse.setImage(mentor.getUser().getImage());
             mentorsResponse.setBachelorsMajor(mentor.getBachelorsMajor());
             mentorsResponse.setMastersMajor(mentor.getMastersMajor());
             mentorsResponse.setBachelorsUniversity(mentor.getBachelorsUniversity());

@@ -24,5 +24,4 @@ import java.util.Set;
 
 public class MentorProfileResponse extends MentorResponseSuper{
 
-    private Image image;
 }
