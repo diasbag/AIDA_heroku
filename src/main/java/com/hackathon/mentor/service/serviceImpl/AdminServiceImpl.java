@@ -26,8 +26,13 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public void createAdmin() {
         if (!userRepository.findByEmail("admin@gmail.com").isPresent()) {
-            User user = new User("Admin", "Admin", "admin@gmail.com",
-                    encoder.encode("admin"));
+            User user = new User();
+            user.setPassword(encoder.encode("admin"));
+            user.setEmail("admin@gmail.com");
+            user.setFirstname("Admin");
+            user.setMiddlename("Adminovich");
+            user.setLastname("Adminov");
+            user.setTelegram("@smth");
             Role role = roleRepository.findByName(ERole.ROLE_ADMIN).orElseThrow(() ->
                     new AccountNotFound("Error: Role is not found."));
             List<Role> roles = new ArrayList<>();

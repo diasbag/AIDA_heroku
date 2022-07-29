@@ -41,6 +41,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         user.setLastname(signupUpdateMentorRequest.getLastname());
         user.setPassword(encoder.encode(signupUpdateMentorRequest.getPassword()));
         user.setEmail(signupUpdateMentorRequest.getEmail());
+        user.setTelegram(signupUpdateMentorRequest.getTelegram());
         user.setStatus(true);
         user.setMiddlename(signupUpdateMentorRequest.getMiddlename());
         Role role = roleRepository.findByName(ERole.ROLE_MENTOR).orElseThrow(() ->
@@ -83,6 +84,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         user.setLastname(signupUpdateMenteeRequest.getLastname());
         user.setPassword(encoder.encode(signupUpdateMenteeRequest.getPassword()));
         user.setEmail(signupUpdateMenteeRequest.getEmail());
+        user.setTelegram(signupUpdateMenteeRequest.getTelegram());
         user.setStatus(true);
         Role role = roleRepository.findByName(ERole.ROLE_MENTEE).orElseThrow(() ->
                 new AccountNotFound("Role is not found"));
@@ -93,6 +95,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 
         Mentee mentee = new Mentee();
         mentee.setIin(signupUpdateMenteeRequest.getIin());
+        mentee.setAge(signupUpdateMenteeRequest.getAge());
 //        mentee.setNumber(signupUpdateMenteeRequest.getNumber());
         mentee.setSchool(signupUpdateMenteeRequest.getSchool());
         mentee.setUser(user);

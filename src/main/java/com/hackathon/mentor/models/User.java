@@ -10,6 +10,7 @@ import java.util.*;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -39,6 +40,8 @@ public class User {
 	@Size(max = 20)
 	@Column(name = "middlename")
 	private String middlename;
+
+	private String telegram;
 //	@NotBlank
 //	@Size(max = 20)
 //	private String username;
