@@ -57,7 +57,7 @@ public class MenteeServiceImpl implements MenteeService {
 
         mentee.setSchool(updateMenteeRequest.getSchool());
         mentee.setIin(updateMenteeRequest.getIin());
-        mentee.setNumber(updateMenteeRequest.getNumber());
+//        mentee.setNumber(updateMenteeRequest.getNumber());
         mentee.setSubjectOfInterest1(updateMenteeRequest.getSubjectOfInterest1());
         mentee.setSubjectOfInterest2(updateMenteeRequest.getSubjectOfInterest2());
         menteeRepository.save(mentee);

@@ -50,7 +50,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         mentor.setAge(signupUpdateMentorRequest.getAge());
         mentor.setIin(signupUpdateMentorRequest.getIin());
         mentor.setCountry(signupUpdateMentorRequest.getCountryOfResidence());
-        mentor.setNumber(signupUpdateMentorRequest.getNumber());
+//        mentor.setNumber(signupUpdateMentorRequest.getNumber());
         mentor.setWork(signupUpdateMentorRequest.getWork());
         mentor.setUserInfo(signupUpdateMentorRequest.getUserInfo());
         mentor.setSchool(signupUpdateMentorRequest.getSchool());
@@ -87,7 +87,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 
         Mentee mentee = new Mentee();
         mentee.setIin(signupUpdateMenteeRequest.getIin());
-        mentee.setNumber(signupUpdateMenteeRequest.getNumber());
+//        mentee.setNumber(signupUpdateMenteeRequest.getNumber());
         mentee.setSchool(signupUpdateMenteeRequest.getSchool());
         mentee.setUser(user);
         mentee.setSubjectOfInterest1(signupUpdateMenteeRequest.getSubjectOfInterest1());

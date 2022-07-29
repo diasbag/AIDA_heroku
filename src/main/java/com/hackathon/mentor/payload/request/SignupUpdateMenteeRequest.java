@@ -33,9 +33,7 @@ public class SignupUpdateMenteeRequest {
     @NotNull
     @NotBlank
     private String telegram;
-    @NotNull
-    @NotBlank
-    private String number;
+//    private String number;
 
     @NotNull
     @NotBlank

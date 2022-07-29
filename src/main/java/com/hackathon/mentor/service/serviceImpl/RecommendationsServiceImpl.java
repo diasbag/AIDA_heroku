@@ -93,6 +93,10 @@ public class RecommendationsServiceImpl implements RecommendationsService {
             for (int i = 0; i < 10; i++){
                 out.add(majorsUniversity.iterator().next());
             }
+        } else {
+            out.addAll(subjectsSet);
+            out.addAll(majorsSet);
+            out.addAll(majorsUniversity);
         }
         out.subList(0, 10);
         log.info("recommendations by subject is done <<<");

@@ -20,9 +20,9 @@ public class Mentee {
     @JoinColumn(name = "user_id")
     private  User user;
 
-    @NotBlank
-    @NotNull
-    private String number;
+//    @NotBlank
+//    @NotNull
+//    private String number;
 
     @NotNull
     private String iin;

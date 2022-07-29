@@ -52,7 +52,7 @@ public class MentorServiceImpl implements MentorService {
             mentorsResponse.setId(mentor.getId());
             mentorsResponse.setUser(mentor.getUser());
             mentorsResponse.setAge(mentor.getAge());
-            mentorsResponse.setNumber(mentor.getNumber());
+//            mentorsResponse.setNumber(mentor.getNumber());
 //            mentorsResponse.setRating(mentor.getRating());
             mentorsResponse.setIin(mentor.getIin());
             mentorsResponse.setBachelorsMajor(mentor.getBachelorsMajor());
@@ -138,7 +138,7 @@ public class MentorServiceImpl implements MentorService {
         mentorProfileResponse.setEmail(mentor.getUser().getEmail());
         mentorProfileResponse.setImage(mentor.getUser().getImage());
         mentorProfileResponse.setAge(mentor.getAge());
-        mentorProfileResponse.setNumber(mentor.getNumber());
+//        mentorProfileResponse.setNumber(mentor.getNumber());
 //        mentorProfileResponse.setRating(mentor.getRating());
         mentorProfileResponse.setIin(mentor.getIin());
         mentorProfileResponse.setBachelorsMajor(mentor.getBachelorsMajor());
@@ -191,7 +191,7 @@ public class MentorServiceImpl implements MentorService {
         mentor.setIin(signupMentorRequest.getIin());
         mentor.setBachelorsUniversity(signupMentorRequest.getBachelorsUniversity());
         mentor.setCountry(signupMentorRequest.getCountryOfResidence());
-        mentor.setNumber(signupMentorRequest.getNumber());
+//        mentor.setNumber(signupMentorRequest.getNumber());
         mentor.setWork(signupMentorRequest.getWork());
         mentor.setUserInfo(signupMentorRequest.getUserInfo());
         mentor.setSchool(signupMentorRequest.getSchool());

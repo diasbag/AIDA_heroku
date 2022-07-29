@@ -28,9 +28,9 @@ public class Mentor {
     @Min(value = 0, message = "Age < 0")
     @Max(100)
     private int age;
-
-    @Column(name = "phone_number")
-    private String number;
+//
+//    @Column(name = "phone_number")
+//    private String number;
 
 
     @Column(name = "iin")
