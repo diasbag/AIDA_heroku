@@ -35,11 +35,14 @@ public class RegistrationServiceImpl implements RegistrationService {
         if (userRepository.existsByEmail(signupUpdateMentorRequest.getEmail())) {
             throw new AccountBadRequest("Email is already in use!");
         }
-        User user = new User(signupUpdateMentorRequest.getFirstname(),
-                signupUpdateMentorRequest.getLastname(),
-                signupUpdateMentorRequest.getEmail(),
-                encoder.encode(signupUpdateMentorRequest.getPassword()));
+        User user = new User();
+        user.setFirstname(signupUpdateMentorRequest.getFirstname());
+        user.setMiddlename(signupUpdateMentorRequest.getMiddlename());
+        user.setLastname(signupUpdateMentorRequest.getLastname());
+        user.setPassword(encoder.encode(signupUpdateMentorRequest.getPassword()));
+        user.setEmail(signupUpdateMentorRequest.getEmail());
         user.setStatus(true);
+        user.setMiddlename(signupUpdateMentorRequest.getMiddlename());
         Role role = roleRepository.findByName(ERole.ROLE_MENTOR).orElseThrow(() ->
                 new AccountNotFound("Error: Role is not found"));
         List<Role> roles = new ArrayList<>();
@@ -50,7 +53,6 @@ public class RegistrationServiceImpl implements RegistrationService {
         mentor.setAge(signupUpdateMentorRequest.getAge());
         mentor.setIin(signupUpdateMentorRequest.getIin());
         mentor.setCountry(signupUpdateMentorRequest.getCountryOfResidence());
-//        mentor.setNumber(signupUpdateMentorRequest.getNumber());
         mentor.setWork(signupUpdateMentorRequest.getWork());
         mentor.setUserInfo(signupUpdateMentorRequest.getUserInfo());
         mentor.setSchool(signupUpdateMentorRequest.getSchool());
@@ -62,6 +64,8 @@ public class RegistrationServiceImpl implements RegistrationService {
         mentor.setCountryOfMastersUniversity(signupUpdateMentorRequest.getCountryOfMastersUniversity());
         mentor.setBachelorsMajor(signupUpdateMentorRequest.getBachelorsMajor());
         mentor.setMastersMajor(signupUpdateMentorRequest.getMastersMajor());
+        mentor.setBachelorsUniversity(signupUpdateMentorRequest.getBachelorsUniversity());
+        mentor.setMastersUniversity(signupUpdateMentorRequest.getMastersUniversity());
         mentorRepository.save(mentor);
         log.info("mentor was registered <<<");
         return new MessageResponse("User registered successfully!");
@@ -73,10 +77,12 @@ public class RegistrationServiceImpl implements RegistrationService {
         if (userRepository.existsByEmail(signupUpdateMenteeRequest.getEmail())) {
             throw new AccountBadRequest("Email is already in use!");
         }
-        User user = new User(signupUpdateMenteeRequest.getFirstname(),
-                signupUpdateMenteeRequest.getLastname(),
-                signupUpdateMenteeRequest.getEmail(),
-                encoder.encode(signupUpdateMenteeRequest.getPassword()));
+        User user = new User();
+        user.setFirstname(signupUpdateMenteeRequest.getFirstname());
+        user.setMiddlename(signupUpdateMenteeRequest.getMiddlename());
+        user.setLastname(signupUpdateMenteeRequest.getLastname());
+        user.setPassword(encoder.encode(signupUpdateMenteeRequest.getPassword()));
+        user.setEmail(signupUpdateMenteeRequest.getEmail());
         user.setStatus(true);
         Role role = roleRepository.findByName(ERole.ROLE_MENTEE).orElseThrow(() ->
                 new AccountNotFound("Role is not found"));

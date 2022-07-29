@@ -126,11 +126,8 @@ public class MentorServiceImpl implements MentorService {
 
     @Override
     public ResponseEntity<?> getMentorById(Long id) {
-        Mentor mentor = mentorRepository.findById(id).orElse(null);
-        if (mentor == null) {
-            return new ResponseEntity<>("Not Found!!!", HttpStatus.NOT_FOUND);
-        }
         log.info("get mentor...");
+        Mentor mentor = mentorRepository.findById(id).orElseThrow(() -> new AccountNotFound("mentor with id " + id));
         MentorProfileResponse mentorProfileResponse = new MentorProfileResponse();
         mentorProfileResponse.setFirstname(mentor.getUser().getFirstname());
         mentorProfileResponse.setLastname(mentor.getUser().getLastname());
