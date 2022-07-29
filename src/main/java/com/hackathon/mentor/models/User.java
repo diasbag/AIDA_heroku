@@ -1,6 +1,8 @@
 package com.hackathon.mentor.models;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.*;
@@ -17,6 +19,7 @@ import javax.validation.constraints.Size;
 		})
 @Getter
 @Setter
+@AllArgsConstructor
 public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,9 +39,9 @@ public class User {
 	@Size(max = 20)
 	@Column(name = "middlename")
 	private String middlename;
-	@NotBlank
-	@Size(max = 20)
-	private String username;
+//	@NotBlank
+//	@Size(max = 20)
+//	private String username;
 	@NotBlank
 	@Size(max = 50)
 	@Email
@@ -66,7 +69,6 @@ public class User {
 	public User(String firstname, String lastname, String email, String password) {
 		this.firstname = firstname;
 		this.lastname = lastname;
-		this.username = firstname+lastname;
 		this.email = email;
 		this.password = password;
 	}
@@ -77,7 +79,6 @@ public class User {
 				"id=" + id +
 				", firstname='" + firstname +
 		", lastname='" + lastname +
-		", username='" + username +
 		", email='" + email +
 		", roles=" + roles +
 		", status=" + status +
