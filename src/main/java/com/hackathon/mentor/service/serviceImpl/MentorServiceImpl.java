@@ -72,7 +72,7 @@ public class MentorServiceImpl implements MentorService {
             mentorsResponse.setYearOfGraduation(mentor.getYearOfGraduation());
             mentorsResponse.setSubjectOfInterest1(mentor.getSubjectOfInterest1());
             mentorsResponse.setSubjectOfInterest2(mentor.getSubjectOfInterest2());
-
+            mentorsResponse.setListOfSkills(mentor.getListOfSkills());
             mentorsResponseList.add(mentorsResponse);
             mentorsResponse.setMenteesCount(mentor.getMentees().size());
         }
@@ -155,6 +155,7 @@ public class MentorServiceImpl implements MentorService {
         mentorProfileResponse.setSubjectOfInterest1(mentor.getSubjectOfInterest1());
         mentorProfileResponse.setSubjectOfInterest2(mentor.getSubjectOfInterest2());
         mentorProfileResponse.setMenteesCount(mentor.getMentees().size());
+        mentorProfileResponse.setListOfSkills(mentor.getListOfSkills());
         log.info("Get mentor by id" + mentorProfileResponse);
         return new ResponseEntity<>(mentorProfileResponse, HttpStatus.OK);
     }
@@ -207,7 +208,7 @@ public class MentorServiceImpl implements MentorService {
         mentor.setCountryOfMastersUniversity(signupMentorRequest.getCountryOfMastersUniversity());
         mentor.setBachelorsMajor(signupMentorRequest.getBachelorsMajor());
         mentor.setMastersMajor(signupMentorRequest.getMastersMajor());
-
+        mentor.setListOfSkills(signupMentorRequest.getListOfSkills());
         mentorRepository.save(mentor);
         log.info("mentor successfully updated!!!");
         return ResponseEntity.ok("User updated successfully!");

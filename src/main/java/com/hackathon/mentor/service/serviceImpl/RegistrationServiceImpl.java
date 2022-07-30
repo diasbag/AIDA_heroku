@@ -67,6 +67,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         mentor.setMastersMajor(signupUpdateMentorRequest.getMastersMajor());
         mentor.setBachelorsUniversity(signupUpdateMentorRequest.getBachelorsUniversity());
         mentor.setMastersUniversity(signupUpdateMentorRequest.getMastersUniversity());
+        mentor.setListOfSkills(signupUpdateMentorRequest.getListOfSkills());
         mentorRepository.save(mentor);
         log.info("mentor was registered <<<");
         return new MessageResponse("User registered successfully!");
