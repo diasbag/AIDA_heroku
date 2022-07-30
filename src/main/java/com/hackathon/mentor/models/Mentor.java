@@ -4,7 +4,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -64,6 +63,10 @@ public class Mentor {
 
     @Column(name = "subject2")
     private String subjectOfInterest2;
+
+    @Column(name = "list_of_skills")
+    @ElementCollection
+    private List<String> listOfSkills;
 
     @ManyToMany
     @Column(name = "mentee_id")

@@ -2,7 +2,7 @@ package com.hackathon.mentor.payload.request;
 
 import lombok.*;
 
-import javax.validation.constraints.*;
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,6 +19,7 @@ public class SignupUpdateMentorRequest extends SignupUpdateMenteeRequest {
     private String countryOfMastersUniversity;
 
     private String countryOfResidence;
+    private List<String> listOfSkills;
 
     private String work;
 
