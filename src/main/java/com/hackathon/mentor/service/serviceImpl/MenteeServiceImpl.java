@@ -1,5 +1,6 @@
 package com.hackathon.mentor.service.serviceImpl;
 
+import com.hackathon.mentor.exceptions.AccountNotFound;
 import com.hackathon.mentor.models.Mentee;
 import com.hackathon.mentor.models.Mentor;
 import com.hackathon.mentor.models.Subscribe;
@@ -92,6 +93,21 @@ public class MenteeServiceImpl implements MenteeService {
             mentors.add(subscribe.getMentor());
         }
         return new ResponseEntity<>(mentors, HttpStatus.OK);
+    }
+
+    @Override
+    public Boolean isSubscribe(String email, Long id) {
+        User user = userRepository.findByEmail(email).orElse(null);
+        Mentee mentee = menteeRepository.findByUser(user);
+        log.info("get mentee wait list...");
+        List<Subscribe> subscribes = subscribeRepository.findByMentee(mentee);
+        Mentor mentor = mentorRepository.findById(id).orElseThrow(() -> new AccountNotFound("mentor not found!!!"));
+        for (Subscribe subscribe : subscribes) {
+            if (subscribe.getMentor().equals(mentor)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
