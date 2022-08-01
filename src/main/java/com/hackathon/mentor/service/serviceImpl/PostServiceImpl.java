@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,7 +45,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post createPost(PostRequest postRequest) {
+    public Post createPost(@Valid PostRequest postRequest) {
         log.info("creating post ...");
         Post post;
         if (postRequest.getId() != null && postRepository.findById(postRequest.getId()).isPresent()) {
@@ -61,7 +62,7 @@ public class PostServiceImpl implements PostService {
         return post;
     }
     @Override
-    public Post createPostWithImage(PostRequest postRequest, MultipartFile file) {
+    public Post createPostWithImage(@Valid PostRequest postRequest, MultipartFile file) {
         log.info("creating post ...");
         Post post = new Post();
         post.setTitle(postRequest.getTitle());
@@ -102,7 +103,7 @@ public class PostServiceImpl implements PostService {
 //    }
 
     @Override
-    public Post editPostText(PostRequest postRequest) {
+    public Post editPostText(@Valid PostRequest postRequest) {
         log.info("editing post text ...");
         Long id = postRequest.getId();
         Post post = postRepository.findById(id).orElseThrow(() -> new AccountNotFound("post with id " + id));

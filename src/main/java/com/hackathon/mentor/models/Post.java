@@ -2,10 +2,9 @@ package com.hackathon.mentor.models;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 @Entity
@@ -17,11 +16,13 @@ public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "title")
+    @Column(name = "title", length = 4096)
+    @Size(max =  4096)
     private String title;
     @Column(name = "created_date")
     private Date date;
-    @Column(name = "article")
+    @Column(name = "article", length = 4096)
+    @Size(max =  4096)
     private String article;
     @OneToOne(cascade = {CascadeType.ALL})
     private Image image;
