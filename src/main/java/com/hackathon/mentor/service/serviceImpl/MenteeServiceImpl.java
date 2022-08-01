@@ -6,7 +6,6 @@ import com.hackathon.mentor.models.Mentor;
 import com.hackathon.mentor.models.Subscribe;
 import com.hackathon.mentor.models.User;
 import com.hackathon.mentor.payload.request.SignupUpdateMenteeRequest;
-import com.hackathon.mentor.payload.request.RatingRequest;
 import com.hackathon.mentor.repository.*;
 import com.hackathon.mentor.service.MenteeService;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +30,6 @@ public class MenteeServiceImpl implements MenteeService {
 
     private final UserRepository userRepository;
 
-    private final RatingRepository ratingRepository;
 
     private final SubscribeRepository subscribeRepository;
     @Override
@@ -125,8 +123,9 @@ public class MenteeServiceImpl implements MenteeService {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = userDetails.getUsername();
         User user = userRepository.findByEmail(email).orElseThrow(() -> new AccountNotFound("user - " + email));
-        Mentor mentor = mentorRepository.findByUser(user).orElseThrow(() ->
-                new AccountNotFound("mentor - " + user));
+        Mentee mentee = menteeRepository.findByUser(user).orElseThrow(() ->
+                new AccountNotFound("mentee - " + user));
+        Mentor mentor = mentee.getMentor();
         log.info("mentor was found " + mentor + " <<<");
         return mentor;
     }
