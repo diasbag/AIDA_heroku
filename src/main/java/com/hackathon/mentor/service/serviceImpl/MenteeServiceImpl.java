@@ -6,10 +6,12 @@ import com.hackathon.mentor.models.Mentor;
 import com.hackathon.mentor.models.Subscribe;
 import com.hackathon.mentor.models.User;
 import com.hackathon.mentor.payload.request.SignupUpdateMenteeRequest;
+import com.hackathon.mentor.payload.response.MentorsResponse;
 import com.hackathon.mentor.repository.*;
 import com.hackathon.mentor.service.MenteeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,6 +31,7 @@ public class MenteeServiceImpl implements MenteeService {
     private final MenteeRepository menteeRepository;
 
     private final UserRepository userRepository;
+    private final ModelMapper modelMapper = new ModelMapper();
 
 
     private final SubscribeRepository subscribeRepository;
@@ -118,7 +121,7 @@ public class MenteeServiceImpl implements MenteeService {
     }
 
     @Override
-    public Mentor getMyMentor() {
+    public MentorsResponse getMyMentor() {
         log.info("finding mentor of mentee ...");
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = userDetails.getUsername();
@@ -126,8 +129,15 @@ public class MenteeServiceImpl implements MenteeService {
         Mentee mentee = menteeRepository.findByUser(user).orElseThrow(() ->
                 new AccountNotFound("mentee - " + user));
         Mentor mentor = mentee.getMentor();
+        MentorsResponse mentorsResponse = modelMapper.map(mentor, MentorsResponse.class);
+        mentorsResponse.setFirstname(mentor.getUser().getFirstname());
+        mentorsResponse.setMiddlename(mentor.getUser().getMiddlename());
+        mentorsResponse.setLastname(mentor.getUser().getLastname());
+        mentorsResponse.setEmail(mentor.getUser().getEmail());
+        mentorsResponse.setCountryOfResidence(mentor.getCountry());
+        mentorsResponse.setImage(mentor.getUser().getImage());
         log.info("mentor was found " + mentor + " <<<");
-        return mentor;
+        return mentorsResponse;
     }
 
 

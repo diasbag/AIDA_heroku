@@ -1,7 +1,7 @@
 package com.hackathon.mentor.controllers;
 
-import com.hackathon.mentor.models.Mentor;
 import com.hackathon.mentor.payload.request.SignupUpdateMenteeRequest;
+import com.hackathon.mentor.payload.response.MentorsResponse;
 import com.hackathon.mentor.service.MenteeService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -60,11 +60,11 @@ public class MenteeController {
     }
     @GetMapping(value = "/my_mentor", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getMyMentor() {
-        Mentor mentor = menteeService.getMyMentor();
-        if (mentor == null) {
+        MentorsResponse mentorsResponse = menteeService.getMyMentor();
+        if (mentorsResponse == null) {
             return ResponseEntity.ok("{\"message\":\"Mentee has no mentor\"}");
         } else {
-            return ResponseEntity.ok(mentor);
+            return ResponseEntity.ok(mentorsResponse);
         }
     }
 }
