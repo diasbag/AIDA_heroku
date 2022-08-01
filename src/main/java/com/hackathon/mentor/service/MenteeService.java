@@ -14,4 +14,6 @@ public interface MenteeService {
     ResponseEntity<?> deleteMentor(Long id, String email);
 
     ResponseEntity<?> getWaitList(String email);
+
+    Boolean isSubscribe(String email, Long id);
 }
