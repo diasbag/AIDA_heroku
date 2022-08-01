@@ -141,5 +141,18 @@ public class MenteeServiceImpl implements MenteeService {
         return mentorsResponse;
     }
 
+    @Override
+    public Boolean isMyMentor(String email, Long id) {
+        log.info("get mentee's mentor status ...");
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new AccountNotFound("user with email " + email));
+        Mentee mentee = menteeRepository.findByUser(user).orElseThrow(() ->
+                new AccountNotFound("mentee - " + user));
+        Mentor mentor = mentorRepository.findById(id).orElseThrow(() ->
+                new AccountNotFound("mentor with id " + id));
+        return mentee.getMentor().equals(mentor);
+
+    }
+
 
 }

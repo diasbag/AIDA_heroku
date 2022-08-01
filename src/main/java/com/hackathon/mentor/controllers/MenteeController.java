@@ -58,6 +58,12 @@ public class MenteeController {
         String email = userDetails.getUsername();
         return menteeService.isSubscribe(email, id);
     }
+    @GetMapping("mentor/is_my_mentor/{id}")
+    public Boolean isMyMentor(@PathVariable("id") Long id) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = userDetails.getUsername();
+        return menteeService.isMyMentor(email, id);
+    }
     @GetMapping(value = "/my_mentor", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getMyMentor() {
         MentorsResponse mentorsResponse = menteeService.getMyMentor();

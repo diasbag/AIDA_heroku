@@ -19,4 +19,6 @@ public interface MenteeService {
     Boolean isSubscribe(String email, Long id);
 
     MentorsResponse getMyMentor();
+
+    Boolean isMyMentor(String email, Long id);
 }
