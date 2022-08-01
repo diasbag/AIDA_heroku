@@ -1,21 +1,15 @@
 package com.hackathon.mentor.controllers;
 
-import com.hackathon.mentor.models.Mentee;
 import com.hackathon.mentor.models.Mentor;
-import com.hackathon.mentor.models.Subscribe;
-import com.hackathon.mentor.models.User;
 import com.hackathon.mentor.payload.request.SignupUpdateMenteeRequest;
 import com.hackathon.mentor.service.MenteeService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -64,9 +58,13 @@ public class MenteeController {
         String email = userDetails.getUsername();
         return menteeService.isSubscribe(email, id);
     }
-    @GetMapping("/my_mentor")
+    @GetMapping(value = "/my_mentor", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getMyMentor() {
         Mentor mentor = menteeService.getMyMentor();
-        return ResponseEntity.ok(mentor);
+        if (mentor == null) {
+            return ResponseEntity.ok("{\"message\":\"Mentee has no mentor\"}");
+        } else {
+            return ResponseEntity.ok(mentor);
+        }
     }
 }
