@@ -10,11 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.webjars.NotFoundException;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Service
@@ -37,93 +32,58 @@ public class RatingServiceImpl implements RatingService {
                 new AccountNotFound("user with email " + email));
         ERole role = user.getRoles().get(0).getName();
         Set<Mentee> mentees;
+        Mentor mentor;
+        Mentee mentee;
         if (role.equals(ERole.ROLE_MENTOR)) {
-            Mentor mentor = mentorRepository.findByUser(user).orElseThrow(() ->
+            mentor = mentorRepository.findByUser(user).orElseThrow(() ->
                     new AccountNotFound("user with email " + email));
-            Mentee mentee = menteeRepository.findById(id).orElseThrow(() ->
+            mentee = menteeRepository.findById(id).orElseThrow(() ->
                     new AccountNotFound("mentee with id " + id));
-
-            mentees = mentor.getMentees();
-            if (!mentees.contains(mentee)) {
-                return new ResponseEntity<>("Not your mentee!!!!!!! 4ert", HttpStatus.CONFLICT);
-            }
-            Comment comment = new Comment();
-            Rating rating = user.getRating();
-            if (rating == null) {
-
-                comment.setComment(ratingRequest.getComment());
-                comment.setUser(mentor.getUser());
-                Rating rating1 = new Rating();
-                rating1.getComments().add(comment);
-
-                rating1.setRating(ratingRequest.getRate());
-                rating1.setPeopleCount(1);
-                commentRepository.save(comment);
-
-                ratingRepository.save(rating1);
-                user.setRating(rating1);
-                userRepository.save(user);
-                return new ResponseEntity<>("success", HttpStatus.OK);
-            }
-            long cnt =  (rating.getPeopleCount()+1);
-            double res = ((rating.getRating()* rating.getPeopleCount()) + ratingRequest.getRate())/(cnt);
-            comment.setComment(ratingRequest.getComment());
-            comment.setUser(mentor.getUser());
-            commentRepository.save(comment);
-            rating.getComments().add(comment);
-            rating.setRating(res);
-            rating.setPeopleCount(cnt);
-            ratingRepository.save(rating);
-            user.setRating(rating);
-            userRepository.save(user);
-            log.info("Mentor was rated!!!");
-            return new ResponseEntity<>("Success", HttpStatus.OK);
-        }
-        if (role.equals(ERole.ROLE_MENTEE)) {
-            Mentee mentee = menteeRepository.findByUser(user).orElseThrow(() ->
+        } else if (role.equals(ERole.ROLE_MENTEE)){
+            mentee = menteeRepository.findByUser(user).orElseThrow(() ->
                     new AccountNotFound("user - " + user));
-            Mentor mentor = mentorRepository.findById(id).orElseThrow(() ->
+            mentor = mentorRepository.findById(id).orElseThrow(() ->
                     new AccountNotFound("mentor with id " + id));
-            mentees = mentor.getMentees();
-            if (!mentees.contains(mentee)) {
-                return new ResponseEntity<>("Not your mentor!!!!!!! 4ert", HttpStatus.CONFLICT);
-            }
-            Comment comment = new Comment();
-            Rating rating = user.getRating();
-            if (rating == null) {
-
-                comment.setComment(ratingRequest.getComment());
-                comment.setUser(mentee.getUser());
-                Rating rating1 = new Rating();
-                rating1.getComments().add(comment);
-
-                rating1.setRating(ratingRequest.getRate());
-                rating1.setPeopleCount(1);
-                commentRepository.save(comment);
-
-                ratingRepository.save(rating1);
-                user.setRating(rating1);
-                userRepository.save(user);
-                return new ResponseEntity<>(user, HttpStatus.OK);
-            }
+        } else {
+            return new ResponseEntity<>("Wrong role", HttpStatus.CONFLICT);
+        }
+        mentees = mentor.getMentees();
+        if (!mentees.contains(mentee)) {
+            return new ResponseEntity<>("Not your mentee!", HttpStatus.CONFLICT);
+        }
+        Comment comment = new Comment();
+        Rating rating = user.getRating();
+        double overallRating = 0;
+        comment.setComment(ratingRequest.getComment());
+        comment.setUser(mentor.getUser());
+        if (rating == null) {
+            overallRating = (ratingRequest.getKnowledgeRating() + ratingRequest.getCommunicationRating() +
+                    ratingRequest.getQualityOfServiceRating())/3.0;
+            Rating rating1 = new Rating();
+            rating1.getComments().add(comment);
+            rating1.setKnowledgeRating(ratingRequest.getKnowledgeRating());
+            rating1.setCommunicationRating(ratingRequest.getCommunicationRating());
+            rating1.setQualityOfServiceRating(ratingRequest.getQualityOfServiceRating());
+            rating1.setRating(overallRating);
+            rating1.setPeopleCount(1);
+            commentRepository.save(comment);
+            ratingRepository.save(rating1);
+            user.setRating(rating1);
+        } else {
             long cnt =  (rating.getPeopleCount()+1);
-            double res = ((rating.getRating()* rating.getPeopleCount()) + ratingRequest.getRate())/(cnt);
-            comment.setComment(ratingRequest.getComment());
-            comment.setUser(mentee.getUser());
+            double res = ((rating.getRating()* rating.getPeopleCount()) + overallRating)/(cnt);
             commentRepository.save(comment);
             rating.getComments().add(comment);
             rating.setRating(res);
             rating.setPeopleCount(cnt);
             ratingRepository.save(rating);
             user.setRating(rating);
-            userRepository.save(user);
-            log.info("Mentor was rated!!!");
-            return new ResponseEntity<>("Success", HttpStatus.OK);
         }
-        return new ResponseEntity<>("ERROR", HttpStatus.CONFLICT);
+        userRepository.save(user);
+        log.info("Mentor was rated!!!");
+        return new ResponseEntity<>("Success", HttpStatus.OK);
     }
-
-//    public User rate(User user, RatingRequest ratingRequest) {
+    //    public User rate(User user, RatingRequest ratingRequest) {
 //        Comment comment = new Comment();
 //        Rating rating = user.getRating();
 //        if (rating == null) {
@@ -155,5 +115,8 @@ public class RatingServiceImpl implements RatingService {
 //        log.info("Mentor was rated!!!");
 //        return user;
 //    }
-
 }
+
+
+
+

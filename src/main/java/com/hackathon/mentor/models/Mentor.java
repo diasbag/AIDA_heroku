@@ -1,5 +1,6 @@
 package com.hackathon.mentor.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,7 @@ public class Mentor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "user_id")
     private  User user;
