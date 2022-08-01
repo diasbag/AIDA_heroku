@@ -16,13 +16,13 @@ public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "title", length = 4096)
-    @Size(max =  4096)
+    @Column(name = "title", length = 10485760, columnDefinition = "TEXT")
+    @Size(max =  10485760)
     private String title;
     @Column(name = "created_date")
     private Date date;
-    @Column(name = "article", length = 4096)
-    @Size(max =  4096)
+    @Column(name = "article", length = 10485760, columnDefinition = "TEXT")
+    @Size(max =  10485760)
     private String article;
     @OneToOne(cascade = {CascadeType.ALL})
     private Image image;
