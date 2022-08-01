@@ -6,12 +6,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface MenteeRepository extends JpaRepository<Mentee, Long> {
 
     @Query(value = "SELECT * FROM mentees", nativeQuery = true)
     List<Mentee> getAll();
 
-    Mentee findByUser(User user);
+    Optional<Mentee> findByUser(User user);
 
 }

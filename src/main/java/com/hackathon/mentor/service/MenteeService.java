@@ -1,5 +1,6 @@
 package com.hackathon.mentor.service;
 
+import com.hackathon.mentor.models.Mentor;
 import com.hackathon.mentor.payload.request.SignupUpdateMenteeRequest;
 import org.springframework.http.ResponseEntity;
 
@@ -16,4 +17,6 @@ public interface MenteeService {
     ResponseEntity<?> getWaitList(String email);
 
     Boolean isSubscribe(String email, Long id);
+
+    Mentor getMyMentor();
 }
