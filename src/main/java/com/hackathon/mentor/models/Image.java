@@ -6,13 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -42,7 +40,7 @@ public class Image {
     private String systemName;
 
     @Lob
-    @Column(name = "data")
+    @Column(name = "data", length = 32768)
     @Type(type = "org.hibernate.type.BinaryType")
     private byte[] data;
 

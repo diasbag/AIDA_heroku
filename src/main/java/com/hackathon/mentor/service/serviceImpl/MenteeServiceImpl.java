@@ -136,6 +136,7 @@ public class MenteeServiceImpl implements MenteeService {
         mentorsResponse.setEmail(mentor.getUser().getEmail());
         mentorsResponse.setCountryOfResidence(mentor.getCountry());
         mentorsResponse.setImage(mentor.getUser().getImage());
+        mentorsResponse.setMenteesCount(mentor.getMentees().size());
         log.info("mentor was found " + mentor + " <<<");
         return mentorsResponse;
     }
