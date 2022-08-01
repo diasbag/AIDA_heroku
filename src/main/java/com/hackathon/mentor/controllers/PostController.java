@@ -49,6 +49,12 @@ public class PostController {
         Post post = postService.uploadPostImage(file);
         return new ResponseEntity<>(post.getId(), HttpStatus.OK);
     }
+    @PostMapping("/post/upload_post_image")
+    public ResponseEntity<?> uploadPostImageText(@RequestBody PostRequest postRequest,
+                                                 @RequestParam("file") MultipartFile file) {
+        Post post = postService.createPostWithImage(postRequest, file);
+        return new ResponseEntity<>(post.getId(), HttpStatus.OK);
+    }
 
     @GetMapping("/mentor/posts/{id}")
     public ResponseEntity<?> getMentorPostsById(@PathVariable("id") Long id) {

@@ -1,5 +1,6 @@
 package com.hackathon.mentor.service.serviceImpl;
 
+import com.hackathon.mentor.exceptions.AccountConflict;
 import com.hackathon.mentor.exceptions.AccountNotFound;
 import com.hackathon.mentor.models.*;
 import com.hackathon.mentor.payload.request.SignupUpdateMentorRequest;
@@ -33,11 +34,13 @@ public class MentorServiceImpl implements MentorService {
     public ResponseEntity<?> getUserProfile(User user) {
         ERole role = user.getRoles().get(0).getName();
         if (role.name().equals("ROLE_MENTOR") ) {
-            Mentor mentor = mentorRepository.getByUser(user);
+            Mentor mentor = mentorRepository.findByUser(user).orElseThrow(() ->
+                    new AccountNotFound("mentor - " + user));
             return new ResponseEntity<>(mentor, HttpStatus.OK);
         }
         if (role.name().equals("ROLE_MENTEE")) {
-            Mentee mentee = menteeRepository.findByUser(user);
+            Mentee mentee = menteeRepository.findByUser(user).orElseThrow(() ->
+                    new AccountNotFound("user - " + user));
             return new ResponseEntity<>(mentee, HttpStatus.OK);
         }
         return new ResponseEntity<>("Some ERROR!!!!", HttpStatus.BAD_REQUEST);
@@ -45,6 +48,7 @@ public class MentorServiceImpl implements MentorService {
 
     @Override
     public ResponseEntity<?> getMentors() {
+        log.info("getting all mentors ...");
         List<Mentor> mentors = mentorRepository.getAll();
         List<MentorsResponse> mentorsResponseList = new ArrayList<>();
         for (Mentor mentor : mentors) {
@@ -76,6 +80,7 @@ public class MentorServiceImpl implements MentorService {
             mentorsResponseList.add(mentorsResponse);
             mentorsResponse.setMenteesCount(mentor.getMentees().size());
         }
+        log.info("got all mentors " + mentorsResponseList + " <<<");
         return new ResponseEntity<>(mentorsResponseList, HttpStatus.OK);
     }
 
@@ -156,35 +161,37 @@ public class MentorServiceImpl implements MentorService {
         mentorProfileResponse.setSubjectOfInterest2(mentor.getSubjectOfInterest2());
         mentorProfileResponse.setMenteesCount(mentor.getMentees().size());
         mentorProfileResponse.setListOfSkills(mentor.getListOfSkills());
-        log.info("Get mentor by id" + mentorProfileResponse);
+        log.info("Get mentor by id" + mentorProfileResponse + " <<<");
         return new ResponseEntity<>(mentorProfileResponse, HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<?> getProfile(String email) {
+        log.info("get active user profile ...");
         User user = userRepository.findByEmail(email).orElseThrow(() ->
                 new AccountNotFound("user with email " + email));
         ERole role = user.getRoles().get(0).getName();
-        log.info("get active user profile ...");
         if (role.name().equals("ROLE_MENTOR") ) {
             Mentor mentor = mentorRepository.findByUser(user).orElseThrow(() ->
                     new AccountNotFound("user with email " + email));
             return new ResponseEntity<>(mentor, HttpStatus.OK);
         }
         if (role.equals(ERole.ROLE_MENTEE)) {
-            Mentee mentee = menteeRepository.findByUser(user);
+            Mentee mentee = menteeRepository.findByUser(user).orElseThrow(() ->
+                    new AccountNotFound("user - " + user));
             return new ResponseEntity<>(mentee, HttpStatus.OK);
         }
-        log.info("Active user profile" + user);
+        log.info("Active user profile" + user + " <<<");
         return null;
     }
 
     @Override
     public ResponseEntity<?> updateMentor(String email, SignupUpdateMentorRequest signupMentorRequest) {
-        User user = userRepository.getByEmail(email);
+        log.info("updating mentor profile....");
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new AccountNotFound("user - " + email));
         Mentor mentor = mentorRepository.findByUser(user).orElseThrow(() ->
                 new AccountNotFound("user with email " + email));
-        log.info("updating mentor profile....");
+
         user.setEmail(signupMentorRequest.getEmail());
         user.setFirstname(signupMentorRequest.getFirstname());
         user.setLastname(signupMentorRequest.getLastname());
@@ -210,21 +217,23 @@ public class MentorServiceImpl implements MentorService {
         mentor.setMastersMajor(signupMentorRequest.getMastersMajor());
         mentor.setListOfSkills(signupMentorRequest.getListOfSkills());
         mentorRepository.save(mentor);
-        log.info("mentor successfully updated!!!");
+        log.info("mentor's profile is successfully updated " + mentor + " <<<");
         return ResponseEntity.ok("User updated successfully!");
     }
 
     @Override
     public ResponseEntity<?> getMySubscribers(String email) {
-        User user = userRepository.findByEmail(email).orElse(null);
+        log.info("getting mentor subscribers ...");
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new AccountNotFound("user - " + email));
         Mentor mentor = mentorRepository.findByUser(user).orElseThrow(() ->
                 new AccountNotFound("user with email " + email));
-        log.info("get mentor wait list...");
+
         List<Subscribe> subscribes = subscribeRepository.findByMentor(mentor);
         List<Mentee> mentees = new ArrayList<>();
         for (Subscribe subscribe : subscribes) {
             mentees.add(subscribe.getMentee());
         }
+        log.info("mentor waiting list: " + mentees + " <<<");
         return new ResponseEntity<>(mentees, HttpStatus.OK);
     }
 
@@ -238,7 +247,8 @@ public class MentorServiceImpl implements MentorService {
             return new ResponseEntity<>("You have 3 mentees" , HttpStatus.I_AM_A_TEAPOT);
         }
         Mentee mentee = menteeRepository.findById(id).orElseThrow(() -> new AccountNotFound("mentee with id " + id));
-
+        if (mentee.getMentor() != null) {throw new AccountConflict("mentee already have mentor " + mentor);
+        }
         Subscribe subscribe = subscribeRepository.getByMentorAndMentee(mentor, mentee).orElseThrow(() ->
                 new AccountNotFound(" subscribe: " + mentor + " and " + mentee));
         mentor.getMentees().add(mentee);
@@ -247,13 +257,14 @@ public class MentorServiceImpl implements MentorService {
         mentorRepository.save(mentor);
         Long sid = subscribe.getId();
         subscribeRepository.deleteById(sid);
-        log.info("Mentor confirmed mentee <<<");
+        log.info("Mentor confirmed mentee " + mentor + " + " + " <<<");
         return new ResponseEntity<>("Success!!!", HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<?> reject(Long id, String email) {
-        User user = userRepository.findByEmail(email).orElse(null);
+        log.info("mentor reject started ...");
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new AccountNotFound("user - " + email));
         Mentor mentor = mentorRepository.findByUser(user).orElseThrow(() ->
                 new AccountNotFound("user with email " + email));
         Mentee mentee = menteeRepository.findById(id).orElse(null);
@@ -261,16 +272,17 @@ public class MentorServiceImpl implements MentorService {
                 new AccountNotFound(" subscribe: " + mentor + " and " + mentee));
         Long sid = subscribe.getId();
         subscribeRepository.deleteById(sid);
-        log.info("Mentor rejected mentee!!!");
+        log.info("Mentor rejected mentee " + mentor + " + " + mentee + " <<<");
         return new ResponseEntity<>("Success" , HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<?> getMentorMentees(String email) {
-        User user = userRepository.findByEmail(email).orElse(null);
+        log.info("getting mentor's mentees ...");
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new AccountNotFound("user - " + email));
         Mentor mentor = mentorRepository.findByUser(user).orElseThrow(() ->
                 new AccountNotFound("user with email " + email));
-        log.info("Mentor menteeList!!!");
+        log.info("Mentor menteeList " + mentor.getMentees() + " <<<");
         return new ResponseEntity<>(mentor.getMentees(), HttpStatus.OK);
     }
 
@@ -279,7 +291,8 @@ public class MentorServiceImpl implements MentorService {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new AccountNotFound("user - " + email));
         Mentor mentor = mentorRepository.findByUser(user).orElseThrow(() ->
                 new AccountNotFound("user with email " + email));
-        Mentee mentee = menteeRepository.findById(id).orElseThrow(() -> new RuntimeException("Mentee Not Found!!!!"));
+        Mentee mentee = menteeRepository.findById(id).orElseThrow(() ->
+                new AccountNotFound("mentee with id - " + id));
 
         mentor.getMentees().remove(mentee);
         mentee.setMentor(null);

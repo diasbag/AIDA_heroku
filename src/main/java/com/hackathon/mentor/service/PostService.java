@@ -12,6 +12,8 @@ public interface PostService {
 
     Post createPost(PostRequest postRequest);
 
+    Post createPostWithImage(PostRequest postRequest, MultipartFile file);
+
     Post uploadPostImage(MultipartFile file);
 
     Post getByID(Long id);

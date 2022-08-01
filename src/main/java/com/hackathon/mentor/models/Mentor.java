@@ -1,9 +1,13 @@
 package com.hackathon.mentor.models;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -13,7 +17,6 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Table(	name = "mentors")
 public class Mentor {
     @Id
@@ -72,5 +75,26 @@ public class Mentor {
     @Column(name = "mentee_id")
     private Set<Mentee> mentees = new HashSet<>();
 
-
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" +
+                "id = " + id + ", " +
+                "user = " + user + ", " +
+                "age = " + age + ", " +
+                "iin = " + iin + ", " +
+                "bachelorsMajor = " + bachelorsMajor + ", " +
+                "mastersMajor = " + mastersMajor + ", " +
+                "bachelorsUniversity = " + bachelorsUniversity + ", " +
+                "countryOfBachelorsUniversity = " + countryOfBachelorsUniversity + ", " +
+                "mastersUniversity = " + mastersUniversity + ", " +
+                "countryOfMastersUniversity = " + countryOfMastersUniversity + ", " +
+                "country = " + country + ", " +
+                "work = " + work + ", " +
+                "userInfo = " + userInfo + ", " +
+                "school = " + school + ", " +
+                "yearOfGraduation = " + yearOfGraduation + ", " +
+                "subjectOfInterest1 = " + subjectOfInterest1 + ", " +
+                "subjectOfInterest2 = " + subjectOfInterest2 + ", " +
+                "listOfSkills = " + listOfSkills + ")";
+    }
 }

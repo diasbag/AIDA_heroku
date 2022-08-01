@@ -33,13 +33,15 @@ public class RatingServiceImpl implements RatingService {
     private final CommentRepository commentRepository;
     @Override
     public ResponseEntity<?> rateUser(Long id, String email, RatingRequest ratingRequest) {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User not Found!!!!"));
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new AccountNotFound("user with email " + email));
         ERole role = user.getRoles().get(0).getName();
         Set<Mentee> mentees;
         if (role.equals(ERole.ROLE_MENTOR)) {
             Mentor mentor = mentorRepository.findByUser(user).orElseThrow(() ->
                     new AccountNotFound("user with email " + email));
-            Mentee mentee = menteeRepository.findById(id).orElseThrow(() -> new NotFoundException("Mentee Not Found!!!"));
+            Mentee mentee = menteeRepository.findById(id).orElseThrow(() ->
+                    new AccountNotFound("mentee with id " + id));
 
             mentees = mentor.getMentees();
             if (!mentees.contains(mentee)) {
@@ -78,8 +80,10 @@ public class RatingServiceImpl implements RatingService {
             return new ResponseEntity<>("Success", HttpStatus.OK);
         }
         if (role.equals(ERole.ROLE_MENTEE)) {
-            Mentee mentee = menteeRepository.findByUser(user);
-            Mentor mentor = mentorRepository.findById(id).orElseThrow(() -> new NotFoundException("Mentor Not Found!!!"));
+            Mentee mentee = menteeRepository.findByUser(user).orElseThrow(() ->
+                    new AccountNotFound("user - " + user));
+            Mentor mentor = mentorRepository.findById(id).orElseThrow(() ->
+                    new AccountNotFound("mentor with id " + id));
             mentees = mentor.getMentees();
             if (!mentees.contains(mentee)) {
                 return new ResponseEntity<>("Not your mentor!!!!!!! 4ert", HttpStatus.CONFLICT);

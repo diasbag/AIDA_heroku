@@ -64,4 +64,9 @@ public class MenteeController {
         String email = userDetails.getUsername();
         return menteeService.isSubscribe(email, id);
     }
+    @GetMapping("/my_mentor")
+    public ResponseEntity<?> getMyMentor() {
+        Mentor mentor = menteeService.getMyMentor();
+        return ResponseEntity.ok(mentor);
+    }
 }
