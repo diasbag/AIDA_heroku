@@ -16,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -23,6 +25,7 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@EnableAsync
 public class SubscribeServiceImpl implements SubscribeService {
 
     private final SubscribeRepository subscribeRepository;
@@ -41,6 +44,7 @@ public class SubscribeServiceImpl implements SubscribeService {
 
     }
 
+    @Async
     @Override
     public ResponseEntity<?> subscribe(Long id, String email) {
         log.info("starting subscription ...");
