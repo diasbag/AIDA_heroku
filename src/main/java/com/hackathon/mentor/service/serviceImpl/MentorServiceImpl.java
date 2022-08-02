@@ -79,6 +79,7 @@ public class MentorServiceImpl implements MentorService {
             mentorsResponse.setSubjectOfInterest1(mentor.getSubjectOfInterest1());
             mentorsResponse.setSubjectOfInterest2(mentor.getSubjectOfInterest2());
             mentorsResponse.setListOfSkills(mentor.getListOfSkills());
+            mentorsResponse.setRating(mentor.getUser().getRating());
             mentorsResponseList.add(mentorsResponse);
             mentorsResponse.setMenteesCount(mentor.getMentees().size());
         }
@@ -162,6 +163,7 @@ public class MentorServiceImpl implements MentorService {
         mentorProfileResponse.setSubjectOfInterest1(mentor.getSubjectOfInterest1());
         mentorProfileResponse.setSubjectOfInterest2(mentor.getSubjectOfInterest2());
         mentorProfileResponse.setMenteesCount(mentor.getMentees().size());
+        mentorProfileResponse.setRating(mentorProfileResponse.getRating());
         mentorProfileResponse.setListOfSkills(mentor.getListOfSkills());
         log.info("Get mentor by id" + mentorProfileResponse + " <<<");
         return new ResponseEntity<>(mentorProfileResponse, HttpStatus.OK);
