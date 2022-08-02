@@ -303,7 +303,9 @@ public class MentorServiceImpl implements MentorService {
         mentee.setMentor(null);
         menteeRepository.save(mentee);
         mentorRepository.save(mentor);
-        subscribeRepository.deleteByMentorAndMentee(mentor, mentee);
+        if(subscribeRepository.findByMentorAndMentee(mentor, mentee).isPresent()) {
+            subscribeRepository.deleteByMentorAndMentee(mentor, mentee);
+        }
         log.info("Mentee has been removed!!!");
         return new ResponseEntity<>(mentor, HttpStatus.OK);
     }
