@@ -25,7 +25,6 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@EnableAsync
 public class SubscribeServiceImpl implements SubscribeService {
 
     private final SubscribeRepository subscribeRepository;
@@ -44,7 +43,7 @@ public class SubscribeServiceImpl implements SubscribeService {
 
     }
 
-    @Async
+
     @Override
     public ResponseEntity<?> subscribe(Long id, String email) {
         log.info("starting subscription ...");
