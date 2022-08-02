@@ -2,6 +2,7 @@ package com.hackathon.mentor.controllers;
 
 import com.hackathon.mentor.models.Mentor;
 import com.hackathon.mentor.service.RecommendationsService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +13,7 @@ import java.util.Set;
 @CrossOrigin(value = "*", maxAge = 3600)
 @RequiredArgsConstructor
 @RequestMapping("/recommendations")
+@SecurityRequirement(name = "basicauth")
 public class RecommendationsController {
     private final RecommendationsService recommendationsService;
 

@@ -3,6 +3,7 @@ package com.hackathon.mentor.controllers;
 
 import com.hackathon.mentor.payload.request.RatingRequest;
 import com.hackathon.mentor.service.RatingService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "basicauth")
 public class RatingController {
 
     private final RatingService ratingService;

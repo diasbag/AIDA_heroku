@@ -2,6 +2,7 @@ package com.hackathon.mentor.service.serviceImpl;
 
 import com.hackathon.mentor.models.User;
 import com.hackathon.mentor.payload.request.FeedbackRequest;
+import com.hackathon.mentor.service.AdminService;
 import com.hackathon.mentor.service.FeedbackService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,18 +24,21 @@ import java.util.List;
 @EnableAsync
 public class FeedbackServiceImpl implements FeedbackService {
     private final JavaMailSender javaMailSender;
+    private final AdminService adminService;
     @Async
     @Transactional
     @Override
     public void createFeedback(FeedbackRequest feedbackRequest)
             throws MessagingException, UnsupportedEncodingException {
         log.info("sending email with feedback started ...");
+        List<User> listOfAdmins = adminService.findAllAdmins();
         String fromAddress = "diasbagzat2@gmail.com";
         String senderName = feedbackRequest.getEmail();
         String subject = "New feedback";
         String content = "Dear NIS Alumni,<br>"
                 + "You have a new feedback:<br>"
-                + feedbackRequest.getComment()
+                + feedbackRequest.getComment() + "<br>"
+                + "from - " + senderName + "<br>"
                 + "Thank you,<br>";
 
         MimeMessage message = javaMailSender.createMimeMessage();
@@ -42,8 +46,11 @@ public class FeedbackServiceImpl implements FeedbackService {
         helper.setFrom(fromAddress, senderName);
         helper.setSubject(subject);
         helper.setText(content, true);
-
-        helper.setTo(feedbackRequest.getEmail());
+        for(User admin:listOfAdmins){
+            String toAddress = admin.getEmail();
+            helper.setTo(toAddress);
+            javaMailSender.send(message);
+        }
         javaMailSender.send(message);
         log.info("email with feedback were sent <<<");
     }

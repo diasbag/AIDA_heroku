@@ -1,6 +1,7 @@
 package com.hackathon.mentor.service.serviceImpl;
 
 import com.hackathon.mentor.exceptions.AccountNotFound;
+import com.hackathon.mentor.exceptions.ServerFail;
 import com.hackathon.mentor.models.Mentee;
 import com.hackathon.mentor.models.Mentor;
 import com.hackathon.mentor.models.Subscribe;
@@ -150,6 +151,9 @@ public class MenteeServiceImpl implements MenteeService {
                 new AccountNotFound("mentee - " + user));
         Mentor mentor = mentorRepository.findById(id).orElseThrow(() ->
                 new AccountNotFound("mentor with id " + id));
+        if (mentee.getMentor() == null)  {
+            throw new ServerFail("u mentee mentor kakogo to huya null, ya ne ebu, ya voobshe slomalsya, poshli vse nahui");
+        }
         return mentee.getMentor().equals(mentor);
 
     }
