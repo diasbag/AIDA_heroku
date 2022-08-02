@@ -9,6 +9,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api")
@@ -22,6 +24,10 @@ public class RatingController {
         String email = userDetails.getUsername();
         return ratingService.rateUser(id, email, ratingRequest);
     }
-
+    @GetMapping("/who_to_rate")
+    public ResponseEntity<?> whoToRate() {
+        List<Long> whoToRate = ratingService.whoToRate();
+        return ResponseEntity.ok("{\"toRate\":\"" + whoToRate + "\"}");
+    }
 
 }

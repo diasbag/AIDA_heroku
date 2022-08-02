@@ -1,5 +1,6 @@
 package com.hackathon.mentor.service.serviceImpl;
 
+import com.hackathon.mentor.exceptions.AccountConflict;
 import com.hackathon.mentor.exceptions.AccountNotFound;
 import com.hackathon.mentor.models.*;
 import com.hackathon.mentor.payload.request.RatingRequest;
@@ -9,7 +10,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -26,11 +33,15 @@ public class RatingServiceImpl implements RatingService {
     private final RatingRepository ratingRepository;
 
     private final CommentRepository commentRepository;
+    private final RatingNotificationRepository ratingNotificationRepository;
+    @Transactional
     @Override
     public ResponseEntity<?> rateUser(Long id, String email, RatingRequest ratingRequest) {
+        log.info("rating of user with id - " + id);
         User user = userRepository.findByEmail(email).orElseThrow(() ->
                 new AccountNotFound("user with email " + email));
         ERole role = user.getRoles().get(0).getName();
+
         Set<Mentee> mentees;
         Mentor mentor;
         Mentee mentee;
@@ -39,11 +50,25 @@ public class RatingServiceImpl implements RatingService {
                     new AccountNotFound("user with email " + email));
             mentee = menteeRepository.findById(id).orElseThrow(() ->
                     new AccountNotFound("mentee with id " + id));
+            RatingNotification ratingNotification =
+                    ratingNotificationRepository.findRatingNotificationByMentorAndMentee(mentor, mentee).orElseThrow(
+                            () -> new AccountNotFound("rating notification with mentor - " + mentor +
+                                    " and mentee - " + mentee)
+                    );
+            ratingNotification.setMentor(null);
+            ratingNotificationRepository.save(ratingNotification);
         } else if (role.equals(ERole.ROLE_MENTEE)){
             mentee = menteeRepository.findByUser(user).orElseThrow(() ->
                     new AccountNotFound("user - " + user));
             mentor = mentorRepository.findById(id).orElseThrow(() ->
                     new AccountNotFound("mentor with id " + id));
+            RatingNotification ratingNotification =
+                    ratingNotificationRepository.findRatingNotificationByMentorAndMentee(mentor, mentee).orElseThrow(
+                            () -> new AccountNotFound("rating notification with mentor - " + mentor +
+                                    " and mentee - " + mentee)
+                    );
+            ratingNotification.setMentee(null);
+            ratingNotificationRepository.save(ratingNotification);
         } else {
             return new ResponseEntity<>("Wrong role", HttpStatus.CONFLICT);
         }
@@ -80,8 +105,40 @@ public class RatingServiceImpl implements RatingService {
             user.setRating(rating);
         }
         userRepository.save(user);
-        log.info("Mentor was rated!!!");
+        log.info("user was rated - " + user + " <<<");
         return new ResponseEntity<>("Success", HttpStatus.OK);
+    }
+
+    @Override
+    public List<Long> whoToRate() throws AccountConflict {
+        log.info("retrieving list of users who user needs to rate ...");
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = userDetails.getUsername();
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new AccountNotFound("user with email " + email));
+        ERole role = user.getRoles().get(0).getName();
+        List<Long> toRate = new ArrayList<>();
+        if (role.equals(ERole.ROLE_MENTOR)) {
+            Mentor mentor = mentorRepository.findByUser(user).orElseThrow(() ->
+                    new AccountNotFound("user with email " + email));
+            List<RatingNotification> ratingNotification = ratingNotificationRepository
+                    .findRatingNotificationByMentor(mentor);
+            for (RatingNotification rating: ratingNotification) {
+                toRate.add(rating.getMentee().getId());
+            }
+        } else if (role.equals(ERole.ROLE_MENTEE)) {
+            Mentee mentee = menteeRepository.findByUser(user).orElseThrow(() ->
+                    new AccountNotFound("user - " + user));
+            List<RatingNotification> ratingNotification = ratingNotificationRepository
+                    .findRatingNotificationByMentee(mentee);
+            for (RatingNotification rating : ratingNotification) {
+                toRate.add(rating.getMentor().getId());
+            }
+        } else {
+            throw new AccountConflict("Wrong role!");
+        }
+        log.info("rate list was retrieved - " + toRate);
+        return toRate;
     }
     //    public User rate(User user, RatingRequest ratingRequest) {
 //        Comment comment = new Comment();
