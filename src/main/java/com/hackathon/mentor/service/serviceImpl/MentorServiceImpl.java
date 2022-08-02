@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -237,7 +238,7 @@ public class MentorServiceImpl implements MentorService {
         log.info("mentor waiting list: " + mentees + " <<<");
         return new ResponseEntity<>(mentees, HttpStatus.OK);
     }
-
+    @Transactional
     @Override
     public ResponseEntity<?> confirm(Long id, String email) {
         log.info("mentor confirmation started ...");
@@ -254,6 +255,10 @@ public class MentorServiceImpl implements MentorService {
                 new AccountNotFound(" subscribe: " + mentor + " and " + mentee));
         mentor.getMentees().add(mentee);
         mentee.setMentor(mentor);
+        RatingNotification ratingNotification = new RatingNotification();
+        ratingNotification.setMentor(mentor);
+        ratingNotification.setMentee(mentee);
+        ratingNotificationRepository.save(ratingNotification);
         menteeRepository.save(mentee);
         mentorRepository.save(mentor);
         Long sid = subscribe.getId();
