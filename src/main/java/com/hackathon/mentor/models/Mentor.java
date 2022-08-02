@@ -1,5 +1,6 @@
 package com.hackathon.mentor.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -96,5 +98,18 @@ public class Mentor {
                 "subjectOfInterest1 = " + subjectOfInterest1 + ", " +
                 "subjectOfInterest2 = " + subjectOfInterest2 + ", " +
                 "listOfSkills = " + listOfSkills + ")";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Mentor mentor = (Mentor) o;
+        return Objects.equals(id, mentor.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

@@ -29,6 +29,7 @@ public class MentorServiceImpl implements MentorService {
     private final UserRepository userRepository;
 
     private final SubscribeRepository subscribeRepository;
+    private final RatingNotificationRepository ratingNotificationRepository;
 
     @Override
     public ResponseEntity<?> getUserProfile(User user) {
@@ -293,7 +294,10 @@ public class MentorServiceImpl implements MentorService {
                 new AccountNotFound("user with email " + email));
         Mentee mentee = menteeRepository.findById(id).orElseThrow(() ->
                 new AccountNotFound("mentee with id - " + id));
-
+        RatingNotification ratingNotification = new RatingNotification();
+        ratingNotification.setMentor(mentor);
+        ratingNotification.setMentee(mentee);
+        ratingNotificationRepository.save(ratingNotification);
         mentor.getMentees().remove(mentee);
         mentee.setMentor(null);
         menteeRepository.save(mentee);

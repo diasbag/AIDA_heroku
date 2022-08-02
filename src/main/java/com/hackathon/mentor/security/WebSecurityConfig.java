@@ -60,13 +60,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 			.authorizeRequests().antMatchers("/api/auth/**").permitAll()
-				.antMatchers("/api/**").permitAll()
+
 				.antMatchers("/api/mentors/**").permitAll()
 				.antMatchers("/api/mentees/**").permitAll()
 				.antMatchers("/v3/api-docs/**",
 						"/swagger-ui/**", "/aidateam.herokuapp.com/**").permitAll()
 				.antMatchers("/api/post/**").permitAll()
 				.antMatchers("/api/posts/**").permitAll()
+				.antMatchers("/api/**").permitAll()
 			.anyRequest().authenticated();
 
 		http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
