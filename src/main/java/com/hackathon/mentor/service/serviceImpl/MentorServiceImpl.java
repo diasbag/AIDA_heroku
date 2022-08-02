@@ -255,9 +255,7 @@ public class MentorServiceImpl implements MentorService {
                 new AccountNotFound(" subscribe: " + mentor + " and " + mentee));
         mentor.getMentees().add(mentee);
         mentee.setMentor(mentor);
-        RatingNotification ratingNotification = new RatingNotification();
-        ratingNotification.setMentor(mentor);
-        ratingNotification.setMentee(mentee);
+        RatingNotification ratingNotification = new RatingNotification(mentor, mentee);
         ratingNotificationRepository.save(ratingNotification);
         menteeRepository.save(mentee);
         mentorRepository.save(mentor);

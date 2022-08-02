@@ -1,6 +1,5 @@
 package com.hackathon.mentor.models;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,13 +10,18 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class RatingNotification {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "r_n")
+    @SequenceGenerator(name = "r_n", sequenceName = "r_n", allocationSize = 1)
     private Long id;
     @OneToOne
     private Mentor mentor;
     @OneToOne
     private Mentee mentee;
+
+    public RatingNotification(Mentor mentor, Mentee mentee) {
+        this.mentor = mentor;
+        this.mentee = mentee;
+    }
 }
