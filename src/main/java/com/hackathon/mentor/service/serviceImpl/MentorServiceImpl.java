@@ -299,10 +299,6 @@ public class MentorServiceImpl implements MentorService {
                 new AccountNotFound("user with email " + email));
         Mentee mentee = menteeRepository.findById(id).orElseThrow(() ->
                 new AccountNotFound("mentee with id - " + id));
-        RatingNotification ratingNotification = new RatingNotification();
-        ratingNotification.setMentor(mentor);
-        ratingNotification.setMentee(mentee);
-        ratingNotificationRepository.save(ratingNotification);
         mentor.getMentees().remove(mentee);
         mentee.setMentor(null);
         menteeRepository.save(mentee);
