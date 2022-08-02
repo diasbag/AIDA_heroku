@@ -6,9 +6,9 @@ import lombok.Data;
 @Data
 public class RatingRequest {
 
-    private Integer knowledgeRating;
-    private Integer communicationRating;
-    private Integer qualityOfServiceRating;
+    private Double knowledgeRating;
+    private Double communicationRating;
+    private Double qualityOfServiceRating;
 
     private String comment;
 

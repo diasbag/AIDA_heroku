@@ -20,27 +20,27 @@ public class Rating {
     private Long id;
 
     @Column(name = "rating")
-    private double rating = 0;
+    private Double rating = 0D;
+
     @Column(name = "knowledge_rating")
     @Min(1)
     @Max(5)
-    private Integer knowledgeRating;
+    private Double knowledgeRating;
 
     @Column(name = "communication_rating")
     @Min(1)
     @Max(5)
-    private Integer communicationRating;
+    private Double communicationRating;
 
     @Column(name = "quality_of_service_rating")
     @Min(1)
     @Max(5)
-    private Integer qualityOfServiceRating;
+    private Double qualityOfServiceRating;
 
     @Column(name = "peopleCount")
     private long peopleCount = 0;
 
     @OneToMany
     private List<Comment> comments = new ArrayList<>();
-
 
 }
