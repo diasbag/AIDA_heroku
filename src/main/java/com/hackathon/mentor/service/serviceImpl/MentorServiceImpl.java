@@ -305,6 +305,8 @@ public class MentorServiceImpl implements MentorService {
         mentorRepository.save(mentor);
         if(subscribeRepository.findByMentorAndMentee(mentor, mentee).isPresent()) {
             subscribeRepository.deleteByMentorAndMentee(mentor, mentee);
+        } else {
+            throw new AccountConflict("there is no connection between - " + mentor + " and " + mentee);
         }
         log.info("Mentee has been removed!!!");
         return new ResponseEntity<>(mentor, HttpStatus.OK);
