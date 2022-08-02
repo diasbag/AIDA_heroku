@@ -6,6 +6,7 @@ import com.hackathon.mentor.payload.response.MessageResponse;
 import com.hackathon.mentor.service.ImageService;
 import com.hackathon.mentor.service.ReportsService;
 import com.hackathon.mentor.utils.FileNameHelper;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/report")
+@SecurityRequirement(name = "basicauth")
 public class ReportsController {
     private final ImageService imageService;
     private final ReportsService reportsService;

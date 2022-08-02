@@ -1,34 +1,23 @@
 package com.hackathon.mentor.controllers;
 
-import com.hackathon.mentor.models.Image;
-import com.hackathon.mentor.models.Mentor;
 import com.hackathon.mentor.models.Post;
-import com.hackathon.mentor.models.User;
 import com.hackathon.mentor.payload.request.PostRequest;
 import com.hackathon.mentor.payload.response.PostResponse;
-import com.hackathon.mentor.repository.MentorRepository;
-import com.hackathon.mentor.repository.PostRepository;
-import com.hackathon.mentor.repository.UserRepository;
 import com.hackathon.mentor.service.PostService;
-import com.hackathon.mentor.utils.FileNameHelper;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "basicauth")
 public class PostController {
     private final PostService postService;
 

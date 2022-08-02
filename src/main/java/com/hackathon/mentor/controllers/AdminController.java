@@ -3,6 +3,7 @@ package com.hackathon.mentor.controllers;
 import com.hackathon.mentor.models.User;
 import com.hackathon.mentor.payload.request.SignupAdminRequest;
 import com.hackathon.mentor.service.AdminService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,6 +15,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*", maxAge = 3600)
+@SecurityRequirement(name = "basicauth")
 @RequestMapping("/admin")
 public class AdminController {
     private final AdminService adminService;

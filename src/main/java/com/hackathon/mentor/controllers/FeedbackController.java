@@ -2,6 +2,7 @@ package com.hackathon.mentor.controllers;
 
 import com.hackathon.mentor.payload.request.FeedbackRequest;
 import com.hackathon.mentor.service.FeedbackService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

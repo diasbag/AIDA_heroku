@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,6 +79,7 @@ public class MentorServiceImpl implements MentorService {
             mentorsResponse.setSubjectOfInterest1(mentor.getSubjectOfInterest1());
             mentorsResponse.setSubjectOfInterest2(mentor.getSubjectOfInterest2());
             mentorsResponse.setListOfSkills(mentor.getListOfSkills());
+            mentorsResponse.setRating(mentor.getUser().getRating());
             mentorsResponseList.add(mentorsResponse);
             mentorsResponse.setMenteesCount(mentor.getMentees().size());
         }
@@ -161,6 +163,7 @@ public class MentorServiceImpl implements MentorService {
         mentorProfileResponse.setSubjectOfInterest1(mentor.getSubjectOfInterest1());
         mentorProfileResponse.setSubjectOfInterest2(mentor.getSubjectOfInterest2());
         mentorProfileResponse.setMenteesCount(mentor.getMentees().size());
+        mentorProfileResponse.setRating(mentorProfileResponse.getRating());
         mentorProfileResponse.setListOfSkills(mentor.getListOfSkills());
         log.info("Get mentor by id" + mentorProfileResponse + " <<<");
         return new ResponseEntity<>(mentorProfileResponse, HttpStatus.OK);
@@ -237,7 +240,7 @@ public class MentorServiceImpl implements MentorService {
         log.info("mentor waiting list: " + mentees + " <<<");
         return new ResponseEntity<>(mentees, HttpStatus.OK);
     }
-
+    @Transactional
     @Override
     public ResponseEntity<?> confirm(Long id, String email) {
         log.info("mentor confirmation started ...");
@@ -254,6 +257,8 @@ public class MentorServiceImpl implements MentorService {
                 new AccountNotFound(" subscribe: " + mentor + " and " + mentee));
         mentor.getMentees().add(mentee);
         mentee.setMentor(mentor);
+        RatingNotification ratingNotification = new RatingNotification(mentor, mentee);
+        ratingNotificationRepository.save(ratingNotification);
         menteeRepository.save(mentee);
         mentorRepository.save(mentor);
         Long sid = subscribe.getId();
@@ -294,15 +299,15 @@ public class MentorServiceImpl implements MentorService {
                 new AccountNotFound("user with email " + email));
         Mentee mentee = menteeRepository.findById(id).orElseThrow(() ->
                 new AccountNotFound("mentee with id - " + id));
-        RatingNotification ratingNotification = new RatingNotification();
-        ratingNotification.setMentor(mentor);
-        ratingNotification.setMentee(mentee);
-        ratingNotificationRepository.save(ratingNotification);
         mentor.getMentees().remove(mentee);
         mentee.setMentor(null);
         menteeRepository.save(mentee);
         mentorRepository.save(mentor);
-        subscribeRepository.deleteByMentorAndMentee(mentor, mentee);
+        if(subscribeRepository.findByMentorAndMentee(mentor, mentee).isPresent()) {
+            subscribeRepository.deleteByMentorAndMentee(mentor, mentee);
+        } else {
+            throw new AccountConflict("there is no connection between - " + mentor + " and " + mentee);
+        }
         log.info("Mentee has been removed!!!");
         return new ResponseEntity<>(mentor, HttpStatus.OK);
     }

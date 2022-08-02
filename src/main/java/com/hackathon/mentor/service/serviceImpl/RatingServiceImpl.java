@@ -41,34 +41,43 @@ public class RatingServiceImpl implements RatingService {
         User user = userRepository.findByEmail(email).orElseThrow(() ->
                 new AccountNotFound("user with email " + email));
         ERole role = user.getRoles().get(0).getName();
-
         Set<Mentee> mentees;
         Mentor mentor;
         Mentee mentee;
+        User UserForRating;
         if (role.equals(ERole.ROLE_MENTOR)) {
             mentor = mentorRepository.findByUser(user).orElseThrow(() ->
                     new AccountNotFound("user with email " + email));
             mentee = menteeRepository.findById(id).orElseThrow(() ->
                     new AccountNotFound("mentee with id " + id));
+            UserForRating = mentee.getUser();
             RatingNotification ratingNotification =
                     ratingNotificationRepository.findRatingNotificationByMentorAndMentee(mentor, mentee).orElseThrow(
                             () -> new AccountNotFound("rating notification with mentor - " + mentor +
-                                    " and mentee - " + mentee)
-                    );
+                                    " and mentee - " + mentee));
             ratingNotification.setMentor(null);
-            ratingNotificationRepository.save(ratingNotification);
+            if (ratingNotification.getMentee() == null) {
+                ratingNotificationRepository.delete(ratingNotification);
+            } else {
+                ratingNotificationRepository.save(ratingNotification);
+            }
         } else if (role.equals(ERole.ROLE_MENTEE)){
             mentee = menteeRepository.findByUser(user).orElseThrow(() ->
                     new AccountNotFound("user - " + user));
             mentor = mentorRepository.findById(id).orElseThrow(() ->
                     new AccountNotFound("mentor with id " + id));
+            UserForRating = mentor.getUser();
             RatingNotification ratingNotification =
                     ratingNotificationRepository.findRatingNotificationByMentorAndMentee(mentor, mentee).orElseThrow(
                             () -> new AccountNotFound("rating notification with mentor - " + mentor +
                                     " and mentee - " + mentee)
                     );
             ratingNotification.setMentee(null);
-            ratingNotificationRepository.save(ratingNotification);
+            if (ratingNotification.getMentor() == null) {
+                ratingNotificationRepository.delete(ratingNotification);
+            } else {
+                ratingNotificationRepository.save(ratingNotification);
+            }
         } else {
             return new ResponseEntity<>("Wrong role", HttpStatus.CONFLICT);
         }
@@ -92,13 +101,16 @@ public class RatingServiceImpl implements RatingService {
             rating1.setPeopleCount(1);
             commentRepository.save(comment);
             ratingRepository.save(rating1);
-            user.setRating(rating1);
+            UserForRating.setRating(rating1);
         } else {
             long cnt =  (rating.getPeopleCount()+1);
             double res = ((rating.getRating()* rating.getPeopleCount()) + overallRating)/(cnt);
-            double knowledgeRating = ((rating.getKnowledgeRating()*rating.getPeopleCount()) + ratingRequest.getSubjectKnowledge())/(cnt);
-            double communicationRating = ((rating.getCommunicationRating() * rating.getPeopleCount()) + ratingRequest.getCommunicativeActivity())/(cnt);
-            double qualityOfService = ((rating.getQualityOfServiceRating() * rating.getPeopleCount()) + ratingRequest.getDataQuality())/(cnt);
+            double knowledgeRating = ((rating.getKnowledgeRating()*rating.getPeopleCount()) +
+                    ratingRequest.getSubjectKnowledge())/(cnt);
+            double communicationRating = ((rating.getCommunicationRating() * rating.getPeopleCount()) +
+                    ratingRequest.getCommunicativeActivity())/(cnt);
+            double qualityOfService = ((rating.getQualityOfServiceRating() * rating.getPeopleCount()) +
+                    ratingRequest.getDataQuality())/(cnt);
             commentRepository.save(comment);
             rating.getComments().add(comment);
             rating.setRating(res);
@@ -107,9 +119,9 @@ public class RatingServiceImpl implements RatingService {
             rating.setQualityOfServiceRating(qualityOfService);
             rating.setPeopleCount(cnt);
             ratingRepository.save(rating);
-            user.setRating(rating);
+            UserForRating.setRating(rating);
         }
-        userRepository.save(user);
+        userRepository.save(UserForRating);
         log.info("user was rated - " + user + " <<<");
         return new ResponseEntity<>("Success", HttpStatus.OK);
     }

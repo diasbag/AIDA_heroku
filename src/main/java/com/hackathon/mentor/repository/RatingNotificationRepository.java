@@ -16,4 +16,5 @@ public interface RatingNotificationRepository extends JpaRepository<RatingNotifi
     List<RatingNotification> findRatingNotificationByMentee(Mentee mentee);
 
     List<RatingNotification> findRatingNotificationByMentor(Mentor mentor);
+
 }
