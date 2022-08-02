@@ -78,16 +78,16 @@ public class RatingServiceImpl implements RatingService {
         }
         Comment comment = new Comment();
         Rating rating = user.getRating();
-        double overallRating = (ratingRequest.getKnowledgeRating() + ratingRequest.getCommunicationRating() +
-                ratingRequest.getQualityOfServiceRating())/3.0;
+        double overallRating = (ratingRequest.getSubjectKnowledge() + ratingRequest.getCommunicativeActivity() +
+                ratingRequest.getDataQuality())/3.0;
         comment.setComment(ratingRequest.getComment());
         comment.setUser(mentor.getUser());
         if (rating == null) {
             Rating rating1 = new Rating();
             rating1.getComments().add(comment);
-            rating1.setKnowledgeRating(ratingRequest.getKnowledgeRating());
-            rating1.setCommunicationRating(ratingRequest.getCommunicationRating());
-            rating1.setQualityOfServiceRating(ratingRequest.getQualityOfServiceRating());
+            rating1.setKnowledgeRating(ratingRequest.getSubjectKnowledge());
+            rating1.setCommunicationRating(ratingRequest.getCommunicativeActivity());
+            rating1.setQualityOfServiceRating(ratingRequest.getDataQuality());
             rating1.setRating(overallRating);
             rating1.setPeopleCount(1);
             commentRepository.save(comment);
@@ -96,9 +96,9 @@ public class RatingServiceImpl implements RatingService {
         } else {
             long cnt =  (rating.getPeopleCount()+1);
             double res = ((rating.getRating()* rating.getPeopleCount()) + overallRating)/(cnt);
-            double knowledgeRating = ((rating.getKnowledgeRating()*rating.getPeopleCount()) + ratingRequest.getKnowledgeRating())/(cnt);
-            double communicationRating = ((rating.getCommunicationRating() * rating.getPeopleCount()) + ratingRequest.getCommunicationRating())/(cnt);
-            double qualityOfService = ((rating.getQualityOfServiceRating() * rating.getPeopleCount()) + ratingRequest.getQualityOfServiceRating())/(cnt);
+            double knowledgeRating = ((rating.getKnowledgeRating()*rating.getPeopleCount()) + ratingRequest.getSubjectKnowledge())/(cnt);
+            double communicationRating = ((rating.getCommunicationRating() * rating.getPeopleCount()) + ratingRequest.getCommunicativeActivity())/(cnt);
+            double qualityOfService = ((rating.getQualityOfServiceRating() * rating.getPeopleCount()) + ratingRequest.getDataQuality())/(cnt);
             commentRepository.save(comment);
             rating.getComments().add(comment);
             rating.setRating(res);
