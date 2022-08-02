@@ -24,6 +24,7 @@ public class Mentee {
     @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "user_id")
     private  User user;
+
     @Min(value = 0, message = "Age < 0")
     @Max(100)
     private int age;

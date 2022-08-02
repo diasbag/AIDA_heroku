@@ -78,12 +78,11 @@ public class RatingServiceImpl implements RatingService {
         }
         Comment comment = new Comment();
         Rating rating = user.getRating();
-        double overallRating = 0;
+        double overallRating = (ratingRequest.getKnowledgeRating() + ratingRequest.getCommunicationRating() +
+                ratingRequest.getQualityOfServiceRating())/3.0;
         comment.setComment(ratingRequest.getComment());
         comment.setUser(mentor.getUser());
         if (rating == null) {
-            overallRating = (ratingRequest.getKnowledgeRating() + ratingRequest.getCommunicationRating() +
-                    ratingRequest.getQualityOfServiceRating())/3.0;
             Rating rating1 = new Rating();
             rating1.getComments().add(comment);
             rating1.setKnowledgeRating(ratingRequest.getKnowledgeRating());
@@ -97,9 +96,15 @@ public class RatingServiceImpl implements RatingService {
         } else {
             long cnt =  (rating.getPeopleCount()+1);
             double res = ((rating.getRating()* rating.getPeopleCount()) + overallRating)/(cnt);
+            double knowledgeRating = ((rating.getKnowledgeRating()*rating.getPeopleCount()) + ratingRequest.getKnowledgeRating())/(cnt);
+            double communicationRating = ((rating.getCommunicationRating() * rating.getPeopleCount()) + ratingRequest.getCommunicationRating())/(cnt);
+            double qualityOfService = ((rating.getQualityOfServiceRating() * rating.getPeopleCount()) + ratingRequest.getQualityOfServiceRating())/(cnt);
             commentRepository.save(comment);
             rating.getComments().add(comment);
             rating.setRating(res);
+            rating.setCommunicationRating(communicationRating);
+            rating.setKnowledgeRating(knowledgeRating);
+            rating.setQualityOfServiceRating(qualityOfService);
             rating.setPeopleCount(cnt);
             ratingRepository.save(rating);
             user.setRating(rating);
