@@ -163,7 +163,7 @@ public class MentorServiceImpl implements MentorService {
         mentorProfileResponse.setSubjectOfInterest1(mentor.getSubjectOfInterest1());
         mentorProfileResponse.setSubjectOfInterest2(mentor.getSubjectOfInterest2());
         mentorProfileResponse.setMenteesCount(mentor.getMentees().size());
-        mentorProfileResponse.setRating(mentorProfileResponse.getRating());
+        mentorProfileResponse.setRating(mentor.getUser().getRating());
         mentorProfileResponse.setListOfSkills(mentor.getListOfSkills());
         log.info("Get mentor by id" + mentorProfileResponse + " <<<");
         return new ResponseEntity<>(mentorProfileResponse, HttpStatus.OK);
