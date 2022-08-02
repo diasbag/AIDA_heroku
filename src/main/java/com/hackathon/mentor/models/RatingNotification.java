@@ -12,8 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class RatingNotification {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "r_n")
-    @SequenceGenerator(name = "r_n", sequenceName = "r_n", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @OneToOne
     private Mentor mentor;
