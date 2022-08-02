@@ -1,5 +1,6 @@
 package com.hackathon.mentor.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,6 +10,7 @@ import javax.persistence.*;
 @Table(name = "comments")
 @Getter
 @Setter
+
 public class Comment {
 
     @Id
@@ -19,6 +21,7 @@ public class Comment {
     private String comment;
 
     @OneToOne
+    @JsonIgnore
     @JoinColumn(name = "user_id")
     private User user;
 }
