@@ -5,6 +5,7 @@ import org.joda.time.DateTime;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -33,4 +34,16 @@ public class Report {
     @Column(name = "ignore")
     private Boolean ignore;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Report report = (Report) o;
+        return Objects.equals(id, report.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

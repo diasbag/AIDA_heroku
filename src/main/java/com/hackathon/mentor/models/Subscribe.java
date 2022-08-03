@@ -3,6 +3,7 @@ package com.hackathon.mentor.models;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -51,5 +52,18 @@ public class Subscribe {
 
     public void setMentor(Mentor mentor) {
         this.mentor = mentor;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Subscribe subscribe = (Subscribe) o;
+        return Objects.equals(id, subscribe.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
