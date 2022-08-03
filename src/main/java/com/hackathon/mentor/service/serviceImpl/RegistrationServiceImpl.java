@@ -47,10 +47,12 @@ public class RegistrationServiceImpl implements RegistrationService {
                 new AccountNotFound("Error: Role is not found"));
         List<Role> roles = new ArrayList<>();
         roles.add(role);
+        log.info(user.toString());
         user.setRoles(roles);
         userRepository.save(user);
         Mentor mentor = modelMapper.map(signupUpdateMentorRequest, Mentor.class);
         mentor.setUser(user);
+        log.info(mentor.toString());
         mentorRepository.save(mentor);
         log.info("mentor was registered <<<");
         return new MessageResponse("User registered successfully!");
