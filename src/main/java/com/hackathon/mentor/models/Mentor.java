@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
@@ -54,6 +55,7 @@ public class Mentor {
     @Column(name = "work")
     private String work;
 
+    @Length(min = 0, max = 1000)
     @Column(name = "userInfo")
     private String userInfo;
 

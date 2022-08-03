@@ -1,10 +1,7 @@
 package com.hackathon.mentor.service.serviceImpl;
 
 import com.hackathon.mentor.exceptions.AccountNotFound;
-import com.hackathon.mentor.models.Mentee;
-import com.hackathon.mentor.models.Mentor;
-import com.hackathon.mentor.models.Subscribe;
-import com.hackathon.mentor.models.User;
+import com.hackathon.mentor.models.*;
 import com.hackathon.mentor.payload.request.SignupUpdateMenteeRequest;
 import com.hackathon.mentor.payload.response.MentorsResponse;
 import com.hackathon.mentor.repository.*;
@@ -18,6 +15,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +34,7 @@ public class MenteeServiceImpl implements MenteeService {
     private final ModelMapper modelMapper = new ModelMapper();
 
     private final SubscribeRepository subscribeRepository;
+    private final RatingNotificationRepository ratingNotificationRepository;
     @Override
     public ResponseEntity<?> getAllMentees() {
         List<Mentee> mentees = menteeRepository.getAll();
@@ -77,6 +77,11 @@ public class MenteeServiceImpl implements MenteeService {
         Mentor mentor = mentorRepository.findById(id).orElseThrow(() -> new AccountNotFound("mentor - " + id));
         mentor.getMentees().remove(mentee);
         mentee.setMentor(null);
+        RatingNotification ratingNotification = ratingNotificationRepository.findRatingNotificationByMentorAndMentee(
+                mentor,mentee).orElseThrow(() -> new AccountNotFound("rating notification mentor - " + mentor +
+                " and mentee - " + mentee));
+        ratingNotification.setDateOfEnd(Date.from(Instant.now()));
+        ratingNotificationRepository.save(ratingNotification);
         menteeRepository.save(mentee);
         mentorRepository.save(mentor);
         subscribeRepository.deleteByMentorAndMentee(mentor, mentee);
