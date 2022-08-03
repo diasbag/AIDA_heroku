@@ -58,8 +58,8 @@ public class MentorServiceImpl implements MentorService {
         List<Mentor> mentors = mentorRepository.getAll();
         List<MentorsResponse> mentorsResponseList = new ArrayList<>();
         for (Mentor mentor : mentors) {
-            MentorsResponse mentorsResponse = modelMapper.map(mentor, MentorsResponse.class);
-            modelMapper.map(mentor.getUser(), mentorsResponse);
+            MentorsResponse mentorsResponse = modelMapper.map(mentor.getUser(), MentorsResponse.class);
+            modelMapper.map(mentor, mentorsResponse);
             mentorsResponse.setPassword(null);
             mentorsResponse.setMenteesCount(mentor.getMentees().size());
             mentorsResponseList.add(mentorsResponse);
@@ -69,61 +69,12 @@ public class MentorServiceImpl implements MentorService {
         return new ResponseEntity<>(mentorsResponseList, HttpStatus.OK);
     }
 
-//    @Override
-//    public ResponseEntity<?> filtration(String country, String major, String university) {
-//        List<Mentor> mentors = null;
-//        if (country != null && major != null && university == null) {
-//            mentors = mentorRepository.findByCountryAndMajor(country , major);
-//        } else if (country != null && major == null && university == null) {
-//            mentors = mentorRepository.findByCountry(country);
-//        } else if (country == null && major != null && university == null) {
-//            mentors = mentorRepository.findByMajor(major);
-//        } else if (country != null && major == null) {
-//            mentors = mentorRepository.findByCountryAndUniversity(country, university);
-//        } else if (country == null && major != null) {
-//            mentors = mentorRepository.findByMajorAndUniversity(major, university);
-//        } else if (country != null) {
-//            mentors = mentorRepository.findByCountryAndUniversityAndMajor(country, university, major);
-//        } else if (university != null) {
-//            mentors = mentorRepository.findByUniversity(university);
-//        }
-//        List<MentorsResponse> mentorsResponseList = new ArrayList<>();
-//        if (mentors == null) {
-//            return new ResponseEntity<>("Not found", HttpStatus.NOT_FOUND);
-//        }
-//        for (Mentor mentor : mentors) {
-//            MentorsResponse mentorsResponse = new MentorsResponse();
-//            mentorsResponse.setId(mentor.getId());
-//            mentorsResponse.setUser(mentor.getUser());
-//            mentorsResponse.setAge(mentor.getAge());
-//            mentorsResponse.setNumber(mentor.getNumber());
-//            mentorsResponse.setRating(mentor.getRating());
-//            mentorsResponse.setIin(mentor.getIin());
-//            mentorsResponse.setBachelorsMajor(mentor.getBachelorsMajor());
-//            mentorsResponse.setMastersMajor(mentor.getMastersMajor());
-//            mentorsResponse.setBachelorsUniversity(mentorsResponse.getBachelorsUniversity());
-//            mentorsResponse.setCountryOfBachelorsUniversity(mentor.getCountryOfBachelorsUniversity());
-//            mentorsResponse.setMastersUniversity(mentor.getMastersUniversity());
-//            mentorsResponse.setCountryOfMastersUniversity(mentor.getCountryOfMastersUniversity());
-//            mentorsResponse.setCountry(mentor.getCountry());
-//            mentorsResponse.setWork(mentor.getWork());
-//            mentorsResponse.setUserInfo(mentor.getUserInfo());
-//            mentorsResponse.setSchool(mentor.getSchool());
-//            mentorsResponse.setYearOfGraduation(mentorsResponse.getYearOfGraduation());
-//            mentorsResponse.setSubject1(mentorsResponse.getSubject1());
-//            mentorsResponse.setSubject2(mentor.getSubject2());
-//
-//            mentorsResponseList.add(mentorsResponse);
-//        }
-//        return new ResponseEntity<>(mentorsResponseList, HttpStatus.OK);
-//    }
-
     @Override
     public ResponseEntity<?> getMentorById(Long id) {
         log.info("get mentor...");
         Mentor mentor = mentorRepository.findById(id).orElseThrow(() -> new AccountNotFound("mentor with id " + id));
-        MentorProfileResponse mentorProfileResponse = modelMapper.map(mentor, MentorProfileResponse.class);
-        modelMapper.map(mentor.getUser(), mentorProfileResponse);
+        MentorProfileResponse mentorProfileResponse = modelMapper.map(mentor.getUser(), MentorProfileResponse.class);
+        modelMapper.map(mentor, mentorProfileResponse);
         mentorProfileResponse.setMenteesCount(mentor.getMentees().size());
         log.info("Get mentor by id" + mentorProfileResponse + " <<<");
         return new ResponseEntity<>(mentorProfileResponse, HttpStatus.OK);
@@ -162,7 +113,6 @@ public class MentorServiceImpl implements MentorService {
         user.setMiddlename(signupMentorRequest.getMiddlename());
         userRepository.save(user);
         modelMapper.map(signupMentorRequest, mentor);
-
         mentorRepository.save(mentor);
         log.info("mentor's profile is successfully updated " + mentor + " <<<");
         return ResponseEntity.ok("User updated successfully!");
@@ -174,7 +124,6 @@ public class MentorServiceImpl implements MentorService {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new AccountNotFound("user - " + email));
         Mentor mentor = mentorRepository.findByUser(user).orElseThrow(() ->
                 new AccountNotFound("user with email " + email));
-
         List<Subscribe> subscribes = subscribeRepository.findByMentor(mentor);
         List<Mentee> mentees = new ArrayList<>();
         for (Subscribe subscribe : subscribes) {

@@ -35,6 +35,7 @@ public class RatingServiceImpl implements RatingService {
 
     private final CommentRepository commentRepository;
     private final RatingNotificationRepository ratingNotificationRepository;
+    private final ModelMapper modelMapper = new ModelMapper();
     @Transactional
     @Override
     public ResponseEntity<?> rateUser(Long id, String email, RatingRequest ratingRequest) {
@@ -85,7 +86,6 @@ public class RatingServiceImpl implements RatingService {
         Rating rating = user.getRating();
         double overallRating = (ratingRequest.getSubjectKnowledge() + ratingRequest.getCommunicativeActivity() +
                 ratingRequest.getDataQuality())/3.0;
-        ModelMapper modelMapper = new ModelMapper();
         Comment comment = modelMapper.map(ratingRequest, Comment.class);
         comment.setAverageScore(overallRating);
         comment.setUser(mentor.getUser());

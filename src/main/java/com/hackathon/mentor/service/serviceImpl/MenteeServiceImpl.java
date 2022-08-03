@@ -43,7 +43,7 @@ public class MenteeServiceImpl implements MenteeService {
 
     @Override
     public ResponseEntity<?> getMenteeById(Long id) {
-        Mentee mentee = menteeRepository.findById(id).orElse(null);
+        Mentee mentee = menteeRepository.findById(id).orElseThrow(() -> new AccountNotFound("mentee - " + id));
         if (mentee == null) {
             return new ResponseEntity<>("Not Found!!!", HttpStatus.NOT_FOUND);
         }
