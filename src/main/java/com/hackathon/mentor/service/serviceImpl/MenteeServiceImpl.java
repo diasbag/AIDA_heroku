@@ -31,8 +31,8 @@ public class MenteeServiceImpl implements MenteeService {
     private final MenteeRepository menteeRepository;
 
     private final UserRepository userRepository;
-    private final ModelMapper modelMapper = new ModelMapper();
 
+    private final ModelMapper modelMapper = new ModelMapper();
 
     private final SubscribeRepository subscribeRepository;
     @Override
@@ -43,7 +43,7 @@ public class MenteeServiceImpl implements MenteeService {
 
     @Override
     public ResponseEntity<?> getMenteeById(Long id) {
-        Mentee mentee = menteeRepository.findById(id).orElse(null);
+        Mentee mentee = menteeRepository.findById(id).orElseThrow(() -> new AccountNotFound("mentee - " + id));
         if (mentee == null) {
             return new ResponseEntity<>("Not Found!!!", HttpStatus.NOT_FOUND);
         }
@@ -58,9 +58,7 @@ public class MenteeServiceImpl implements MenteeService {
         user.setFirstname(updateMenteeRequest.getFirstname());
         user.setLastname(updateMenteeRequest.getLastname());
         user.setEmail(updateMenteeRequest.getEmail());
-
         userRepository.save(user);
-
         mentee.setSchool(updateMenteeRequest.getSchool());
         mentee.setIin(updateMenteeRequest.getIin());
 //        mentee.setNumber(updateMenteeRequest.getNumber());
@@ -130,12 +128,7 @@ public class MenteeServiceImpl implements MenteeService {
                 new AccountNotFound("mentee - " + user));
         Mentor mentor = mentee.getMentor();
         MentorsResponse mentorsResponse = modelMapper.map(mentor, MentorsResponse.class);
-        mentorsResponse.setFirstname(mentor.getUser().getFirstname());
-        mentorsResponse.setMiddlename(mentor.getUser().getMiddlename());
-        mentorsResponse.setLastname(mentor.getUser().getLastname());
-        mentorsResponse.setEmail(mentor.getUser().getEmail());
-        mentorsResponse.setCountryOfResidence(mentor.getCountry());
-        mentorsResponse.setImage(mentor.getUser().getImage());
+        modelMapper.map(mentor.getUser(), mentorsResponse);
         mentorsResponse.setMenteesCount(mentor.getMentees().size());
         log.info("mentor was found " + mentor + " <<<");
         return mentorsResponse;

@@ -13,10 +13,13 @@ import com.hackathon.mentor.repository.UserRepository;
 import com.hackathon.mentor.service.RegistrationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.sql.Date;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 @Service
@@ -28,6 +31,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     private final RoleRepository roleRepository;
     private final MentorRepository mentorRepository;
     private final MenteeRepository menteeRepository;
+    private final ModelMapper modelMapper = new ModelMapper();
     @Transactional
     @Override
     public MessageResponse regMentor(SignupUpdateMentorRequest signupUpdateMentorRequest) {
@@ -35,39 +39,18 @@ public class RegistrationServiceImpl implements RegistrationService {
         if (userRepository.existsByEmail(signupUpdateMentorRequest.getEmail())) {
             throw new AccountBadRequest("Email is already in use!");
         }
-        User user = new User();
-        user.setFirstname(signupUpdateMentorRequest.getFirstname());
-        user.setMiddlename(signupUpdateMentorRequest.getMiddlename());
-        user.setLastname(signupUpdateMentorRequest.getLastname());
+        User user = modelMapper.map(signupUpdateMentorRequest, User.class);
         user.setPassword(encoder.encode(signupUpdateMentorRequest.getPassword()));
-        user.setEmail(signupUpdateMentorRequest.getEmail());
-        user.setTelegram(signupUpdateMentorRequest.getTelegram());
+        user.setRegistrationDate(Date.from(Instant.now()));
         user.setStatus(true);
-        user.setMiddlename(signupUpdateMentorRequest.getMiddlename());
         Role role = roleRepository.findByName(ERole.ROLE_MENTOR).orElseThrow(() ->
                 new AccountNotFound("Error: Role is not found"));
         List<Role> roles = new ArrayList<>();
         roles.add(role);
         user.setRoles(roles);
         userRepository.save(user);
-        Mentor mentor = new Mentor();
-        mentor.setAge(signupUpdateMentorRequest.getAge());
-        mentor.setIin(signupUpdateMentorRequest.getIin());
-        mentor.setCountry(signupUpdateMentorRequest.getCountryOfResidence());
-        mentor.setWork(signupUpdateMentorRequest.getWork());
-        mentor.setUserInfo(signupUpdateMentorRequest.getUserInfo());
-        mentor.setSchool(signupUpdateMentorRequest.getSchool());
+        Mentor mentor = modelMapper.map(signupUpdateMentorRequest, Mentor.class);
         mentor.setUser(user);
-        mentor.setYearOfGraduation(signupUpdateMentorRequest.getYearOfGraduation());
-        mentor.setSubjectOfInterest1(signupUpdateMentorRequest.getSubjectOfInterest1());
-        mentor.setSubjectOfInterest2(signupUpdateMentorRequest.getSubjectOfInterest2());
-        mentor.setCountryOfBachelorsUniversity(signupUpdateMentorRequest.getCountryOfBachelorsUniversity());
-        mentor.setCountryOfMastersUniversity(signupUpdateMentorRequest.getCountryOfMastersUniversity());
-        mentor.setBachelorsMajor(signupUpdateMentorRequest.getBachelorsMajor());
-        mentor.setMastersMajor(signupUpdateMentorRequest.getMastersMajor());
-        mentor.setBachelorsUniversity(signupUpdateMentorRequest.getBachelorsUniversity());
-        mentor.setMastersUniversity(signupUpdateMentorRequest.getMastersUniversity());
-        mentor.setListOfSkills(signupUpdateMentorRequest.getListOfSkills());
         mentorRepository.save(mentor);
         log.info("mentor was registered <<<");
         return new MessageResponse("User registered successfully!");
@@ -79,13 +62,9 @@ public class RegistrationServiceImpl implements RegistrationService {
         if (userRepository.existsByEmail(signupUpdateMenteeRequest.getEmail())) {
             throw new AccountBadRequest("Email is already in use!");
         }
-        User user = new User();
-        user.setFirstname(signupUpdateMenteeRequest.getFirstname());
-        user.setMiddlename(signupUpdateMenteeRequest.getMiddlename());
-        user.setLastname(signupUpdateMenteeRequest.getLastname());
+        User user = modelMapper.map(signupUpdateMenteeRequest, User.class);
         user.setPassword(encoder.encode(signupUpdateMenteeRequest.getPassword()));
-        user.setEmail(signupUpdateMenteeRequest.getEmail());
-        user.setTelegram(signupUpdateMenteeRequest.getTelegram());
+        user.setRegistrationDate(Date.from(Instant.now()));
         user.setStatus(true);
         Role role = roleRepository.findByName(ERole.ROLE_MENTEE).orElseThrow(() ->
                 new AccountNotFound("Role is not found"));
@@ -93,16 +72,8 @@ public class RegistrationServiceImpl implements RegistrationService {
         roles.add(role);
         user.setRoles(roles);
         userRepository.save(user);
-
-        Mentee mentee = new Mentee();
-        mentee.setIin(signupUpdateMenteeRequest.getIin());
-        mentee.setAge(signupUpdateMenteeRequest.getAge());
-//        mentee.setNumber(signupUpdateMenteeRequest.getNumber());
-        mentee.setSchool(signupUpdateMenteeRequest.getSchool());
+        Mentee mentee = modelMapper.map(signupUpdateMenteeRequest, Mentee.class);
         mentee.setUser(user);
-        mentee.setSubjectOfInterest1(signupUpdateMenteeRequest.getSubjectOfInterest1());
-        mentee.setSubjectOfInterest2(signupUpdateMenteeRequest.getSubjectOfInterest2());
-
         menteeRepository.save(mentee);
         log.info("mentee was registered <<<");
         return new MessageResponse("User registered successfully!");

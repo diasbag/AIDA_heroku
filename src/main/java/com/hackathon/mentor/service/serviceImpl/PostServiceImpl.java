@@ -3,14 +3,18 @@ package com.hackathon.mentor.service.serviceImpl;
 import com.hackathon.mentor.exceptions.AccountNotFound;
 import com.hackathon.mentor.models.Image;
 import com.hackathon.mentor.models.Post;
+import com.hackathon.mentor.models.User;
 import com.hackathon.mentor.payload.request.PostRequest;
 import com.hackathon.mentor.payload.response.PostResponse;
 import com.hackathon.mentor.repository.ImageRepository;
 import com.hackathon.mentor.repository.PostRepository;
+import com.hackathon.mentor.repository.UserRepository;
 import com.hackathon.mentor.service.PostService;
 import com.hackathon.mentor.utils.FileNameHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,6 +29,7 @@ import java.util.List;
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final ImageRepository imageRepository;
+    private final UserRepository userRepository;
     private final FileNameHelper fileHelper = new FileNameHelper();
     @Override
     public List<PostResponse> getPosts() {
@@ -47,6 +52,10 @@ public class PostServiceImpl implements PostService {
     @Override
     public Post createPost(@Valid PostRequest postRequest) {
         log.info("creating post ...");
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = userDetails.getUsername();
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new AccountNotFound("user with email - " + email));
         Post post;
         if (postRequest.getId() != null && postRepository.findById(postRequest.getId()).isPresent()) {
             post = postRepository.findById(postRequest.getId()).orElseThrow(() ->
@@ -57,6 +66,7 @@ public class PostServiceImpl implements PostService {
         post.setTitle(postRequest.getTitle());
         post.setArticle(postRequest.getArticle());
         post.setDate(Date.from(Instant.now()));
+        post.setUser(user);
         postRepository.save(post);
         log.info("post was created <<<");
         return post;
@@ -105,11 +115,16 @@ public class PostServiceImpl implements PostService {
     @Override
     public Post editPostText(@Valid PostRequest postRequest) {
         log.info("editing post text ...");
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = userDetails.getUsername();
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new AccountNotFound("user with email - " + email));
         Long id = postRequest.getId();
         Post post = postRepository.findById(id).orElseThrow(() -> new AccountNotFound("post with id " + id));
         post.setArticle(postRequest.getArticle());
         post.setTitle(postRequest.getTitle());
         post.setDate(Date.from(Instant.now()));
+        post.setUser(user);
         postRepository.save(post);
         log.info("post text was edited " + post + " <<<");
         return post;

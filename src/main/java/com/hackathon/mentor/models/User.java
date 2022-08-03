@@ -1,16 +1,16 @@
 package com.hackathon.mentor.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.joda.time.DateTime;
 
 import java.util.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -65,6 +65,9 @@ public class User {
 	@OneToOne
 	@JoinColumn(name = "rating_id")
 	private Rating rating;
+	@JsonIgnore
+	@Column(name = "registration_date")
+	private Date registrationDate;
 
 	public User() {
 	}

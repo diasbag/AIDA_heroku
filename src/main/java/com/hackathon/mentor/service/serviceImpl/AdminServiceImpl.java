@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +48,7 @@ public class AdminServiceImpl implements AdminService {
         if (!userRepository.findByEmail(email).isPresent()) {
             User user = new User(firstName, lastName, email,
                     encoder.encode(java.nio.CharBuffer.wrap(password)));
+            user.setRegistrationDate(Date.from(Instant.now()));
             Role role = roleRepository.findByName(ERole.ROLE_ADMIN).orElseThrow(() ->
                     new AccountNotFound("Error: Role is not found."));
             List<Role> roles = new ArrayList<>();

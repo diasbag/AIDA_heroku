@@ -1,8 +1,10 @@
 package com.hackathon.mentor.models;
 
 import lombok.*;
+import org.joda.time.DateTime;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Getter
@@ -25,6 +27,8 @@ public class Report {
 
     @Column(name = "reason")
     private String reason;
+    @Column(name = "report_date")
+    private Date reportDate;
 
     @Column(name = "ignore")
     private Boolean ignore;
