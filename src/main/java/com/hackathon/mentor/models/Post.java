@@ -20,7 +20,7 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "title", length = 10485760, columnDefinition = "TEXT")
-    @Size(max =  10485760)
+    @Size(max =  1024)
     private String title;
     @Column(name = "created_date")
     private Date date;
