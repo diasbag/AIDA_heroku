@@ -1,5 +1,6 @@
 package com.hackathon.mentor.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,7 +20,9 @@ public class RatingNotification {
     private Mentor mentor;
     @OneToOne
     private Mentee mentee;
+    @JsonIgnore
     private DateTime dateOfStart;
+    @JsonIgnore
     private DateTime dateOfEnd;
     private Boolean mentorRated;
     private Boolean menteeRated;
