@@ -6,13 +6,10 @@ import com.hackathon.mentor.models.User;
 import com.hackathon.mentor.payload.request.ReportRequest;
 import com.hackathon.mentor.repository.ReportRepository;
 import com.hackathon.mentor.repository.UserRepository;
-import com.hackathon.mentor.service.AdminService;
 import com.hackathon.mentor.service.ReportsService;
+import com.hackathon.mentor.utils.MailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,12 +17,10 @@ import org.springframework.stereotype.Service;
 
 
 import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 import javax.transaction.Transactional;
 import java.io.UnsupportedEncodingException;
 import java.sql.Date;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -34,15 +29,14 @@ import java.util.List;
 @EnableAsync
 public class ReportsServiceImpl implements ReportsService {
 
-    private final  JavaMailSender mailSender;
-    private final AdminService adminService;
+    private final MailService mailService;
     private final  UserRepository userRepository;
     private final  ReportRepository reportRepository;
 
 
     @Override
     @Transactional
-    public void reportPerson(ReportRequest reportRequest) {
+    public void reportPerson(ReportRequest reportRequest) throws MessagingException, UnsupportedEncodingException {
         log.info("reporting harasser ...");
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = userDetails.getUsername();
@@ -58,36 +52,11 @@ public class ReportsServiceImpl implements ReportsService {
                 .reportDate(Date.from(Instant.now()))
                 .build();
         reportRepository.save(newReport);
+        mailService.sendingNotificationReport();
         log.info("report is saved <<<");
     }
 
-    @Override
-    @Transactional
-    @Async
-    public void sendingNotificationReport() throws MessagingException, UnsupportedEncodingException {
-        log.info("sending email started ...");
-        List<User> listOfAdmins = adminService.findAllAdmins();
-        String fromAddress = "test.spring.test@mail.ru";
-        String senderName = "Mentorship Alumni NIS.";
-        String subject = "You've got a new report";
-        String content = "Dear [[name]],<br>"
-                + "You have a new report to be judged:<br>"
-                + "Thank you,<br>"
-                + "Mentorship Alumni NIS.";
 
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message);
-        helper.setFrom(fromAddress, senderName);
-        helper.setSubject(subject);
-        helper.setText(content, true);
-
-        for(User admin:listOfAdmins){
-            String toAddress = admin.getEmail();
-            helper.setTo(toAddress);
-            mailSender.send(message);
-        }
-        log.info("emails with report notifications were sent <<<");
-    }
 
     @Override
     public void reportIgnore(Long reportId){
@@ -109,15 +78,11 @@ public class ReportsServiceImpl implements ReportsService {
     }
 
     @Override
-    public List<Long> getReportsAll(){
+    public List<Report> getReportsAll(){
         log.info("accessing database for all reports ...");
         List<Report> allReports = reportRepository.findAll();
-        List<Long> listById = new ArrayList<>();
-        for( Report report : allReports){
-            listById.add(report.getId());
-        }
         log.info("reports are retrieved <<<");
-        return listById;
+        return allReports;
     }
 
 }

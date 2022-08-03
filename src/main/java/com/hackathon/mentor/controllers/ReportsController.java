@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,7 +31,7 @@ public class ReportsController {
 
     @PostMapping("/images")
     public ResponseEntity<MessageResponse> uploadFiles(@RequestParam("files") MultipartFile[] files) {
-        String message = "";
+        String message;
         try {
             List<String> fileNames = new ArrayList<>();
             Arrays.stream(files).forEach(file -> {
@@ -45,8 +47,22 @@ public class ReportsController {
         }
     }
     @PostMapping("/report_user")
-    public ResponseEntity<MessageResponse> reportUser(@RequestBody ReportRequest reportRequest) {
+    public ResponseEntity<MessageResponse> reportUser(@RequestBody ReportRequest reportRequest)
+            throws MessagingException, UnsupportedEncodingException {
         reportsService.reportPerson(reportRequest);
         return ResponseEntity.ok(new MessageResponse("User was reported"));
+    }
+    @GetMapping()
+    public ResponseEntity<?> getReports() {
+        return ResponseEntity.ok(reportsService.getReportsAll());
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getReportsByID(@PathVariable Long id) {
+        return ResponseEntity.ok(reportsService.getReportById(id));
+    }
+    @GetMapping("/ignore")
+    public ResponseEntity<?> ignoreByID(@RequestParam Long id) {
+        reportsService.reportIgnore(id);
+        return ResponseEntity.ok("Report was marked as \"ignore\"");
     }
 }
