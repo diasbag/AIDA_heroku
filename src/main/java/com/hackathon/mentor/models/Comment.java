@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "comments")
@@ -20,6 +21,7 @@ public class Comment {
     private Double subjectKnowledge;
     private Double dataQuality;
     private Double averageScore;
+    private Date dateOfComment;
 
     @Column(name = "comment")
     private String comment;

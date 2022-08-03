@@ -67,7 +67,7 @@ public class User {
 	private Rating rating;
 	@JsonIgnore
 	@Column(name = "registration_date")
-	private DateTime registrationDate;
+	private Date registrationDate;
 
 	public User() {
 	}

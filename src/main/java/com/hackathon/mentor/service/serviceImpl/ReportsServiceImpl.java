@@ -10,7 +10,6 @@ import com.hackathon.mentor.service.AdminService;
 import com.hackathon.mentor.service.ReportsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.joda.time.DateTime;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -24,6 +23,8 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.transaction.Transactional;
 import java.io.UnsupportedEncodingException;
+import java.sql.Date;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,7 +55,7 @@ public class ReportsServiceImpl implements ReportsService {
                 .reason(reportRequest.getReason())
                 .reporterID(user.getId())
                 .harasserID(reportRequest.getHarasserId())
-                .reportDate(DateTime.now())
+                .reportDate(Date.from(Instant.now()))
                 .build();
         reportRepository.save(newReport);
         log.info("report is saved <<<");

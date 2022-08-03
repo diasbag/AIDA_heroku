@@ -10,13 +10,14 @@ import com.hackathon.mentor.repository.*;
 import com.hackathon.mentor.service.MentorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.joda.time.DateTime;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.sql.Date;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -217,7 +218,7 @@ public class MentorServiceImpl implements MentorService {
         mentor.getMentees().add(mentee);
         mentee.setMentor(mentor);
         RatingNotification ratingNotification = new RatingNotification(mentor, mentee);
-        ratingNotification.setDateOfStart(DateTime.now());
+        ratingNotification.setDateOfStart(Date.from(Instant.now()));
         ratingNotificationRepository.save(ratingNotification);
         menteeRepository.save(mentee);
         mentorRepository.save(mentor);
@@ -262,7 +263,7 @@ public class MentorServiceImpl implements MentorService {
         RatingNotification ratingNotification = ratingNotificationRepository.findRatingNotificationByMentorAndMentee(
                 mentor,mentee).orElseThrow(() -> new AccountNotFound("rating notification mentor - " + mentor +
                 " and mentee - " + mentee));
-        ratingNotification.setDateOfEnd(DateTime.now());
+        ratingNotification.setDateOfEnd(Date.from(Instant.now()));
         ratingNotificationRepository.save(ratingNotification);
         mentor.getMentees().remove(mentee);
         mentee.setMentor(null);

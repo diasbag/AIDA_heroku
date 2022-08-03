@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Getter
@@ -21,9 +22,9 @@ public class RatingNotification {
     @OneToOne
     private Mentee mentee;
     @JsonIgnore
-    private DateTime dateOfStart;
+    private Date dateOfStart;
     @JsonIgnore
-    private DateTime dateOfEnd;
+    private Date dateOfEnd;
     private Boolean mentorRated;
     private Boolean menteeRated;
 

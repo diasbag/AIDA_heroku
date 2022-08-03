@@ -13,12 +13,13 @@ import com.hackathon.mentor.repository.UserRepository;
 import com.hackathon.mentor.service.RegistrationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.joda.time.DateTime;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.sql.Date;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 @Service
@@ -43,7 +44,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         user.setLastname(signupUpdateMentorRequest.getLastname());
         user.setPassword(encoder.encode(signupUpdateMentorRequest.getPassword()));
         user.setEmail(signupUpdateMentorRequest.getEmail());
-        user.setRegistrationDate(DateTime.now());
+        user.setRegistrationDate(Date.from(Instant.now()));
         user.setTelegram(signupUpdateMentorRequest.getTelegram());
         user.setStatus(true);
         user.setMiddlename(signupUpdateMentorRequest.getMiddlename());
@@ -74,7 +75,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         user.setPassword(encoder.encode(signupUpdateMenteeRequest.getPassword()));
         user.setEmail(signupUpdateMenteeRequest.getEmail());
         user.setTelegram(signupUpdateMenteeRequest.getTelegram());
-        user.setRegistrationDate(DateTime.now());
+        user.setRegistrationDate(Date.from(Instant.now()));
         user.setStatus(true);
         Role role = roleRepository.findByName(ERole.ROLE_MENTEE).orElseThrow(() ->
                 new AccountNotFound("Role is not found"));
