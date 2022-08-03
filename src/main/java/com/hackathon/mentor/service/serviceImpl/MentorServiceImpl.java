@@ -34,6 +34,7 @@ public class MentorServiceImpl implements MentorService {
 
     private final SubscribeRepository subscribeRepository;
     private final RatingNotificationRepository ratingNotificationRepository;
+    private final ModelMapper modelMapper = new ModelMapper();
 
     @Override
     public ResponseEntity<?> getUserProfile(User user) {
@@ -57,18 +58,9 @@ public class MentorServiceImpl implements MentorService {
         List<Mentor> mentors = mentorRepository.getAll();
         List<MentorsResponse> mentorsResponseList = new ArrayList<>();
         for (Mentor mentor : mentors) {
-            MentorsResponse mentorsResponse = new MentorsResponse();
-            mentorsResponse.setId(mentor.getId());
-            mentorsResponse.setUser(mentor.getUser());
-            mentorsResponse.setAge(mentor.getAge());
-            mentorsResponse.setFirstname(mentor.getUser().getFirstname());
-            mentorsResponse.setMiddlename(mentor.getUser().getMiddlename());
-            mentorsResponse.setLastname(mentor.getUser().getLastname());
-            mentorsResponse.setRating(mentor.getUser().getRating());
-            mentorsResponse.setImage(mentor.getUser().getImage());
-//            mentorsResponse.setNumber(mentor.getNumber());
-            ModelMapper modelMapper = new ModelMapper();
-            mentorsResponse = modelMapper.map(mentor, MentorsResponse.class);
+            MentorsResponse mentorsResponse = modelMapper.map(mentor, MentorsResponse.class);
+            modelMapper.map(mentor.getUser(), mentorsResponse);
+            mentorsResponse.setPassword(null);
             mentorsResponse.setMenteesCount(mentor.getMentees().size());
             mentorsResponseList.add(mentorsResponse);
 
@@ -130,18 +122,9 @@ public class MentorServiceImpl implements MentorService {
     public ResponseEntity<?> getMentorById(Long id) {
         log.info("get mentor...");
         Mentor mentor = mentorRepository.findById(id).orElseThrow(() -> new AccountNotFound("mentor with id " + id));
-        MentorProfileResponse mentorProfileResponse = new MentorProfileResponse();
-        mentorProfileResponse.setFirstname(mentor.getUser().getFirstname());
-        mentorProfileResponse.setLastname(mentor.getUser().getLastname());
-        mentorProfileResponse.setMiddlename(mentor.getUser().getMiddlename());
-        mentorProfileResponse.setEmail(mentor.getUser().getEmail());
-        mentorProfileResponse.setImage(mentor.getUser().getImage());
-        mentorProfileResponse.setRating(mentor.getUser().getRating());
-        ModelMapper modelMapper = new ModelMapper();
-        mentorProfileResponse = modelMapper.map(mentor, MentorProfileResponse.class);
+        MentorProfileResponse mentorProfileResponse = modelMapper.map(mentor, MentorProfileResponse.class);
+        modelMapper.map(mentor.getUser(), mentorProfileResponse);
         mentorProfileResponse.setMenteesCount(mentor.getMentees().size());
-
-        mentorProfileResponse.setListOfSkills(mentor.getListOfSkills());
         log.info("Get mentor by id" + mentorProfileResponse + " <<<");
         return new ResponseEntity<>(mentorProfileResponse, HttpStatus.OK);
     }
@@ -178,8 +161,8 @@ public class MentorServiceImpl implements MentorService {
         user.setLastname(signupMentorRequest.getLastname());
         user.setMiddlename(signupMentorRequest.getMiddlename());
         userRepository.save(user);
-        ModelMapper modelMapper = new ModelMapper();
         modelMapper.map(signupMentorRequest, mentor);
+
         mentorRepository.save(mentor);
         log.info("mentor's profile is successfully updated " + mentor + " <<<");
         return ResponseEntity.ok("User updated successfully!");
