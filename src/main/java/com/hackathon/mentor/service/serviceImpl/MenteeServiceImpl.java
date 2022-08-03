@@ -31,7 +31,7 @@ public class MenteeServiceImpl implements MenteeService {
     private final MenteeRepository menteeRepository;
 
     private final UserRepository userRepository;
-    private final ModelMapper modelMapper = new ModelMapper();
+
 
 
     private final SubscribeRepository subscribeRepository;
@@ -60,7 +60,6 @@ public class MenteeServiceImpl implements MenteeService {
         user.setEmail(updateMenteeRequest.getEmail());
 
         userRepository.save(user);
-
         mentee.setSchool(updateMenteeRequest.getSchool());
         mentee.setIin(updateMenteeRequest.getIin());
 //        mentee.setNumber(updateMenteeRequest.getNumber());
@@ -129,12 +128,12 @@ public class MenteeServiceImpl implements MenteeService {
         Mentee mentee = menteeRepository.findByUser(user).orElseThrow(() ->
                 new AccountNotFound("mentee - " + user));
         Mentor mentor = mentee.getMentor();
+        ModelMapper modelMapper = new ModelMapper();
         MentorsResponse mentorsResponse = modelMapper.map(mentor, MentorsResponse.class);
         mentorsResponse.setFirstname(mentor.getUser().getFirstname());
         mentorsResponse.setMiddlename(mentor.getUser().getMiddlename());
         mentorsResponse.setLastname(mentor.getUser().getLastname());
         mentorsResponse.setEmail(mentor.getUser().getEmail());
-        mentorsResponse.setCountryOfResidence(mentor.getCountry());
         mentorsResponse.setImage(mentor.getUser().getImage());
         mentorsResponse.setMenteesCount(mentor.getMentees().size());
         log.info("mentor was found " + mentor + " <<<");

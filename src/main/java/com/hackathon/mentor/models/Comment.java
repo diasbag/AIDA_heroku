@@ -16,6 +16,10 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    private Double communicativeActivity;
+    private Double subjectKnowledge;
+    private Double dataQuality;
+    private Double averageScore;
 
     @Column(name = "comment")
     private String comment;

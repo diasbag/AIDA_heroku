@@ -10,6 +10,8 @@ import com.hackathon.mentor.repository.*;
 import com.hackathon.mentor.service.MentorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -61,27 +63,14 @@ public class MentorServiceImpl implements MentorService {
             mentorsResponse.setFirstname(mentor.getUser().getFirstname());
             mentorsResponse.setMiddlename(mentor.getUser().getMiddlename());
             mentorsResponse.setLastname(mentor.getUser().getLastname());
-//            mentorsResponse.setNumber(mentor.getNumber());
-//            mentorsResponse.setRating(mentor.getRating());
-            mentorsResponse.setIin(mentor.getIin());
-            mentorsResponse.setImage(mentor.getUser().getImage());
-            mentorsResponse.setBachelorsMajor(mentor.getBachelorsMajor());
-            mentorsResponse.setMastersMajor(mentor.getMastersMajor());
-            mentorsResponse.setBachelorsUniversity(mentor.getBachelorsUniversity());
-            mentorsResponse.setCountryOfBachelorsUniversity(mentor.getCountryOfBachelorsUniversity());
-            mentorsResponse.setMastersUniversity(mentor.getMastersUniversity());
-            mentorsResponse.setCountryOfMastersUniversity(mentor.getCountryOfMastersUniversity());
-            mentorsResponse.setCountryOfResidence(mentor.getCountry());
-            mentorsResponse.setWork(mentor.getWork());
-            mentorsResponse.setUserInfo(mentor.getUserInfo());
-            mentorsResponse.setSchool(mentor.getSchool());
-            mentorsResponse.setYearOfGraduation(mentor.getYearOfGraduation());
-            mentorsResponse.setSubjectOfInterest1(mentor.getSubjectOfInterest1());
-            mentorsResponse.setSubjectOfInterest2(mentor.getSubjectOfInterest2());
-            mentorsResponse.setListOfSkills(mentor.getListOfSkills());
             mentorsResponse.setRating(mentor.getUser().getRating());
-            mentorsResponseList.add(mentorsResponse);
+            mentorsResponse.setImage(mentor.getUser().getImage());
+//            mentorsResponse.setNumber(mentor.getNumber());
+            ModelMapper modelMapper = new ModelMapper();
+            mentorsResponse = modelMapper.map(mentor, MentorsResponse.class);
             mentorsResponse.setMenteesCount(mentor.getMentees().size());
+            mentorsResponseList.add(mentorsResponse);
+
         }
         log.info("got all mentors " + mentorsResponseList + " <<<");
         return new ResponseEntity<>(mentorsResponseList, HttpStatus.OK);
@@ -146,24 +135,11 @@ public class MentorServiceImpl implements MentorService {
         mentorProfileResponse.setMiddlename(mentor.getUser().getMiddlename());
         mentorProfileResponse.setEmail(mentor.getUser().getEmail());
         mentorProfileResponse.setImage(mentor.getUser().getImage());
-        mentorProfileResponse.setAge(mentor.getAge());
-//        mentorProfileResponse.setNumber(mentor.getNumber());
-//        mentorProfileResponse.setRating(mentor.getRating());
-        mentorProfileResponse.setIin(mentor.getIin());
-        mentorProfileResponse.setBachelorsMajor(mentor.getBachelorsMajor());
-        mentorProfileResponse.setCountryOfBachelorsUniversity(mentor.getCountryOfBachelorsUniversity());
-        mentorProfileResponse.setMastersUniversity(mentor.getMastersUniversity());
-        mentorProfileResponse.setCountryOfMastersUniversity(mentor.getCountryOfMastersUniversity());
-        mentorProfileResponse.setCountryOfResidence(mentor.getCountry());
-        mentorProfileResponse.setMenteesCount(mentor.getMentees().size());
-        mentorProfileResponse.setWork(mentor.getWork());
-        mentorProfileResponse.setUserInfo(mentor.getUserInfo());
-        mentorProfileResponse.setSchool(mentor.getSchool());
-        mentorProfileResponse.setYearOfGraduation(mentor.getYearOfGraduation());
-        mentorProfileResponse.setSubjectOfInterest1(mentor.getSubjectOfInterest1());
-        mentorProfileResponse.setSubjectOfInterest2(mentor.getSubjectOfInterest2());
-        mentorProfileResponse.setMenteesCount(mentor.getMentees().size());
         mentorProfileResponse.setRating(mentor.getUser().getRating());
+        ModelMapper modelMapper = new ModelMapper();
+        mentorProfileResponse = modelMapper.map(mentor, MentorProfileResponse.class);
+        mentorProfileResponse.setMenteesCount(mentor.getMentees().size());
+
         mentorProfileResponse.setListOfSkills(mentor.getListOfSkills());
         log.info("Get mentor by id" + mentorProfileResponse + " <<<");
         return new ResponseEntity<>(mentorProfileResponse, HttpStatus.OK);
@@ -201,25 +177,8 @@ public class MentorServiceImpl implements MentorService {
         user.setLastname(signupMentorRequest.getLastname());
         user.setMiddlename(signupMentorRequest.getMiddlename());
         userRepository.save(user);
-
-        mentor.setAge(signupMentorRequest.getAge());
-        mentor.setIin(signupMentorRequest.getIin());
-        mentor.setBachelorsUniversity(signupMentorRequest.getBachelorsUniversity());
-        mentor.setCountry(signupMentorRequest.getCountryOfResidence());
-//        mentor.setNumber(signupMentorRequest.getNumber());
-        mentor.setWork(signupMentorRequest.getWork());
-        mentor.setUserInfo(signupMentorRequest.getUserInfo());
-        mentor.setSchool(signupMentorRequest.getSchool());
-        mentor.setSubjectOfInterest1(signupMentorRequest.getSubjectOfInterest1());
-        mentor.setSubjectOfInterest2(signupMentorRequest.getSubjectOfInterest2());
-        mentor.setBachelorsUniversity(signupMentorRequest.getBachelorsUniversity());
-        mentor.setMastersUniversity(signupMentorRequest.getCountryOfMastersUniversity());
-        mentor.setYearOfGraduation(signupMentorRequest.getYearOfGraduation());
-        mentor.setCountryOfBachelorsUniversity(signupMentorRequest.getCountryOfBachelorsUniversity());
-        mentor.setCountryOfMastersUniversity(signupMentorRequest.getCountryOfMastersUniversity());
-        mentor.setBachelorsMajor(signupMentorRequest.getBachelorsMajor());
-        mentor.setMastersMajor(signupMentorRequest.getMastersMajor());
-        mentor.setListOfSkills(signupMentorRequest.getListOfSkills());
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.map(signupMentorRequest, mentor);
         mentorRepository.save(mentor);
         log.info("mentor's profile is successfully updated " + mentor + " <<<");
         return ResponseEntity.ok("User updated successfully!");
@@ -258,6 +217,7 @@ public class MentorServiceImpl implements MentorService {
         mentor.getMentees().add(mentee);
         mentee.setMentor(mentor);
         RatingNotification ratingNotification = new RatingNotification(mentor, mentee);
+        ratingNotification.setDateOfStart(DateTime.now());
         ratingNotificationRepository.save(ratingNotification);
         menteeRepository.save(mentee);
         mentorRepository.save(mentor);
@@ -299,15 +259,15 @@ public class MentorServiceImpl implements MentorService {
                 new AccountNotFound("user with email " + email));
         Mentee mentee = menteeRepository.findById(id).orElseThrow(() ->
                 new AccountNotFound("mentee with id - " + id));
+        RatingNotification ratingNotification = ratingNotificationRepository.findRatingNotificationByMentorAndMentee(
+                mentor,mentee).orElseThrow(() -> new AccountNotFound("rating notification mentor - " + mentor +
+                " and mentee - " + mentee));
+        ratingNotification.setDateOfEnd(DateTime.now());
+        ratingNotificationRepository.save(ratingNotification);
         mentor.getMentees().remove(mentee);
         mentee.setMentor(null);
         menteeRepository.save(mentee);
         mentorRepository.save(mentor);
-        if(subscribeRepository.findByMentorAndMentee(mentor, mentee).isPresent()) {
-            subscribeRepository.deleteByMentorAndMentee(mentor, mentee);
-        } else {
-            throw new AccountConflict("there is no connection between - " + mentor + " and " + mentee);
-        }
         log.info("Mentee has been removed!!!");
         return new ResponseEntity<>(mentor, HttpStatus.OK);
     }

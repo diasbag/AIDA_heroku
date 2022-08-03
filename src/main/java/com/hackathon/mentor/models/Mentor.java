@@ -49,7 +49,7 @@ public class Mentor {
     private String countryOfMastersUniversity;
 
     @Column(name = "country")
-    private String country;
+    private String countryOfResidence;
 
     @Column(name = "work")
     private String work;
@@ -90,7 +90,7 @@ public class Mentor {
                 "countryOfBachelorsUniversity = " + countryOfBachelorsUniversity + ", " +
                 "mastersUniversity = " + mastersUniversity + ", " +
                 "countryOfMastersUniversity = " + countryOfMastersUniversity + ", " +
-                "country = " + country + ", " +
+                "country = " + countryOfResidence + ", " +
                 "work = " + work + ", " +
                 "userInfo = " + userInfo + ", " +
                 "school = " + school + ", " +

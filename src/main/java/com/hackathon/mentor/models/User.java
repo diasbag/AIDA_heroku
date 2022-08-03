@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.joda.time.DateTime;
 
 import java.util.*;
 
@@ -65,6 +66,9 @@ public class User {
 	@OneToOne
 	@JoinColumn(name = "rating_id")
 	private Rating rating;
+
+	@Column(name = "registration_date")
+	private DateTime registrationDate;
 
 	public User() {
 	}

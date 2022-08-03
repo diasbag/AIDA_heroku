@@ -13,6 +13,8 @@ import com.hackathon.mentor.repository.UserRepository;
 import com.hackathon.mentor.service.RegistrationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +43,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         user.setLastname(signupUpdateMentorRequest.getLastname());
         user.setPassword(encoder.encode(signupUpdateMentorRequest.getPassword()));
         user.setEmail(signupUpdateMentorRequest.getEmail());
+        user.setRegistrationDate(DateTime.now());
         user.setTelegram(signupUpdateMentorRequest.getTelegram());
         user.setStatus(true);
         user.setMiddlename(signupUpdateMentorRequest.getMiddlename());
@@ -50,24 +53,9 @@ public class RegistrationServiceImpl implements RegistrationService {
         roles.add(role);
         user.setRoles(roles);
         userRepository.save(user);
-        Mentor mentor = new Mentor();
-        mentor.setAge(signupUpdateMentorRequest.getAge());
-        mentor.setIin(signupUpdateMentorRequest.getIin());
-        mentor.setCountry(signupUpdateMentorRequest.getCountryOfResidence());
-        mentor.setWork(signupUpdateMentorRequest.getWork());
-        mentor.setUserInfo(signupUpdateMentorRequest.getUserInfo());
-        mentor.setSchool(signupUpdateMentorRequest.getSchool());
+        ModelMapper modelMapper = new ModelMapper();
+        Mentor mentor = modelMapper.map(signupUpdateMentorRequest, Mentor.class);
         mentor.setUser(user);
-        mentor.setYearOfGraduation(signupUpdateMentorRequest.getYearOfGraduation());
-        mentor.setSubjectOfInterest1(signupUpdateMentorRequest.getSubjectOfInterest1());
-        mentor.setSubjectOfInterest2(signupUpdateMentorRequest.getSubjectOfInterest2());
-        mentor.setCountryOfBachelorsUniversity(signupUpdateMentorRequest.getCountryOfBachelorsUniversity());
-        mentor.setCountryOfMastersUniversity(signupUpdateMentorRequest.getCountryOfMastersUniversity());
-        mentor.setBachelorsMajor(signupUpdateMentorRequest.getBachelorsMajor());
-        mentor.setMastersMajor(signupUpdateMentorRequest.getMastersMajor());
-        mentor.setBachelorsUniversity(signupUpdateMentorRequest.getBachelorsUniversity());
-        mentor.setMastersUniversity(signupUpdateMentorRequest.getMastersUniversity());
-        mentor.setListOfSkills(signupUpdateMentorRequest.getListOfSkills());
         mentorRepository.save(mentor);
         log.info("mentor was registered <<<");
         return new MessageResponse("User registered successfully!");
@@ -86,6 +74,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         user.setPassword(encoder.encode(signupUpdateMenteeRequest.getPassword()));
         user.setEmail(signupUpdateMenteeRequest.getEmail());
         user.setTelegram(signupUpdateMenteeRequest.getTelegram());
+        user.setRegistrationDate(DateTime.now());
         user.setStatus(true);
         Role role = roleRepository.findByName(ERole.ROLE_MENTEE).orElseThrow(() ->
                 new AccountNotFound("Role is not found"));

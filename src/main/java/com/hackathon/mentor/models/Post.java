@@ -1,5 +1,6 @@
 package com.hackathon.mentor.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,6 +12,7 @@ import java.util.Date;
 @Table(name = "posts")
 @Getter
 @Setter
+
 public class Post {
 
     @Id
@@ -26,6 +28,9 @@ public class Post {
     private String article;
     @OneToOne(cascade = {CascadeType.ALL})
     private Image image;
+    @OneToOne
+    @JsonIgnore
+    private User user;
 
     @Override
     public String toString() {

@@ -8,6 +8,7 @@ import com.hackathon.mentor.repository.*;
 import com.hackathon.mentor.service.RatingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -55,10 +56,8 @@ public class RatingServiceImpl implements RatingService {
                     ratingNotificationRepository.findRatingNotificationByMentorAndMentee(mentor, mentee).orElseThrow(
                             () -> new AccountNotFound("rating notification with mentor - " + mentor +
                                     " and mentee - " + mentee));
-            ratingNotification.setMentor(null);
-            if (ratingNotification.getMentee() == null) {
-                ratingNotificationRepository.delete(ratingNotification);
-            } else {
+            if (!ratingNotification.getMentorRated()) {
+                ratingNotification.setMentorRated(true);
                 ratingNotificationRepository.save(ratingNotification);
             }
         } else if (role.equals(ERole.ROLE_MENTEE)){
@@ -72,10 +71,8 @@ public class RatingServiceImpl implements RatingService {
                             () -> new AccountNotFound("rating notification with mentor - " + mentor +
                                     " and mentee - " + mentee)
                     );
-            ratingNotification.setMentee(null);
-            if (ratingNotification.getMentor() == null) {
-                ratingNotificationRepository.delete(ratingNotification);
-            } else {
+            if (!ratingNotification.getMenteeRated()) {
+                ratingNotification.setMenteeRated(true);
                 ratingNotificationRepository.save(ratingNotification);
             }
         } else {
@@ -85,11 +82,12 @@ public class RatingServiceImpl implements RatingService {
         if (!mentees.contains(mentee)) {
             return new ResponseEntity<>("Not your mentee!", HttpStatus.CONFLICT);
         }
-        Comment comment = new Comment();
         Rating rating = user.getRating();
         double overallRating = (ratingRequest.getSubjectKnowledge() + ratingRequest.getCommunicativeActivity() +
                 ratingRequest.getDataQuality())/3.0;
-        comment.setComment(ratingRequest.getComment());
+        ModelMapper modelMapper = new ModelMapper();
+        Comment comment = modelMapper.map(ratingRequest, Comment.class);
+        comment.setAverageScore(overallRating);
         comment.setUser(mentor.getUser());
         if (rating == null) {
             Rating rating1 = new Rating();
@@ -141,7 +139,9 @@ public class RatingServiceImpl implements RatingService {
             List<RatingNotification> ratingNotification = ratingNotificationRepository
                     .findRatingNotificationByMentor(mentor);
             for (RatingNotification rating: ratingNotification) {
-                toRate.add(rating.getMentee().getId());
+                if (!rating.getMentorRated()) {
+                    toRate.add(rating.getMentee().getId());
+                }
             }
         } else if (role.equals(ERole.ROLE_MENTEE)) {
             Mentee mentee = menteeRepository.findByUser(user).orElseThrow(() ->
@@ -149,7 +149,9 @@ public class RatingServiceImpl implements RatingService {
             List<RatingNotification> ratingNotification = ratingNotificationRepository
                     .findRatingNotificationByMentee(mentee);
             for (RatingNotification rating : ratingNotification) {
-                toRate.add(rating.getMentor().getId());
+                if (!rating.getMenteeRated()) {
+                    toRate.add(rating.getMentor().getId());
+                }
             }
         } else {
             throw new AccountConflict("Wrong role!");

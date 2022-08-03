@@ -10,6 +10,7 @@ import com.hackathon.mentor.repository.UserRepository;
 import com.hackathon.mentor.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +47,7 @@ public class AdminServiceImpl implements AdminService {
         if (!userRepository.findByEmail(email).isPresent()) {
             User user = new User(firstName, lastName, email,
                     encoder.encode(java.nio.CharBuffer.wrap(password)));
+            user.setRegistrationDate(DateTime.now());
             Role role = roleRepository.findByName(ERole.ROLE_ADMIN).orElseThrow(() ->
                     new AccountNotFound("Error: Role is not found."));
             List<Role> roles = new ArrayList<>();

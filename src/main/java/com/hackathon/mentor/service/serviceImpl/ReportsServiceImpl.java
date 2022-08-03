@@ -8,10 +8,9 @@ import com.hackathon.mentor.repository.ReportRepository;
 import com.hackathon.mentor.repository.UserRepository;
 import com.hackathon.mentor.service.AdminService;
 import com.hackathon.mentor.service.ReportsService;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.joda.time.DateTime;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -20,7 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
+
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.transaction.Transactional;
@@ -55,6 +54,7 @@ public class ReportsServiceImpl implements ReportsService {
                 .reason(reportRequest.getReason())
                 .reporterID(user.getId())
                 .harasserID(reportRequest.getHarasserId())
+                .reportDate(DateTime.now())
                 .build();
         reportRepository.save(newReport);
         log.info("report is saved <<<");
