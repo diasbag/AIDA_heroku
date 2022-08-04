@@ -14,5 +14,7 @@ public class PostResponse {
     private String article;
     private Date date;
     private Image image;
-    private User user;
+ //   private User user;
+    private String firstname;
+    private String lastname;
 }

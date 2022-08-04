@@ -44,6 +44,8 @@ public class PostServiceImpl implements PostService {
             postResponse.setDate(post.getDate());
             postResponse.setImage(post.getImage());
             postResponseList.add(postResponse);
+            postResponse.setFirstname(post.getUser().getFirstname());
+            postResponse.setLastname(post.getUser().getLastname());
         }
         log.info("all posts were found <<<");
         return postResponseList;
