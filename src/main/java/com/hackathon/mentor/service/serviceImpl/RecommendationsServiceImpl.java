@@ -2,10 +2,12 @@ package com.hackathon.mentor.service.serviceImpl;
 
 import com.hackathon.mentor.exceptions.AccountNotFound;
 import com.hackathon.mentor.models.Mentor;
+import com.hackathon.mentor.payload.response.MentorsResponse;
 import com.hackathon.mentor.repository.MentorRepository;
 import com.hackathon.mentor.service.RecommendationsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,8 +22,9 @@ import java.util.stream.Collectors;
 public class RecommendationsServiceImpl implements RecommendationsService {
 
     private final MentorRepository mentorRepository;
+    private final ModelMapper modelMapper = new ModelMapper();
     @Override
-    public List<Mentor> getRecommendations(Long mentorID) {
+    public List<MentorsResponse> getRecommendations(Long mentorID) {
         log.info("recommendations by subject ...");
         Mentor mentor = mentorRepository.findById(mentorID).orElseThrow(() ->
                 new AccountNotFound("mentor with id " + mentorID));
@@ -103,14 +106,21 @@ public class RecommendationsServiceImpl implements RecommendationsService {
         if (out.size() > 9) {
             out.subList(0, 9);
         } else {
-            List <Mentor> filling = mentorRepository.getAll();
+            List <Mentor> filling = mentorRepository.findAll();
             filling.removeAll(out);
             out.addAll(filling);
             if (out.size() > 9) {
                 out.subList(0, 9);
             }
         }
+        out.remove(mentor);
+        List<MentorsResponse> outWrapped = new ArrayList<>();
+        for (Mentor mentorForWrap: out) {
+            MentorsResponse mentorsResponse = modelMapper.map(mentorForWrap.getUser(), MentorsResponse.class);
+            modelMapper.map(mentorForWrap, mentorsResponse);
+            outWrapped.add(mentorsResponse);
+        }
         log.info("recommendations by subject is done <<<");
-        return out;
+        return outWrapped;
     }
 }

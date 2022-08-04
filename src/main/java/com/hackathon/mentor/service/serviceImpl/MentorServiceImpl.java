@@ -66,7 +66,6 @@ public class MentorServiceImpl implements MentorService {
             mentorsResponse.setPassword(null);
             mentorsResponse.setMenteesCount(mentor.getMentees().size());
             mentorsResponseList.add(mentorsResponse);
-
         }
         log.info("got all mentors " + mentorsResponseList + " <<<");
         return new ResponseEntity<>(mentorsResponseList, HttpStatus.OK);

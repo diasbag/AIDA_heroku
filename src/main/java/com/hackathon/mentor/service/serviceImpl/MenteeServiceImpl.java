@@ -132,9 +132,14 @@ public class MenteeServiceImpl implements MenteeService {
         Mentee mentee = menteeRepository.findByUser(user).orElseThrow(() ->
                 new AccountNotFound("mentee - " + user));
         Mentor mentor = mentee.getMentor();
-        MentorsResponse mentorsResponse = modelMapper.map(mentor, MentorsResponse.class);
-        modelMapper.map(mentor.getUser(), mentorsResponse);
-        mentorsResponse.setMenteesCount(mentor.getMentees().size());
+        MentorsResponse mentorsResponse;
+        if (mentor != null) {
+            mentorsResponse = modelMapper.map(mentor, MentorsResponse.class);
+            modelMapper.map(mentor.getUser(), mentorsResponse);
+            mentorsResponse.setMenteesCount(mentor.getMentees().size());
+        } else {
+            mentorsResponse = null;
+        }
         log.info("mentor was found " + mentor + " <<<");
         return mentorsResponse;
     }
