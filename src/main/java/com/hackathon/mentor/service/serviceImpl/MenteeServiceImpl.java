@@ -136,8 +136,8 @@ public class MenteeServiceImpl implements MenteeService {
         Mentor mentor = mentee.getMentor();
         MentorsResponse mentorsResponse;
         if (mentor != null) {
-            mentorsResponse = modelMapper.map(mentor, MentorsResponse.class);
-            modelMapper.map(mentor.getUser(), mentorsResponse);
+            mentorsResponse = modelMapper.map(mentor.getUser(), MentorsResponse.class);
+            modelMapper.map(mentor, mentorsResponse);
             mentorsResponse.setMenteesCount(mentor.getMentees().size());
         } else {
             mentorsResponse = null;
