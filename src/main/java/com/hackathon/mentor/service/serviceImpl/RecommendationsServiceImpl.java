@@ -103,6 +103,11 @@ public class RecommendationsServiceImpl implements RecommendationsService {
         }
         if (out.size() > 9) {
             out.subList(0, 9);
+        } else {
+            List <Mentor> filling = mentorRepository.getAll();
+            filling.removeAll(out);
+            out.addAll(filling);
+            out.subList(0, 9);
         }
         log.info("recommendations by subject is done <<<");
         return out;
