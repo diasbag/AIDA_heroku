@@ -194,9 +194,10 @@ public class MentorServiceImpl implements MentorService {
                 new AccountNotFound("user with email " + email));
         Mentee mentee = menteeRepository.findById(id).orElseThrow(() ->
                 new AccountNotFound("mentee with id - " + id));
-        RatingNotification ratingNotification = ratingNotificationRepository.findRatingNotificationByMentorAndMentee(
-                mentor,mentee).orElseThrow(() -> new AccountNotFound("rating notification mentor - " + mentor +
-                " and mentee - " + mentee));
+        List<RatingNotification> ratingNotificationList = ratingNotificationRepository
+                .findRatingNotificationByMentorAndMentee(mentor,mentee).orElseThrow(() -> new AccountNotFound(
+                        "rating notification mentor - " + mentor + " and mentee - " + mentee));
+        RatingNotification ratingNotification = ratingNotificationList.get(ratingNotificationList.size() - 1);
         ratingNotification.setDateOfEnd(Date.from(Instant.now()));
         ratingNotificationRepository.save(ratingNotification);
         mentor.getMentees().remove(mentee);

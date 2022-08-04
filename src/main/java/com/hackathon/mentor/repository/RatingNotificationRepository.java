@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Repository
 public interface RatingNotificationRepository extends JpaRepository<RatingNotification, Long> {
-    Optional<RatingNotification> findRatingNotificationByMentorAndMentee(Mentor mentor, Mentee mentee);
+    Optional<List<RatingNotification>> findRatingNotificationByMentorAndMentee(Mentor mentor, Mentee mentee);
 
     List<RatingNotification> findRatingNotificationByMentee(Mentee mentee);
 
