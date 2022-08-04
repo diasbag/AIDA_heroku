@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @CrossOrigin(value = "*", maxAge = 3600)
@@ -17,7 +16,7 @@ import java.util.Set;
 public class RecommendationsController {
     private final RecommendationsService recommendationsService;
 
-    @GetMapping("/by_subject")
+    @GetMapping()
     public List<Mentor> getRecommendations(@RequestParam Long mentorID) {
         return recommendationsService.getRecommendations(mentorID);
     }

@@ -54,10 +54,6 @@ public class PostServiceImpl implements PostService {
     @Override
     public Post createPost(@Valid PostRequest postRequest) {
         log.info("creating post ...");
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String email = userDetails.getUsername();
-        User user = userRepository.findByEmail(email).orElseThrow(() ->
-                new AccountNotFound("user with email - " + email));
         Post post;
         if (postRequest.getId() != null && postRepository.findById(postRequest.getId()).isPresent()) {
             post = postRepository.findById(postRequest.getId()).orElseThrow(() ->
@@ -68,7 +64,6 @@ public class PostServiceImpl implements PostService {
         post.setTitle(postRequest.getTitle());
         post.setArticle(postRequest.getArticle());
         post.setDate(Date.from(Instant.now()));
-        post.setUser(user);
         postRepository.save(post);
         log.info("post was created <<<");
         return post;
