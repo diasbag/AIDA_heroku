@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,7 +31,9 @@ public class PostController {
 
     @PostMapping("/post/upload_text_2")
     public ResponseEntity<?> createPost (@RequestBody PostRequest postRequest) {
-        Post post = postService.createPost(postRequest);
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = userDetails.getUsername();
+        Post post = postService.createPost(postRequest, email);
         return new ResponseEntity<>(post.getId(), HttpStatus.OK);
     }
 

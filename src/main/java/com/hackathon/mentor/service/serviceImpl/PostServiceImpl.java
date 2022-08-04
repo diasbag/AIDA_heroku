@@ -50,10 +50,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post createPost(@Valid PostRequest postRequest) {
+    public Post createPost(@Valid PostRequest postRequest, String email) {
         log.info("creating post ...");
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String email = userDetails.getUsername();
         User user = userRepository.findByEmail(email).orElseThrow(() ->
                 new AccountNotFound("user with email - " + email));
         Post post;
