@@ -13,4 +13,5 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
 
     Image findByUuid(String uuid);
 
+
 }

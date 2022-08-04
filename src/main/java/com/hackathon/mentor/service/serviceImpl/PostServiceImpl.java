@@ -133,11 +133,13 @@ public class PostServiceImpl implements PostService {
     public Post editPostImage(Long id, MultipartFile file) {
         log.info("editing post image ...");
         Post post = postRepository.findById(id).orElseThrow(() -> new AccountNotFound("post with id " + id));
-        Long imageID = post.getImage().getId();
+        if (post.getImage() != null) {
+            Long imageID = post.getImage().getId();
+            imageRepository.deleteById(imageID);
+        }
         Image image = Image.buildImage(file, fileHelper);
         post.setImage(image);
         postRepository.save(post);
-        imageRepository.deleteById(imageID);
         log.info("post image was edited " + post + " <<<");
         return post;
     }

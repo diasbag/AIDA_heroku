@@ -67,12 +67,17 @@ public class RecommendationsServiceImpl implements RecommendationsService {
         Set<Mentor> subjectsSet = new HashSet<>();
         subjectsSet.addAll(result1);
         subjectsSet.addAll(result2);
+
         Set<Mentor> allSet = new HashSet<>();
         allSet.addAll(majorsSet);
         allSet.addAll(majorsUniversity);
         allSet.addAll(subjectsSet);
         List<Mentor> out = new ArrayList<>(allSet);
-        out.addAll(subjectsSet);
+        out.addAll(allSet);
+        log.info(out.toString());
+        subjectsSet.removeAll(allSet);
+        majorsSet.removeAll(allSet);
+        majorsUniversity.removeAll(allSet);
         if (subjectsSet.size() > 3 && majorsSet.size() > 3 && majorsUniversity.size() > 3) {
             out.add(subjectsSet.iterator().next());
             out.add(subjectsSet.iterator().next());
@@ -98,7 +103,10 @@ public class RecommendationsServiceImpl implements RecommendationsService {
             out.addAll(majorsSet);
             out.addAll(majorsUniversity);
         }
-        out.subList(0, 10);
+        if (out.size() > 9) {
+            out.subList(0, 9);
+        }
+        log.info(out.toString());
         log.info("recommendations by subject is done <<<");
         return out;
     }
