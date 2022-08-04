@@ -55,7 +55,10 @@ public class PostServiceImpl implements PostService {
     public Post createPost(@Valid PostRequest postRequest) {
         log.info("creating post ...");
         Post post;
-        if (postRequest.getId() != null && postRepository.findById(postRequest.getId()).isPresent()) {
+        if (postRequest.getId() != null) {
+            if(!postRepository.findById(postRequest.getId()).isPresent()) {
+                throw new AccountNotFound("post with id - " + postRequest.getId());
+            }
             post = postRepository.findById(postRequest.getId()).orElseThrow(() ->
                     new AccountNotFound("post with id " + postRequest.getId()));
         } else {
@@ -77,6 +80,7 @@ public class PostServiceImpl implements PostService {
         post.setDate(Date.from(Instant.now()));
         Image image =Image.buildImage(file, fileHelper);
         post.setImage(image);
+        imageRepository.save(image);
         postRepository.save(post);
         log.info("post was created <<<");
         return post;
@@ -88,6 +92,7 @@ public class PostServiceImpl implements PostService {
         Image image = Image.buildImage(file, fileHelper);
         Post post = new Post();
         post.setImage(image);
+        imageRepository.save(image);
         postRepository.save(post);
         log.info("photo was uploaded <<<");
         return post;

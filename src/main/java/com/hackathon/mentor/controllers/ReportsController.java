@@ -1,52 +1,32 @@
 package com.hackathon.mentor.controllers;
 
-import com.hackathon.mentor.models.Image;
+import com.hackathon.mentor.models.Report;
 import com.hackathon.mentor.payload.request.ReportRequest;
 import com.hackathon.mentor.payload.response.MessageResponse;
-import com.hackathon.mentor.service.ImageService;
 import com.hackathon.mentor.service.ReportsService;
-import com.hackathon.mentor.utils.FileNameHelper;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*", maxAge = 3600)
-@RequestMapping("/report")
+@RequestMapping("/reports")
 @SecurityRequirement(name = "basicauth")
 public class ReportsController {
-    private final ImageService imageService;
     private final ReportsService reportsService;
-    private final FileNameHelper fileHelper = new FileNameHelper();
 
-    @PostMapping("/images")
-    public ResponseEntity<MessageResponse> uploadFiles(@RequestParam("files") MultipartFile[] files) {
-        String message;
-        try {
-            List<String> fileNames = new ArrayList<>();
-            Arrays.stream(files).forEach(file -> {
-                Image image = Image.buildImage(file, fileHelper);
-                imageService.save(image);
-                fileNames.add(file.getOriginalFilename());
-            });
-            message = "Uploaded the files successfully: " + fileNames;
-            return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse(message));
-        } catch (Exception e) {
-            message = "Fail to upload files!";
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new MessageResponse(message));
-        }
+    @PostMapping("/images_1")
+    public ResponseEntity<?> uploadFiles(@RequestParam("files") MultipartFile[] files) {
+        Report report = reportsService.uploadReportImages(files);
+        return ResponseEntity.ok(report.getId());
     }
-    @PostMapping("/report_user")
+    @PostMapping("/report_user_2")
     public ResponseEntity<MessageResponse> reportUser(@RequestBody ReportRequest reportRequest)
             throws MessagingException, UnsupportedEncodingException {
         reportsService.reportPerson(reportRequest);
@@ -56,6 +36,14 @@ public class ReportsController {
     public ResponseEntity<?> getReports() {
         return ResponseEntity.ok(reportsService.getReportsAll());
     }
+    @GetMapping("non_ignored")
+    public ResponseEntity<?> getNonIgnoredReports() {
+        return ResponseEntity.ok(reportsService.getNonIgnoredReports());
+    }
+    @GetMapping("ignored")
+    public ResponseEntity<?> getIgnoredReports() {
+        return ResponseEntity.ok(reportsService.getIgnoredReports());
+    }
     @GetMapping("/{id}")
     public ResponseEntity<?> getReportsByID(@PathVariable Long id) {
         return ResponseEntity.ok(reportsService.getReportById(id));
@@ -64,5 +52,16 @@ public class ReportsController {
     public ResponseEntity<?> ignoreByID(@RequestParam Long id) {
         reportsService.reportIgnore(id);
         return ResponseEntity.ok("Report was marked as \"ignore\"");
+    }
+
+    @PutMapping("/edit_report")
+    public ResponseEntity<?> editReport(@RequestBody ReportRequest reportRequest) {
+        reportsService.editReport(reportRequest);
+        return ResponseEntity.ok("Report was edited");
+    }
+    @PutMapping("/edit_images/{id}")
+    public ResponseEntity<?> editImages(@PathVariable Long id, @RequestParam("files") MultipartFile[] files) {
+        reportsService.editImages(id, files);
+        return ResponseEntity.ok("Images were edited");
     }
 }
