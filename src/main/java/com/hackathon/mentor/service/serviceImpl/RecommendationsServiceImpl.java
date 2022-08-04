@@ -73,8 +73,6 @@ public class RecommendationsServiceImpl implements RecommendationsService {
         allSet.addAll(majorsUniversity);
         allSet.addAll(subjectsSet);
         List<Mentor> out = new ArrayList<>(allSet);
-        out.addAll(allSet);
-        log.info(out.toString());
         subjectsSet.removeAll(allSet);
         majorsSet.removeAll(allSet);
         majorsUniversity.removeAll(allSet);
@@ -106,7 +104,6 @@ public class RecommendationsServiceImpl implements RecommendationsService {
         if (out.size() > 9) {
             out.subList(0, 9);
         }
-        log.info(out.toString());
         log.info("recommendations by subject is done <<<");
         return out;
     }
