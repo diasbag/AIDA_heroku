@@ -8,6 +8,7 @@ import com.hackathon.mentor.payload.response.MentorProfileResponse;
 import com.hackathon.mentor.payload.response.MentorsResponse;
 import com.hackathon.mentor.repository.*;
 import com.hackathon.mentor.service.MentorService;
+import com.hackathon.mentor.utils.MailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -34,6 +35,8 @@ public class MentorServiceImpl implements MentorService {
 
     private final SubscribeRepository subscribeRepository;
     private final RatingNotificationRepository ratingNotificationRepository;
+
+    private MailService mailService;
     private final ModelMapper modelMapper = new ModelMapper();
 
     @Override
@@ -199,6 +202,9 @@ public class MentorServiceImpl implements MentorService {
         ratingNotificationRepository.save(ratingNotification);
         mentor.getMentees().remove(mentee);
         mentee.setMentor(null);
+        mailService.sendDeleteMailToMentee(mentee.getUser().getEmail(),
+                mentor.getUser().getFirstname(),
+                mentor.getUser().getLastname());
         menteeRepository.save(mentee);
         mentorRepository.save(mentor);
         log.info("Mentee has been removed!!!");
