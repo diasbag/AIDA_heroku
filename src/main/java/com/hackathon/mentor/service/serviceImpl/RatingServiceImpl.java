@@ -85,7 +85,7 @@ public class RatingServiceImpl implements RatingService {
         if (!mentees.contains(mentee)) {
             return new ResponseEntity<>("Not your mentee!", HttpStatus.CONFLICT);
         }
-        Rating rating = user.getRating();
+        Rating rating = userForRating.getRating();
         double overallRating = (ratingRequest.getSubjectKnowledge() + ratingRequest.getCommunicativeActivity() +
                 ratingRequest.getDataQuality())/3.0;
         Comment comment = modelMapper.map(ratingRequest, Comment.class);
@@ -104,7 +104,7 @@ public class RatingServiceImpl implements RatingService {
             userForRating.setRating(rating1);
         } else {
             long cnt =  (rating.getPeopleCount()+1);
-            double res = ((rating.getRating()* rating.getPeopleCount()) + overallRating)/(cnt);
+            double res = ((rating.getRating()*rating.getPeopleCount()) + overallRating)/(cnt);
             double knowledgeRating = ((rating.getKnowledgeRating()*rating.getPeopleCount()) +
                     ratingRequest.getSubjectKnowledge())/(cnt);
             double communicationRating = ((rating.getCommunicationRating() * rating.getPeopleCount()) +

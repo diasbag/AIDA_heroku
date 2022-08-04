@@ -147,6 +147,24 @@ public class MenteeServiceImpl implements MenteeService {
     }
 
     @Override
+    public ResponseEntity<?> unSubscribe(Long id, String email) {
+        log.info("mentee unsubscribe started ...");
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new AccountNotFound("user - " + email));
+//        Mentor mentor = mentorRepository.findByUser(user).orElseThrow(() ->
+//                new AccountNotFound("user with email " + email));
+        Mentee mentee = menteeRepository.findByUser(user).orElseThrow(() ->
+                new AccountNotFound("user with email " + email));
+        Mentor mentor = mentorRepository.findById(id).orElse(null);
+//        Mentee mentee = menteeRepository.findById(id).orElse(null);
+        Subscribe subscribe = subscribeRepository.getByMentorAndMentee(mentor, mentee).orElseThrow(() ->
+                new AccountNotFound(" subscribe: " + mentor + " and " + mentee));
+        Long sid = subscribe.getId();
+        subscribeRepository.deleteById(sid);
+        log.info("Mentee unsubscribed " + mentor + " + " + mentee + " <<<");
+        return new ResponseEntity<>("Success" , HttpStatus.OK);
+    }
+
+    @Override
     public Boolean isMyMentor(String email, Long id) {
         log.info("get mentee's mentor status ...");
         User user = userRepository.findByEmail(email).orElseThrow(() ->
