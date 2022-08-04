@@ -1,10 +1,10 @@
 package com.hackathon.mentor.models;
 
 import lombok.*;
-import org.joda.time.DateTime;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -15,7 +15,6 @@ import java.util.Objects;
 @Table(name = "report_table")
 @Builder
 public class Report {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -33,6 +32,8 @@ public class Report {
 
     @Column(name = "ignore")
     private Boolean ignore;
+    @OneToMany
+    private List<Image> images;
 
     @Override
     public boolean equals(Object o) {
