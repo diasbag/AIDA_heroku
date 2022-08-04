@@ -48,6 +48,18 @@ public class MailService {
         log.info("Vse normal'no rabotaet huli noesh'");
     }
 
+    public void sendDeleteMailToMentee(String to, String firstname, String lastname) {
+        log.info("sending message to Mentee...");
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(from);
+        message.setTo(to);
+        message.setSubject("Менторство остановленно!!!");
+        message.setText("Ментор: " + firstname + " " + lastname + " Прекратил сотрудничество с вами!!!");
+
+        mailSender.send(message);
+        log.info("Vse normal'no rabotaet huli noesh'");
+    }
+
     public void sendingNotificationReport() throws MessagingException, UnsupportedEncodingException {
         log.info("sending email started ...");
         List<User> listOfAdmins = adminService.findAllAdmins();
