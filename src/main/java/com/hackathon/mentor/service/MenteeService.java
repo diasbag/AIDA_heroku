@@ -20,5 +20,6 @@ public interface MenteeService {
 
     MentorsResponse getMyMentor();
 
+    ResponseEntity<?> unSubscribe(Long id, String email);
     Boolean isMyMentor(String email, Long id);
 }
