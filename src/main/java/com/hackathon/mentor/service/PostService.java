@@ -10,7 +10,7 @@ import java.util.List;
 public interface PostService {
     List<PostResponse> getPosts();
 
-    Post createPost(PostRequest postRequest, String email);
+    Post createPost(PostRequest postRequest);
 
     Post createPostWithImage(PostRequest postRequest, MultipartFile file);
 
