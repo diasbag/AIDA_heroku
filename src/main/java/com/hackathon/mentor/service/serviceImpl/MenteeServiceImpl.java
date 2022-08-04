@@ -77,9 +77,11 @@ public class MenteeServiceImpl implements MenteeService {
         Mentor mentor = mentorRepository.findById(id).orElseThrow(() -> new AccountNotFound("mentor - " + id));
         mentor.getMentees().remove(mentee);
         mentee.setMentor(null);
-        RatingNotification ratingNotification = ratingNotificationRepository.findRatingNotificationByMentorAndMentee(
-                mentor,mentee).orElseThrow(() -> new AccountNotFound("rating notification mentor - " + mentor +
-                " and mentee - " + mentee));
+        List<RatingNotification> ratingNotificationList =
+                ratingNotificationRepository.findRatingNotificationByMentorAndMentee(mentor,mentee).orElseThrow(
+                        () -> new AccountNotFound("rating notification mentor - " + mentor +
+                                " and mentee - " + mentee));
+        RatingNotification ratingNotification = ratingNotificationList.get(ratingNotificationList.size() - 1);
         ratingNotification.setDateOfEnd(Date.from(Instant.now()));
         ratingNotificationRepository.save(ratingNotification);
         menteeRepository.save(mentee);

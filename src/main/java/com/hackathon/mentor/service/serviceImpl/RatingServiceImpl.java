@@ -53,10 +53,11 @@ public class RatingServiceImpl implements RatingService {
             mentee = menteeRepository.findById(id).orElseThrow(() ->
                     new AccountNotFound("mentee with id " + id));
             UserForRating = mentee.getUser();
-            RatingNotification ratingNotification =
+            List<RatingNotification> ratingNotificationList =
                     ratingNotificationRepository.findRatingNotificationByMentorAndMentee(mentor, mentee).orElseThrow(
                             () -> new AccountNotFound("rating notification with mentor - " + mentor +
                                     " and mentee - " + mentee));
+            RatingNotification ratingNotification = ratingNotificationList.get(ratingNotificationList.size() - 1);
             if (!ratingNotification.getMentorRated()) {
                 ratingNotification.setMentorRated(true);
                 ratingNotificationRepository.save(ratingNotification);
@@ -67,11 +68,12 @@ public class RatingServiceImpl implements RatingService {
             mentor = mentorRepository.findById(id).orElseThrow(() ->
                     new AccountNotFound("mentor with id " + id));
             UserForRating = mentor.getUser();
-            RatingNotification ratingNotification =
+            List<RatingNotification> ratingNotificationList =
                     ratingNotificationRepository.findRatingNotificationByMentorAndMentee(mentor, mentee).orElseThrow(
                             () -> new AccountNotFound("rating notification with mentor - " + mentor +
                                     " and mentee - " + mentee)
                     );
+            RatingNotification ratingNotification = ratingNotificationList.get(ratingNotificationList.size() - 1);
             if (!ratingNotification.getMenteeRated()) {
                 ratingNotification.setMenteeRated(true);
                 ratingNotificationRepository.save(ratingNotification);
