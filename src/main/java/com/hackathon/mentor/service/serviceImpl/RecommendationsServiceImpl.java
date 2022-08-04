@@ -37,7 +37,6 @@ public class RecommendationsServiceImpl implements RecommendationsService {
             } else {
                 majorsSet.addAll(mentorRepository.findByBachelorsMajor(mentor.getBachelorsMajor()));
             }
-
         }
         Set<Mentor> majorsUniversity = new HashSet<>();
         if (mentor.getBachelorsUniversity() != null) {
@@ -107,7 +106,9 @@ public class RecommendationsServiceImpl implements RecommendationsService {
             List <Mentor> filling = mentorRepository.getAll();
             filling.removeAll(out);
             out.addAll(filling);
-            out.subList(0, 9);
+            if (out.size() > 9) {
+                out.subList(0, 9);
+            }
         }
         log.info("recommendations by subject is done <<<");
         return out;
