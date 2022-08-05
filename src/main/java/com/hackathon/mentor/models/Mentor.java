@@ -71,9 +71,8 @@ public class Mentor {
     @Column(name = "subject2")
     private String subjectOfInterest2;
 
-    @Column(name = "list_of_skills")
-    @ElementCollection
-    private List<String> listOfSkills;
+    @OneToMany
+    private List<Skills> skills;
 
     @ManyToMany
     @Column(name = "mentee_id")
@@ -99,7 +98,7 @@ public class Mentor {
                 "yearOfGraduation = " + yearOfGraduation + ", " +
                 "subjectOfInterest1 = " + subjectOfInterest1 + ", " +
                 "subjectOfInterest2 = " + subjectOfInterest2 + ", " +
-                "listOfSkills = " + listOfSkills + ")";
+                "listOfSkills = " + skills + ")";
     }
 
     @Override

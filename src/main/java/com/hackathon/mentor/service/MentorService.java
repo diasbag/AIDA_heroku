@@ -1,8 +1,11 @@
 package com.hackathon.mentor.service;
 
+import com.hackathon.mentor.models.Skills;
 import com.hackathon.mentor.models.User;
 import com.hackathon.mentor.payload.request.SignupUpdateMentorRequest;
 import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 public interface MentorService {
 

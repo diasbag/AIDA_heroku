@@ -36,7 +36,8 @@ public class MentorServiceImpl implements MentorService {
     private final SubscribeRepository subscribeRepository;
     private final RatingNotificationRepository ratingNotificationRepository;
 
-    private MailService mailService;
+    private final MailService mailService;
+    private final SkillsRepository skillsRepository;
     private final ModelMapper modelMapper = new ModelMapper();
 
     @Override
@@ -210,4 +211,6 @@ public class MentorServiceImpl implements MentorService {
         log.info("Mentee has been removed!!!");
         return new ResponseEntity<>(mentor, HttpStatus.OK);
     }
+
+
 }
