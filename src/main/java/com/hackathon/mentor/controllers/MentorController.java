@@ -26,14 +26,6 @@ public class MentorController {
         return mentorService.getMentors();
     }
 
-//    @PostMapping("/mentors/filter")
-//    public ResponseEntity<?> getMentorsByCountry(@RequestBody FilterRequest filterRequest) {
-//        String country = filterRequest.getCountry();
-//        String major = filterRequest.getMajor();
-//        String university = filterRequest.getUniversity();
-//        return mentorService.filtration(country, major, university);
-//    }
-
     @GetMapping("/mentors/{id}")
     public ResponseEntity<?> getMentorById(@PathVariable("id") Long id) {
         return mentorService.getMentorById(id);
