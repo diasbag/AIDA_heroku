@@ -7,6 +7,8 @@ import com.hackathon.mentor.service.EmitterService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,17 +20,18 @@ public class NotificationsController {
 
     private final EmitterService emitterService;
     @GetMapping("/subscription")
-    public SSEEmitter subscribe() {
-        return emitterService.addEmitter();
+    public ResponseEntity<?> subscribe() {
+        return ResponseEntity.ok("subscribed");
     }
     @GetMapping("/get_emitter")
     public SSEEmitter getSubscription(@RequestParam Long id) {
         return emitterService.getEmitter(id);
     }
-    @PostMapping("/{id}")
-    public ResponseEntity<?> sendToRateNotification(@PathVariable Long id, @RequestBody NotificationRequest request) {
-        emitterService.sendToRateNotification(id, request.getTopic(), request.getMessage());
-        return ResponseEntity.ok().body("message pushed to user " + id);
+
+    @PostMapping("/send")
+    public ResponseEntity<?> sendToRateNotification(@RequestParam Long raterId, Long toRateID) {
+        emitterService.sendToRateNotification(raterId, toRateID);
+        return ResponseEntity.ok().body("message pushed to user " + toRateID);
     }
 
 }
