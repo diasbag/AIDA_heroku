@@ -84,4 +84,17 @@ public class MailService {
         }
         log.info("emails with report notifications were sent <<<");
     }
+
+    public void sendPasswordResetMail(String email, String url) {
+        log.info("sending message to Mentee...");
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(from);
+        message.setTo(email);
+        message.setSubject("Reset password Talim.kz");
+        message.setText("To reset your password, click the link below:\n" + url);
+
+        mailSender.send(message);
+        log.info("Vse normal'no rabotaet huli noesh'");
+    }
+
 }

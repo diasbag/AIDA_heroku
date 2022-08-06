@@ -34,7 +34,10 @@ public class MenteeServiceImpl implements MenteeService {
     private final ModelMapper modelMapper = new ModelMapper();
 
     private final SubscribeRepository subscribeRepository;
+
+    private final MentorHistoryRepository mentorHistoryRepository;
     private final RatingNotificationRepository ratingNotificationRepository;
+
     @Override
     public ResponseEntity<?> getAllMentees() {
         List<Mentee> mentees = menteeRepository.getAll();
@@ -83,6 +86,9 @@ public class MenteeServiceImpl implements MenteeService {
                                 " and mentee - " + mentee));
         RatingNotification ratingNotification = ratingNotificationList.get(ratingNotificationList.size() - 1);
         ratingNotification.setDateOfEnd(Date.from(Instant.now()));
+        MentorHistory mentorHistory = mentorHistoryRepository.findByMentorAndMentee(mentor, mentee);
+        mentorHistory.setEndDate(Date.from(Instant.now()));
+        mentorHistoryRepository.save(mentorHistory);
         ratingNotificationRepository.save(ratingNotification);
         menteeRepository.save(mentee);
         mentorRepository.save(mentor);

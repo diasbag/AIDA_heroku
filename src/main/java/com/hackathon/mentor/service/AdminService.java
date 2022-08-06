@@ -1,5 +1,6 @@
 package com.hackathon.mentor.service;
 
+import com.hackathon.mentor.models.MentorHistory;
 import com.hackathon.mentor.models.User;
 
 import java.util.List;
@@ -12,4 +13,7 @@ public interface AdminService {
     List<User> findAllAdmins();
 
     void deactivateAccount(String email);
+
+    List<MentorHistory> getMentorsHistory();
+
 }

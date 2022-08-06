@@ -69,6 +69,9 @@ public class User {
 	@Column(name = "registration_date")
 	private Date registrationDate;
 
+	@Column(name = "reset_token")
+	private String resetToken;
+
 	public User() {
 	}
 
