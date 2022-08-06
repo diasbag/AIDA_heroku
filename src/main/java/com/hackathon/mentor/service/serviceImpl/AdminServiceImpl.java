@@ -3,8 +3,10 @@ package com.hackathon.mentor.service.serviceImpl;
 import com.hackathon.mentor.exceptions.AccountBadRequest;
 import com.hackathon.mentor.exceptions.AccountNotFound;
 import com.hackathon.mentor.models.ERole;
+import com.hackathon.mentor.models.MentorHistory;
 import com.hackathon.mentor.models.Role;
 import com.hackathon.mentor.models.User;
+import com.hackathon.mentor.repository.MentorHistoryRepository;
 import com.hackathon.mentor.repository.RoleRepository;
 import com.hackathon.mentor.repository.UserRepository;
 import com.hackathon.mentor.service.AdminService;
@@ -24,6 +26,8 @@ import java.util.List;
 public class AdminServiceImpl implements AdminService {
     private  final UserRepository userRepository;
     private final RoleRepository roleRepository;
+
+    private final MentorHistoryRepository mentorHistoryRepository;
     private final PasswordEncoder encoder;
     @Override
     public void createAdmin() {
@@ -82,5 +86,10 @@ public class AdminServiceImpl implements AdminService {
         user.setStatus(false);
         userRepository.save(user);
         log.info("account was deactivated: " + email);
+    }
+
+    @Override
+    public List<MentorHistory> getMentorsHistory() {
+        return mentorHistoryRepository.findAll();
     }
 }

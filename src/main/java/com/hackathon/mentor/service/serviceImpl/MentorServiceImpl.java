@@ -12,6 +12,9 @@ import com.hackathon.mentor.utils.MailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -36,8 +39,9 @@ public class MentorServiceImpl implements MentorService {
     private final SubscribeRepository subscribeRepository;
     private final RatingNotificationRepository ratingNotificationRepository;
 
-    private final MailService mailService;
-    private final SkillsRepository skillsRepository;
+    private final MentorHistoryRepository mentorHistoryRepository;
+
+    private MailService mailService;
     private final ModelMapper modelMapper = new ModelMapper();
 
     @Override
@@ -57,11 +61,12 @@ public class MentorServiceImpl implements MentorService {
     }
 
     @Override
-    public ResponseEntity<?> getMentors() {
+    public ResponseEntity<?> getMentors(Integer page) {
         log.info("getting all mentors ...");
-        List<Mentor> mentors = mentorRepository.getAll();
+        Pageable paging =  PageRequest.of(page, 10);
+        Page<Mentor>  pageMentors = mentorRepository.findAll(paging);
         List<MentorsResponse> mentorsResponseList = new ArrayList<>();
-        for (Mentor mentor : mentors) {
+        for (Mentor mentor : pageMentors) {
             MentorsResponse mentorsResponse = modelMapper.map(mentor.getUser(), MentorsResponse.class);
             modelMapper.map(mentor, mentorsResponse);
             mentorsResponse.setPassword(null);
@@ -153,7 +158,12 @@ public class MentorServiceImpl implements MentorService {
         mentor.getMentees().add(mentee);
         mentee.setMentor(mentor);
         RatingNotification ratingNotification = new RatingNotification(mentor, mentee);
+        MentorHistory mentorHistory = new MentorHistory();
         ratingNotification.setDateOfStart(Date.from(Instant.now()));
+        mentorHistory.setMentor(mentor);
+        mentorHistory.setMentee(mentee);
+        mentorHistory.setStartDate(Date.from(Instant.now()));
+        mentorHistoryRepository.save(mentorHistory);
         ratingNotificationRepository.save(ratingNotification);
         menteeRepository.save(mentee);
         mentorRepository.save(mentor);
@@ -200,6 +210,9 @@ public class MentorServiceImpl implements MentorService {
                         "rating notification mentor - " + mentor + " and mentee - " + mentee));
         RatingNotification ratingNotification = ratingNotificationList.get(ratingNotificationList.size() - 1);
         ratingNotification.setDateOfEnd(Date.from(Instant.now()));
+        MentorHistory mentorHistory = mentorHistoryRepository.findByMentorAndMentee(mentor, mentee);
+        mentorHistory.setEndDate(Date.from(Instant.now()));
+        mentorHistoryRepository.save(mentorHistory);
         ratingNotificationRepository.save(ratingNotification);
         mentor.getMentees().remove(mentee);
         mentee.setMentor(null);
@@ -211,6 +224,4 @@ public class MentorServiceImpl implements MentorService {
         log.info("Mentee has been removed!!!");
         return new ResponseEntity<>(mentor, HttpStatus.OK);
     }
-
-
 }

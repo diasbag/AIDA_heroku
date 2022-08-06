@@ -2,15 +2,18 @@ package com.hackathon.mentor.controllers;
 
 import java.security.Principal;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import com.hackathon.mentor.models.*;
+import com.hackathon.mentor.payload.request.ResetPassRequest;
 import com.hackathon.mentor.payload.request.SignupUpdateMenteeRequest;
 import com.hackathon.mentor.payload.request.SignupUpdateMentorRequest;
 import com.hackathon.mentor.repository.UserRepository;
 import com.hackathon.mentor.service.AuthenticationService;
 import com.hackathon.mentor.service.RegistrationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,5 +53,15 @@ public class AuthController {
 	public ResponseEntity<?> getRole(Principal principal) {
 		User user = userRepository.getByEmail(principal.getName());
 		return ResponseEntity.ok(user.getRoles());
+	}
+
+	@PostMapping("/forgot")
+	public ResponseEntity<?> forgotPassword(@RequestParam("email") String email, HttpServletRequest request) {
+		return registrationService.forgotPassword(email, request);
+	}
+
+	@PostMapping("/reset")
+	public ResponseEntity<?> resetPassword(@RequestBody ResetPassRequest request) {
+		return registrationService.resetPassword(request);
 	}
 }
