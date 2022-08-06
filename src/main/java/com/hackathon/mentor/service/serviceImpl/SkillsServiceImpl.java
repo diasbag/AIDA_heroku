@@ -18,7 +18,7 @@ public class SkillsServiceImpl implements SkillsService {
     @Override
     public List<Skills> getListOfSKills(String partOfSkill) {
         log.info("retrieving skill by part of the string ...");
-        List<Skills> skills = skillsRepository.findAllBySkillContaining(partOfSkill);
+        List<Skills> skills = skillsRepository.findAllBySkillContaining(partOfSkill.toLowerCase());
         log.info("skills were retrieved <<<");
         return skills;
     }
@@ -27,7 +27,7 @@ public class SkillsServiceImpl implements SkillsService {
     public void postListOfSKills(String[] skills) {
         log.info("saving new array of skills ...");
         for (String skill: skills) {
-            Skills skillDB = new Skills(skill);
+            Skills skillDB = new Skills(skill.toLowerCase());
             skillsRepository.save(skillDB);
         }
         log.info("array of skills was saved <<<");
@@ -44,9 +44,9 @@ public class SkillsServiceImpl implements SkillsService {
     @Override
     public void editSkill(String oldSkill, String newSkill) {
         log.info("editing skill ...");
-        Skills skill = skillsRepository.findBySkill(oldSkill). orElseThrow(() -> new AccountNotFound(
+        Skills skill = skillsRepository.findBySkill(oldSkill.toLowerCase()). orElseThrow(() -> new AccountNotFound(
                 "skill - " + oldSkill));
-        skill.setSkill(newSkill);
+        skill.setSkill(newSkill.toLowerCase());
         skillsRepository.save(skill);
         log.info("skill was edited - " + oldSkill + " to " + newSkill + " <<<");
     }
@@ -54,7 +54,7 @@ public class SkillsServiceImpl implements SkillsService {
     @Override
     public void deleteSkill(String skill) {
         log.info("started deleting of a skill ..");
-        Skills skillForErase = skillsRepository.findBySkill(skill).orElseThrow(() -> new AccountNotFound(
+        Skills skillForErase = skillsRepository.findBySkill(skill.toLowerCase()).orElseThrow(() -> new AccountNotFound(
                 "skill - " + skill));
         skillsRepository.delete(skillForErase);
         log.info("skill was deleted <<<");
@@ -63,7 +63,7 @@ public class SkillsServiceImpl implements SkillsService {
     @Override
     public void postOneSKills(String skill) {
         log.info("saving new skill ...");
-        Skills skillDB = new Skills(skill);
+        Skills skillDB = new Skills(skill.toLowerCase());
         skillsRepository.save(skillDB);
         log.info("new skill was saved <<<");
     }

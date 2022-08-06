@@ -27,7 +27,7 @@ public class SkillsController {
     @PostMapping("/post")
     public ResponseEntity<?> postListOfSkills(@RequestParam @NotBlank @NotNull String[] skills) {
         skillsService.postListOfSKills(skills);
-        return ResponseEntity.ok("skill was saved");
+        return ResponseEntity.ok("skills were saved");
     }
     @PostMapping("/post_one")
     public ResponseEntity<?> postOneSkills(@RequestParam @NotBlank @NotNull String skill) {
