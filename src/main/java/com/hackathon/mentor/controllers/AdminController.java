@@ -1,5 +1,6 @@
 package com.hackathon.mentor.controllers;
 
+import com.hackathon.mentor.models.MentorHistory;
 import com.hackathon.mentor.models.User;
 import com.hackathon.mentor.payload.request.SignupAdminRequest;
 import com.hackathon.mentor.service.AdminService;
@@ -40,4 +41,12 @@ public class AdminController {
         adminService.deactivateAccount(email);
         return ResponseEntity.ok("Account "+ email + "is deactivated");
     }
+
+    @GetMapping("/mentors/history")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<MentorHistory> getMentorsHistory() {
+        return adminService.getMentorsHistory();
+    }
+
+
 }
