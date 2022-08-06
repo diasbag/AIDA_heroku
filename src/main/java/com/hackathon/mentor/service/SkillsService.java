@@ -10,4 +10,10 @@ public interface SkillsService {
     void postListOfSKills(String[] skill);
 
     List<Skills> getAllSkills();
+
+    void editSkill(String oldSkill, String newSkill);
+
+    void deleteSkill(String skill);
+
+    void postOneSKills(String skill);
 }
