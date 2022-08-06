@@ -47,6 +47,7 @@ public class RatingServiceImpl implements RatingService {
         Mentor mentor;
         Mentee mentee;
         User userForRating;
+        RatingNotification ratingNotification;
         if (role.equals(ERole.ROLE_MENTOR)) {
             mentor = mentorRepository.findByUser(user).orElseThrow(() ->
                     new AccountNotFound("user with email " + email));
@@ -57,7 +58,7 @@ public class RatingServiceImpl implements RatingService {
                     ratingNotificationRepository.findRatingNotificationByMentorAndMentee(mentor, mentee).orElseThrow(
                             () -> new AccountNotFound("rating notification with mentor - " + mentor +
                                     " and mentee - " + mentee));
-            RatingNotification ratingNotification = ratingNotificationList.get(ratingNotificationList.size() - 1);
+            ratingNotification = ratingNotificationList.get(ratingNotificationList.size() - 1);
             if (!ratingNotification.getMentorRated()) {
                 ratingNotification.setMentorRated(true);
                 ratingNotificationRepository.save(ratingNotification);
@@ -73,7 +74,7 @@ public class RatingServiceImpl implements RatingService {
                             () -> new AccountNotFound("rating notification with mentor - " + mentor +
                                     " and mentee - " + mentee)
                     );
-            RatingNotification ratingNotification = ratingNotificationList.get(ratingNotificationList.size() - 1);
+            ratingNotification = ratingNotificationList.get(ratingNotificationList.size() - 1);
             if (!ratingNotification.getMenteeRated()) {
                 ratingNotification.setMenteeRated(true);
                 ratingNotificationRepository.save(ratingNotification);
@@ -123,7 +124,13 @@ public class RatingServiceImpl implements RatingService {
         }
         userRepository.save(userForRating);
         log.info("user was rated - " + user + " <<<");
-        return new ResponseEntity<>("Success", HttpStatus.OK);
+        Long returnID;
+        if (ratingNotification.getMentorRated()) {
+            returnID = ratingNotification.getMentee().getId();
+        } else {
+            returnID = ratingNotification.getMentor().getId();
+        }
+        return new ResponseEntity<>(returnID, HttpStatus.OK);
     }
 
     @Override

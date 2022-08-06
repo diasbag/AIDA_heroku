@@ -10,6 +10,7 @@ import java.util.Objects;
 
 @Entity
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 public class SSEEmitter {

@@ -1,12 +1,11 @@
 package com.hackathon.mentor.service;
 
 import com.hackathon.mentor.models.SSEEmitter;
-import com.hackathon.mentor.models.SerializableSSE;
 
 public interface EmitterService {
-    SSEEmitter addEmitter();
+    void addEmitter();
 
-    void sendToRateNotification(Long id, String name, String message);
+    void sendToRateNotification(Long id, Long toRateID);
 
     SSEEmitter getEmitter(Long id);
 }
