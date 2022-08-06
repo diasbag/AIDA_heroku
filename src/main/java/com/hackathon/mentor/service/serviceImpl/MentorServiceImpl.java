@@ -76,7 +76,7 @@ public class MentorServiceImpl implements MentorService {
             mentorsResponse.setMenteesCount(mentor.getMentees().size());
             mentorsResponseList.add(mentorsResponse);
             result.put("mentors", mentorsResponseList);
-            result.put("totalPage:", pageMentors.getTotalPages());
+            result.put("totalPages", pageMentors.getTotalPages());
         }
         log.info("got all mentors " + mentorsResponseList + " <<<");
         return new ResponseEntity<>(result, HttpStatus.OK);
