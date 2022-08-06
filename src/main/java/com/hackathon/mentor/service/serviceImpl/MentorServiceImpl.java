@@ -63,7 +63,7 @@ public class MentorServiceImpl implements MentorService {
     @Override
     public ResponseEntity<?> getMentors(Integer page) {
         log.info("getting all mentors ...");
-        Pageable paging =  PageRequest.of(page-1, 10);
+        Pageable paging =  PageRequest.of(page, 10);
         Page<Mentor>  pageMentors = mentorRepository.findAll(paging);
         List<MentorsResponse> mentorsResponseList = new ArrayList<>();
         for (Mentor mentor : pageMentors) {
