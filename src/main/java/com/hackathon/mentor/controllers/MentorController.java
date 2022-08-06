@@ -22,8 +22,8 @@ public class MentorController {
     private final MentorServiceImpl mentorService;
 
     @GetMapping("/mentors")
-    public ResponseEntity<?> getMentors() {
-        return mentorService.getMentors();
+    public ResponseEntity<?> getMentors(@RequestParam Integer page) {
+        return mentorService.getMentors(page);
     }
 
     @GetMapping("/mentors/{id}")
