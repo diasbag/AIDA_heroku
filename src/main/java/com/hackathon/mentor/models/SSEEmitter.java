@@ -5,15 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 @AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
 public class SSEEmitter {
@@ -21,6 +17,12 @@ public class SSEEmitter {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private SerializableSSE sseEmitter;
+    @OneToOne
+    private User user;
+
+    public SSEEmitter(SerializableSSE sseEmitter) {
+        this.sseEmitter = sseEmitter;
+    }
 
     @Override
     public boolean equals(Object o) {
