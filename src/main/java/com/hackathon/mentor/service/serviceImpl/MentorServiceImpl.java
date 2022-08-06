@@ -12,6 +12,9 @@ import com.hackathon.mentor.utils.MailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -58,11 +61,12 @@ public class MentorServiceImpl implements MentorService {
     }
 
     @Override
-    public ResponseEntity<?> getMentors() {
+    public ResponseEntity<?> getMentors(Integer page) {
         log.info("getting all mentors ...");
-        List<Mentor> mentors = mentorRepository.getAll();
+        Pageable paging =  PageRequest.of(page, 10);
+        Page<Mentor>  pageMentors = mentorRepository.findAll(paging);
         List<MentorsResponse> mentorsResponseList = new ArrayList<>();
-        for (Mentor mentor : mentors) {
+        for (Mentor mentor : pageMentors) {
             MentorsResponse mentorsResponse = modelMapper.map(mentor.getUser(), MentorsResponse.class);
             modelMapper.map(mentor, mentorsResponse);
             mentorsResponse.setPassword(null);
