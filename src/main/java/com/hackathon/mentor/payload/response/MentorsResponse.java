@@ -19,5 +19,4 @@ public class MentorsResponse extends MentorResponseSuper{
 
     private Long id;
     private User user;
-
 }

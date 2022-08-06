@@ -23,7 +23,9 @@ import javax.transaction.Transactional;
 import java.sql.Date;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -66,15 +68,18 @@ public class MentorServiceImpl implements MentorService {
         Pageable paging =  PageRequest.of(page, 10);
         Page<Mentor>  pageMentors = mentorRepository.findAll(paging);
         List<MentorsResponse> mentorsResponseList = new ArrayList<>();
+        Map<String, Object> result = new HashMap<>();
         for (Mentor mentor : pageMentors) {
             MentorsResponse mentorsResponse = modelMapper.map(mentor.getUser(), MentorsResponse.class);
             modelMapper.map(mentor, mentorsResponse);
             mentorsResponse.setPassword(null);
             mentorsResponse.setMenteesCount(mentor.getMentees().size());
             mentorsResponseList.add(mentorsResponse);
+            result.put("mentors", mentorsResponseList);
+            result.put("totalPage:", pageMentors.getTotalPages());
         }
         log.info("got all mentors " + mentorsResponseList + " <<<");
-        return new ResponseEntity<>(mentorsResponseList, HttpStatus.OK);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @Override
