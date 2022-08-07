@@ -34,6 +34,7 @@ public class EmitterServiceImpl implements EmitterService {
         SSEEmitter forRepo = sseEmitterRepository.findByUser(user).orElse(new SSEEmitter(
                 new SerializableSSE(24 * 60 * 60 * 1000L)));
         SerializableSSE sseEmitter = forRepo.getSseEmitter();
+        forRepo.setUser(user);
         sseEmitter.onCompletion(() -> sseEmitterRepository.deleteBySseEmitter(sseEmitter));
         sseEmitter.onTimeout(() -> sseEmitterRepository.deleteBySseEmitter(sseEmitter));
         forRepo.setSseEmitter(sseEmitter);
