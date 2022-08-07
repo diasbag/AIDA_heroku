@@ -1,6 +1,7 @@
 package com.hackathon.mentor.controllers;
 
-import com.hackathon.mentor.models.MentorHistory;
+//import com.hackathon.mentor.models.MentorHistory;
+import com.hackathon.mentor.models.RatingNotification;
 import com.hackathon.mentor.models.User;
 import com.hackathon.mentor.payload.request.SignupAdminRequest;
 import com.hackathon.mentor.service.AdminService;
@@ -44,7 +45,7 @@ public class AdminController {
 
     @GetMapping("/mentors/history")
     @PreAuthorize("hasRole('ADMIN')")
-    public List<MentorHistory> getMentorsHistory() {
+    public List<RatingNotification> getMentorsHistory() {
         return adminService.getMentorsHistory();
     }
 
