@@ -103,19 +103,24 @@ public class RecommendationsServiceImpl implements RecommendationsService {
             out.addAll(majorsSet);
             out.addAll(majorsUniversity);
         }
+        List<Mentor> result = null;
         if (out.size() > 9) {
-            out.subList(0, 9);
+            result = out.subList(0, 9);
         } else {
             List <Mentor> filling = mentorRepository.findAll();
             filling.removeAll(out);
             out.addAll(filling);
             if (out.size() > 9) {
-                out.subList(0, 9);
+                result = out.subList(0, 9);
             }
         }
-        out.remove(mentor);
+        if (result != null) {
+            result.remove(mentor);
+        } else {
+            return null;
+        }
         List<MentorsResponse> outWrapped = new ArrayList<>();
-        for (Mentor mentorForWrap: out) {
+        for (Mentor mentorForWrap: result) {
             MentorsResponse mentorsResponse = modelMapper.map(mentorForWrap.getUser(), MentorsResponse.class);
             modelMapper.map(mentorForWrap, mentorsResponse);
             outWrapped.add(mentorsResponse);
