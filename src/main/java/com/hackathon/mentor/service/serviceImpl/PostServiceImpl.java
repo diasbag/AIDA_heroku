@@ -9,6 +9,7 @@ import com.hackathon.mentor.payload.response.PostResponse;
 import com.hackathon.mentor.repository.ImageRepository;
 import com.hackathon.mentor.repository.PostRepository;
 import com.hackathon.mentor.repository.UserRepository;
+import com.hackathon.mentor.service.EmitterService;
 import com.hackathon.mentor.service.PostService;
 import com.hackathon.mentor.utils.FileNameHelper;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final ImageRepository imageRepository;
     private final UserRepository userRepository;
+    private final EmitterService emitterService;
     private final FileNameHelper fileHelper = new FileNameHelper();
     @Override
     public List<PostResponse> getPosts() {
@@ -67,7 +69,8 @@ public class PostServiceImpl implements PostService {
         post.setTitle(postRequest.getTitle());
         post.setArticle(postRequest.getArticle());
         post.setDate(Date.from(Instant.now()));
-        postRepository.save(post);
+        Post post1 = postRepository.save(post);
+        emitterService.sendNews(post1.getId());
         log.info("post was created <<<");
         return post;
     }
