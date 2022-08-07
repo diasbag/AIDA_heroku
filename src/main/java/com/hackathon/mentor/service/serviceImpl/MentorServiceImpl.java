@@ -41,9 +41,8 @@ public class MentorServiceImpl implements MentorService {
     private final SubscribeRepository subscribeRepository;
     private final RatingNotificationRepository ratingNotificationRepository;
 
-    private final MentorHistoryRepository mentorHistoryRepository;
+//    private final MentorHistoryRepository mentorHistoryRepository;
 
-    private MailService mailService;
     private final ModelMapper modelMapper = new ModelMapper();
 
     @Override
@@ -163,12 +162,12 @@ public class MentorServiceImpl implements MentorService {
         mentor.getMentees().add(mentee);
         mentee.setMentor(mentor);
         RatingNotification ratingNotification = new RatingNotification(mentor, mentee);
-        MentorHistory mentorHistory = new MentorHistory();
+//        MentorHistory mentorHistory = new MentorHistory();
         ratingNotification.setDateOfStart(Date.from(Instant.now()));
-        mentorHistory.setMentor(mentor);
-        mentorHistory.setMentee(mentee);
-        mentorHistory.setStartDate(Date.from(Instant.now()));
-        mentorHistoryRepository.save(mentorHistory);
+//        mentorHistory.setMentor(mentor);
+//        mentorHistory.setMentee(mentee);
+//        mentorHistory.setStartDate(Date.from(Instant.now()));
+//        mentorHistoryRepository.save(mentorHistory);
         ratingNotificationRepository.save(ratingNotification);
         menteeRepository.save(mentee);
         mentorRepository.save(mentor);
@@ -215,9 +214,9 @@ public class MentorServiceImpl implements MentorService {
                         "rating notification mentor - " + mentor + " and mentee - " + mentee));
         RatingNotification ratingNotification = ratingNotificationList.get(ratingNotificationList.size() - 1);
         ratingNotification.setDateOfEnd(Date.from(Instant.now()));
-        MentorHistory mentorHistory = mentorHistoryRepository.findByMentorAndMentee(mentor, mentee);
-        mentorHistory.setEndDate(Date.from(Instant.now()));
-        mentorHistoryRepository.save(mentorHistory);
+//        MentorHistory mentorHistory = mentorHistoryRepository.findByMentorAndMentee(mentor, mentee);
+//        mentorHistory.setEndDate(Date.from(Instant.now()));
+//        mentorHistoryRepository.save(mentorHistory);
         ratingNotificationRepository.save(ratingNotification);
         mentor.getMentees().remove(mentee);
         mentee.setMentor(null);
