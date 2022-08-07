@@ -7,6 +7,7 @@ import com.hackathon.mentor.payload.request.SignupUpdateMentorRequest;
 import com.hackathon.mentor.payload.response.MentorProfileResponse;
 import com.hackathon.mentor.payload.response.MentorsResponse;
 import com.hackathon.mentor.repository.*;
+import com.hackathon.mentor.service.EmitterService;
 import com.hackathon.mentor.service.MentorService;
 import com.hackathon.mentor.utils.MailService;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +45,7 @@ public class MentorServiceImpl implements MentorService {
 //    private final MentorHistoryRepository mentorHistoryRepository;
 
     private final MailService mailService;
+    private final EmitterService emitterService;
     private final ModelMapper modelMapper = new ModelMapper();
 
     @Override
@@ -174,6 +176,7 @@ public class MentorServiceImpl implements MentorService {
         mentorRepository.save(mentor);
         Long sid = subscribe.getId();
         subscribeRepository.deleteById(sid);
+        emitterService.confirmationNotification(mentor.getId(), mentee.getId());
         log.info("Mentor confirmed mentee " + mentor + " + " + " <<<");
         return new ResponseEntity<>("Success!!!", HttpStatus.OK);
     }
