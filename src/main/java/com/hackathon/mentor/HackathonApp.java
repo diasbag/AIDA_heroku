@@ -28,6 +28,7 @@ public class HackathonApp implements CommandLineRunner {
 	public void run(String... arg0) {
 		userService.initRoles();
 		adminService.createAdmin();
+//		userService.setPasswords();
 	}
 
 

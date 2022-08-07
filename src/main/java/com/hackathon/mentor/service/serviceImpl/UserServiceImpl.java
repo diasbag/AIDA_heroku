@@ -10,6 +10,7 @@ import com.hackathon.mentor.repository.UserRepository;
 import com.hackathon.mentor.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
 
     private final UserRepository userRepository;
+    private final PasswordEncoder encoder;
 
     private final MentorRepository mentorRepository;
     private final String[] firstName =  new String[] { "Adam", "Alex", "Aaron", "Ben", "Carl", "Dan", "David", "Edward",
@@ -84,6 +86,14 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public void setPasswords() {
+        List<User> users = userRepository.findAll();
+        for (User user: users) {
+            user.setPassword(encoder.encode("Alex@345"));
+            userRepository.save(user);
+        }
+    }
 
 
 }
