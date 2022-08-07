@@ -7,6 +7,8 @@ import com.hackathon.mentor.repository.*;
 import com.hackathon.mentor.service.EmitterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -18,12 +20,14 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@EnableAsync
 public class EmitterServiceImpl implements EmitterService {
     private final SSEEmitterRepository sseEmitterRepository;
     private final UserRepository userRepository;
     private final MentorRepository mentorRepository;
     private final MenteeRepository menteeRepository;
     private final PostRepository postRepository;
+    @Async
     public SerializableSSE addEmitter(String email) {
         log.info("subscribing to notifications ...");
         User user= userRepository.findByEmail(email).orElseThrow(() -> new AccountNotFound("user - " + email));
@@ -37,7 +41,9 @@ public class EmitterServiceImpl implements EmitterService {
         return sseEmitter;
 
     }
+    @Async
     @Override
+
     public void sendToRateNotification(Long raterID, Long toRateID, boolean raterIsMentor) {
         log.info("pushing {} notification for user {}", "notification for rating", raterID);
         Mentor mentor = null;
@@ -74,7 +80,7 @@ public class EmitterServiceImpl implements EmitterService {
         log.info("to rate notification was sent <<<");
     }
 
-
+    @Async
     @Override
     public void sendNews(Long newsID) {
         log.info("sending news started ...");
@@ -93,7 +99,7 @@ public class EmitterServiceImpl implements EmitterService {
         }
         log.info("news were sent <<<");
     }
-
+    @Async
     @Override
     public void sendSubscriptionNotification(Long mentorID, Long menteeID) {
         log.info("pushing {} notification for user {}", "\"subscription\"", mentorID);
@@ -113,7 +119,7 @@ public class EmitterServiceImpl implements EmitterService {
         }
         log.info("subscription notification was sent <<<");
     }
-
+    @Async
     @Override
     public void confirmationNotification(Long mentorID, Long menteeID) {
         log.info("pushing {} notification for user {}", "\"confirmation\"", mentorID);
