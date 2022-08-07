@@ -9,6 +9,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 //@EnableSwagger2
 @SpringBootApplication
@@ -17,7 +21,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 		SecuritySchemeIn.HEADER)
 //@EnableSwagger2
 @RequiredArgsConstructor
-public class HackathonApp implements CommandLineRunner {
+public class HackathonApp implements CommandLineRunner, WebMvcConfigurer {
 	private final AdminService adminService;
 	private final UserService userService;
 
@@ -31,6 +35,18 @@ public class HackathonApp implements CommandLineRunner {
 //		userService.setPasswords();
 	}
 
+	@Override
+	public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
+		configurer.setTaskExecutor(mvcTaskExecutor());
+		configurer.setDefaultTimeout(30_000);
+	}
+
+	@Bean
+	public ThreadPoolTaskExecutor mvcTaskExecutor() {
+		ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
+		taskExecutor.setThreadNamePrefix("mvc-task-");
+		return taskExecutor;
+	}
 
 
 }
