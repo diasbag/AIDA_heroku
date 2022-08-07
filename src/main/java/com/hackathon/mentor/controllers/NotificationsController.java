@@ -27,7 +27,7 @@ public class NotificationsController {
         httpServletResponse.addHeader("charset","UTF-8");
         String email =  jwtUtils.getUserNameFromJwtToken(token);
         emitterService.addEmitter(email);
-        return "OK";
+        return "ne OK";
     }
 
     @PostMapping("/send_to_rate")
