@@ -21,7 +21,7 @@ public class NotificationsController {
 
     @PostMapping("/send_to_rate")
     public ResponseEntity<?> sendToRateNotification(@RequestParam Long raterId, Long toRateID) {
-        emitterService.sendToRateNotification(raterId, toRateID);
+        emitterService.sendToRateNotification(raterId, toRateID, true);
         return ResponseEntity.ok().body("message pushed to user " + toRateID);
     }
 

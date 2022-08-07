@@ -5,6 +5,7 @@ import com.hackathon.mentor.exceptions.AccountNotFound;
 import com.hackathon.mentor.models.*;
 import com.hackathon.mentor.payload.request.RatingRequest;
 import com.hackathon.mentor.repository.*;
+import com.hackathon.mentor.service.EmitterService;
 import com.hackathon.mentor.service.RatingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,7 @@ public class RatingServiceImpl implements RatingService {
 
     private final CommentRepository commentRepository;
     private final RatingNotificationRepository ratingNotificationRepository;
+    private final EmitterService emitterService;
     private final ModelMapper modelMapper = new ModelMapper();
     @Transactional
     @Override
@@ -63,6 +65,7 @@ public class RatingServiceImpl implements RatingService {
                 ratingNotification.setMentorRated(true);
                 ratingNotificationRepository.save(ratingNotification);
             }
+            emitterService.sendToRateNotification(mentor.getId(), id, true);
         } else if (role.equals(ERole.ROLE_MENTEE)){
             mentee = menteeRepository.findByUser(user).orElseThrow(() ->
                     new AccountNotFound("user - " + user));
@@ -79,6 +82,7 @@ public class RatingServiceImpl implements RatingService {
                 ratingNotification.setMenteeRated(true);
                 ratingNotificationRepository.save(ratingNotification);
             }
+            emitterService.sendToRateNotification(mentee.getId(), id, false);
         } else {
             return new ResponseEntity<>("Wrong role", HttpStatus.CONFLICT);
         }
@@ -123,6 +127,7 @@ public class RatingServiceImpl implements RatingService {
             userForRating.setRating(rating);
         }
         userRepository.save(userForRating);
+
         log.info("user was rated - " + user + " <<<");
         Long returnID;
         if (ratingNotification.getMentorRated()) {
