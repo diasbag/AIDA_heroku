@@ -88,16 +88,14 @@ public class MentorServiceImpl implements MentorService {
 
 
     @Override
-    public ResponseEntity<?> filtration(FilterRequest request, Integer page) {
+    public ResponseEntity<?> filtration(String university, String country, String major, Integer page) {
         List<MentorsResponse> mentors = new ArrayList<>();
-        String university = request.getUniversity();
-        String country = request.getCountry();
-        String major = request.getMajor();
-        Pageable paging =  PageRequest.of(page, 10);
+
+        Pageable paging =  PageRequest.of(page, 8);
         Page<Mentor>  pageMentors = null;
         if (university != null && country != null && major != null) {
             pageMentors = mentorRepository
-                    .findByBachelorsUniversityContainingIgnoreCaseAndCountryOfResidenceAndBachelorsMajor(university,
+                    .findByBachelorsUniversityStartingWithIgnoreCaseAndCountryOfResidenceAndBachelorsMajor(university,
                             country,
                             major, paging);
         }
@@ -105,18 +103,18 @@ public class MentorServiceImpl implements MentorService {
             pageMentors = mentorRepository.findByCountryOfResidenceAndBachelorsMajor(country, major, paging);
         }
         if (university != null && country == null && major != null) {
-            pageMentors = mentorRepository.findByBachelorsUniversityContainingIgnoreCaseAndBachelorsMajor(university, major, paging);
+            pageMentors = mentorRepository.findByBachelorsUniversityStartingWithIgnoreCaseAndBachelorsMajor(university, major, paging);
         }
         if (university != null && country != null && major == null) {
             pageMentors = mentorRepository
-                    .findByBachelorsUniversityContainingIgnoreCaseAndCountryOfResidence(university,
+                    .findByBachelorsUniversityStartingWithIgnoreCaseAndCountryOfResidence(university,
                             country, paging);
         }
         if (university == null && country != null && major == null) {
             pageMentors = mentorRepository.findByCountryOfResidence(country, paging);
         }
         if (university != null && country == null && major == null) {
-            pageMentors =  mentorRepository.getMentorByBachelorsUniversityContainingIgnoreCase(university, paging);
+            pageMentors =  mentorRepository.getMentorByBachelorsUniversityStartingWithIgnoreCase(university, paging);
         }
         if (university == null && country == null && major != null) {
             pageMentors = mentorRepository.getMentorByBachelorsMajor(major, paging);
@@ -203,9 +201,21 @@ public class MentorServiceImpl implements MentorService {
     }
 
     @Override
-    public ResponseEntity<?> getMentorByUniversity(String university) {
-        List<Mentor> mentors = mentorRepository.findByBachelorsUniversityContainingIgnoreCase(university);
-        return new ResponseEntity<>(mentors, HttpStatus.OK);
+    public ResponseEntity<?> getMentorByUniversity(String university, Integer page) {
+        List<MentorsResponse> mentors = new ArrayList<>();
+        Pageable paging =  PageRequest.of(page, 8);
+        Page<Mentor> mentorPage = mentorRepository.findByBachelorsUniversityStartingWithIgnoreCase(university, paging);
+        Map<String, Object> result = new HashMap<>();
+        for (Mentor mentor : mentorPage) {
+            MentorsResponse mentorsResponse = modelMapper.map(mentor.getUser(), MentorsResponse.class);
+            modelMapper.map(mentor, mentorsResponse);
+            mentorsResponse.setPassword(null);
+            mentorsResponse.setMenteesCount(mentor.getMentees().size());
+            mentors.add(mentorsResponse);
+            result.put("mentors", mentors);
+            result.put("totalPages", mentorPage.getTotalPages());
+        }
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 

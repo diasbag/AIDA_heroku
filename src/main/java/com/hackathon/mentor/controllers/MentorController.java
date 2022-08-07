@@ -61,13 +61,16 @@ public class MentorController {
     }
 
     @GetMapping("/mentors/filter/university")
-    public ResponseEntity<?> getByUniversity(@RequestBody FilterRequest request) {
-        return mentorService.getMentorByUniversity(request.getUniversity());
+    public ResponseEntity<?> getByUniversity(@RequestParam String university, @RequestParam Integer page) {
+        return mentorService.getMentorByUniversity(university, page);
     }
 
     @GetMapping("/mentors/filter")
-    public ResponseEntity<?> getFilteredMentor(@RequestBody FilterRequest request, @RequestParam("page") Integer page) {
-        return mentorService.filtration(request, page);
+    public ResponseEntity<?> getFilteredMentor(@RequestParam(required = false) String university,
+                                               @RequestParam(required = false) String country,
+                                               @RequestParam(required = false) String major,
+                                               @RequestParam("page") Integer page) {
+        return mentorService.filtration(university, country, major, page);
     }
     @PostMapping("/mentor/mentee/{id}/reject")
     public ResponseEntity<?> reject(@PathVariable("id") Long id) {
