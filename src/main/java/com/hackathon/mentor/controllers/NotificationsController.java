@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,9 +19,9 @@ public class NotificationsController {
     private final EmitterService emitterService;
     private final JwtUtils jwtUtils;
     @GetMapping("/subscription")
-    public SerializableSSE subscribe(@RequestParam String token) {
+    public SseEmitter subscribe(@RequestParam String token) {
         String email =  jwtUtils.getUserNameFromJwtToken(token);
-        return emitterService.addEmitter(email);
+        return (SseEmitter) emitterService.addEmitter(email);
     }
 
     @PostMapping("/send_to_rate")
