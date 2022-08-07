@@ -92,6 +92,8 @@ public class EmitterServiceImpl implements EmitterService {
             try {
                 sseEmitter.getSseEmitter().send(SseEmitter
                         .event()
+                        .id("1")
+                        .comment("asjdnakjsdnas")
                         .name("news")
                         .data("check news with id: " + post.getId() + ". Post - " + post));
 
@@ -113,6 +115,8 @@ public class EmitterServiceImpl implements EmitterService {
         try {
             sseEmitter.getSseEmitter().send(SseEmitter
                     .event()
+                    .id("1")
+                    .comment("asjdnakjsdnas")
                     .name("subscription")
                     .data("you have new subscription of mentee with id: " + menteeID));
         } catch (IOException e) {
@@ -133,6 +137,8 @@ public class EmitterServiceImpl implements EmitterService {
         try {
             sseEmitter.getSseEmitter().send(SseEmitter
                     .event()
+                    .id("1")
+                    .comment("asjdnakjsdnas")
                     .name("confirmation")
                     .data("you have new confirmation from mentor with id: " + mentorID));
         } catch (IOException e) {
