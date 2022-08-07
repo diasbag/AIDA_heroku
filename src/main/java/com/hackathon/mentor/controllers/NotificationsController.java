@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import javax.servlet.http.HttpServletResponse;
+
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin(value = "*", maxAge = 3600)
@@ -21,9 +23,11 @@ public class NotificationsController {
     private final JwtUtils jwtUtils;
     @GetMapping(value = "/subscription",headers = "Accept=*/*", consumes = MediaType.ALL_VALUE,
             produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter subscribe(@RequestParam String token) {
+    public String subscribe(@RequestParam String token, HttpServletResponse httpServletResponse) {
+        httpServletResponse.addHeader("charset","UTF-8");
         String email =  jwtUtils.getUserNameFromJwtToken(token);
-        return (SseEmitter) emitterService.addEmitter(email);
+        emitterService.addEmitter(email);
+        return "OK";
     }
 
     @PostMapping("/send_to_rate")
