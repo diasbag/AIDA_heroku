@@ -68,7 +68,7 @@ public class AuthController {
 			user = userRepository.getByEmail(principal.getName());
 		} else {
 			user = new User();
-			Role role = roleRepository.findByName(ERole.ANONYMOUS).orElse(null);
+			Role role = roleRepository.findByName(ERole.ANONYMOUS).orElseThrow(() -> new RuntimeException("Role not found"));
 			user.getRoles().add(role);
 		}
 		return ResponseEntity.ok(user.getRoles());
