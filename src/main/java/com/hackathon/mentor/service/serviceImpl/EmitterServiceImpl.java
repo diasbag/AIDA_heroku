@@ -24,7 +24,7 @@ public class EmitterServiceImpl implements EmitterService {
     private final MentorRepository mentorRepository;
     private final MenteeRepository menteeRepository;
     private final PostRepository postRepository;
-    public void addEmitter() {
+    public SerializableSSE addEmitter() {
         log.info("subscribing to notifications ...");
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = userDetails.getUsername();
@@ -36,6 +36,8 @@ public class EmitterServiceImpl implements EmitterService {
         forRepo.setSseEmitter(sseEmitter);
         sseEmitterRepository.save(forRepo);
         log.info("subscribed <<<");
+        return sseEmitter;
+
     }
     @Override
     public void sendToRateNotification(Long raterID, Long toRateID) {
@@ -66,16 +68,14 @@ public class EmitterServiceImpl implements EmitterService {
                 throw new EmitterGone("emitter of mentee - " + mentee.getUser().getEmail());
             }
         }
+        log.info("to rate notification was sent <<<");
     }
 
-    @Override
-    public SSEEmitter getEmitter(Long id) {
-        return sseEmitterRepository.findById(id).orElse(null);
-    }
 
     @Override
-    public void sendNews(Long id) {
-        Post post = postRepository.findById(id).orElseThrow(() -> new AccountNotFound("post - " + id));
+    public void sendNews(Long newsID) {
+        log.info("sending news started ...");
+        Post post = postRepository.findById(newsID).orElseThrow(() -> new AccountNotFound("post - " + newsID));
         List<SSEEmitter> allEmitters = sseEmitterRepository.findAll();
         for (SSEEmitter sseEmitter: allEmitters) {
             try {
@@ -88,11 +88,46 @@ public class EmitterServiceImpl implements EmitterService {
                 sseEmitterRepository.delete(sseEmitter);
             }
         }
-
+        log.info("news were sent <<<");
     }
 
     @Override
-    public void sendSubscriptionNotification(Long id) {
+    public void sendSubscriptionNotification(Long mentorID, Long menteeID) {
+        log.info("pushing {} notification for user {}", "\"subscription\"", mentorID);
+        Mentor mentor = mentorRepository.findById(mentorID).orElseThrow(() -> new AccountNotFound(
+                "mentor with id - " + mentorID));
+        User user = mentor.getUser();
+        SSEEmitter sseEmitter = sseEmitterRepository.findByUser(user).orElseThrow(() ->
+                new AccountNotFound("emitter us user - " + user.getEmail()));
+        try {
+            sseEmitter.getSseEmitter().send(SseEmitter
+                    .event()
+                    .name("subscription")
+                    .data("you have new subscription of mentee with id: " + menteeID));
+        } catch (IOException e) {
+            sseEmitterRepository.delete(sseEmitter);
+            throw new EmitterGone("emitter of mentor - " + mentor.getUser().getEmail());
+        }
+        log.info("subscription notification was sent <<<");
+    }
 
+    @Override
+    public void confirmationNotification(Long mentorID, Long menteeID) {
+        log.info("pushing {} notification for user {}", "\"confirmation\"", mentorID);
+        Mentee mentee = menteeRepository.findById(mentorID).orElseThrow(() -> new AccountNotFound(
+                "mentor with id - " + menteeID));
+        User user = mentee.getUser();
+        SSEEmitter sseEmitter = sseEmitterRepository.findByUser(user).orElseThrow(() ->
+                new AccountNotFound("emitter us user - " + user.getEmail()));
+        try {
+            sseEmitter.getSseEmitter().send(SseEmitter
+                    .event()
+                    .name("confirmation")
+                    .data("you have new confirmation from mentor with id: " + mentorID));
+        } catch (IOException e) {
+            sseEmitterRepository.delete(sseEmitter);
+            throw new EmitterGone("emitter of mentor - " + mentee.getUser().getEmail());
+        }
+        log.info("confirmation notification was sent <<<");
     }
 }
