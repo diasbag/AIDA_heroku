@@ -15,8 +15,11 @@ import com.hackathon.mentor.repository.UserRepository;
 import com.hackathon.mentor.service.AuthenticationService;
 import com.hackathon.mentor.service.RegistrationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import com.hackathon.mentor.payload.request.LoginRequest;
@@ -25,6 +28,7 @@ import com.hackathon.mentor.payload.response.MessageResponse;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
+@Slf4j
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
@@ -52,10 +56,11 @@ public class AuthController {
 		return ResponseEntity.ok(messageResponse);
 	}
 	@GetMapping("/user/role")
-	public ResponseEntity<?> getRole(Principal principal) {
-		User user = new User(ERole.ANONYMOUS);
-		if(principal != null){
-			 user =  userRepository.getByEmail(principal.getName());
+	public ResponseEntity<?> getRole() {
+		String name = SecurityContextHolder.getContext().getAuthentication().getName();
+		User user = userRepository.getByEmail(name);
+		if (user == null){
+			user = new User(ERole.ANONYMOUS);
 		}
 		return ResponseEntity.ok().body(user.getRoles());
 	}
