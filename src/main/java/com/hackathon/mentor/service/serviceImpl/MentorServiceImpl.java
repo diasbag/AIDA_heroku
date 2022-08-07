@@ -3,6 +3,7 @@ package com.hackathon.mentor.service.serviceImpl;
 import com.hackathon.mentor.exceptions.AccountConflict;
 import com.hackathon.mentor.exceptions.AccountNotFound;
 import com.hackathon.mentor.models.*;
+import com.hackathon.mentor.payload.request.FilterRequest;
 import com.hackathon.mentor.payload.request.SignupUpdateMentorRequest;
 import com.hackathon.mentor.payload.response.MentorProfileResponse;
 import com.hackathon.mentor.payload.response.MentorsResponse;
@@ -16,6 +17,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -67,7 +69,7 @@ public class MentorServiceImpl implements MentorService {
     @Override
     public ResponseEntity<?> getMentors(Integer page) {
         log.info("getting all mentors ...");
-        Pageable paging =  PageRequest.of(page, 10);
+        Pageable paging =  PageRequest.of(page, 8);
         Page<Mentor>  pageMentors = mentorRepository.findAll(paging);
         List<MentorsResponse> mentorsResponseList = new ArrayList<>();
         Map<String, Object> result = new HashMap<>();
@@ -83,6 +85,59 @@ public class MentorServiceImpl implements MentorService {
         log.info("got all mentors " + mentorsResponseList + " <<<");
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+
+    @Override
+    public ResponseEntity<?> filtration(String university, String country, String major, Integer page) {
+        List<MentorsResponse> mentors = new ArrayList<>();
+
+        Pageable paging =  PageRequest.of(page, 8);
+        Page<Mentor>  pageMentors = null;
+        if (university != null && country != null && major != null) {
+            pageMentors = mentorRepository
+                    .findByBachelorsUniversityStartingWithIgnoreCaseAndCountryOfResidenceAndBachelorsMajor(university,
+                            country,
+                            major, paging);
+        }
+        if ((university == null || university.equals("")) && country != null && major != null) {
+            pageMentors = mentorRepository.findByCountryOfResidenceAndBachelorsMajor(country, major, paging);
+        }
+        if (university != null && (country == null || country.equals("")) && major != null) {
+            pageMentors = mentorRepository.findByBachelorsUniversityStartingWithIgnoreCaseAndBachelorsMajor(university, major, paging);
+        }
+        if (university != null && country != null && (major == null|| major.equals(""))) {
+            pageMentors = mentorRepository
+                    .findByBachelorsUniversityStartingWithIgnoreCaseAndCountryOfResidence(university,
+                            country, paging);
+        }
+        if ((university == null || university.equals("")) && country != null && (major == null|| major.equals(""))) {
+            pageMentors = mentorRepository.findByCountryOfResidence(country, paging);
+        }
+        if (university != null && (country == null || country.equals("")) && (major == null|| major.equals(""))) {
+            pageMentors =  mentorRepository.getMentorByBachelorsUniversityStartingWithIgnoreCase(university, paging);
+        }
+        if ((university == null || university.equals("")) && (country == null || country.equals("")) && major != null) {
+            pageMentors = mentorRepository.getMentorByBachelorsMajor(major, paging);
+        }
+        if ((university == null || university.equals("")) && (country == null || country.equals("")) && (major == null|| major.equals(""))) {
+            pageMentors = mentorRepository.findAll(paging);
+        }
+        if (pageMentors == null) {
+            return new ResponseEntity<>("Not Found!!!", HttpStatus.OK);
+        }
+        Map<String, Object> result = new HashMap<>();
+        for (Mentor mentor : pageMentors) {
+            MentorsResponse mentorsResponse = modelMapper.map(mentor.getUser(), MentorsResponse.class);
+            modelMapper.map(mentor, mentorsResponse);
+            mentorsResponse.setPassword(null);
+            mentorsResponse.setMenteesCount(mentor.getMentees().size());
+            mentors.add(mentorsResponse);
+            result.put("mentors", mentors);
+            result.put("totalPages", pageMentors.getTotalPages());
+        }
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
 
     @Override
     public ResponseEntity<?> getMentorById(Long id) {
@@ -147,6 +202,27 @@ public class MentorServiceImpl implements MentorService {
         log.info("mentor waiting list: " + mentees + " <<<");
         return new ResponseEntity<>(mentees, HttpStatus.OK);
     }
+
+    @Override
+    public ResponseEntity<?> getMentorByUniversity(String university, Integer page) {
+        List<MentorsResponse> mentors = new ArrayList<>();
+        Pageable paging =  PageRequest.of(page, 8);
+        Page<Mentor> mentorPage = mentorRepository.findByBachelorsUniversityStartingWithIgnoreCase(university, paging);
+        Map<String, Object> result = new HashMap<>();
+        for (Mentor mentor : mentorPage) {
+            MentorsResponse mentorsResponse = modelMapper.map(mentor.getUser(), MentorsResponse.class);
+            modelMapper.map(mentor, mentorsResponse);
+            mentorsResponse.setPassword(null);
+            mentorsResponse.setMenteesCount(mentor.getMentees().size());
+            mentors.add(mentorsResponse);
+            result.put("mentors", mentors);
+            result.put("totalPages", mentorPage.getTotalPages());
+        }
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+
+
     @Transactional
     @Override
     public ResponseEntity<?> confirm(Long id, String email) {
