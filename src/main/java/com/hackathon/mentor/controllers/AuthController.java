@@ -11,15 +11,18 @@ import com.hackathon.mentor.models.*;
 import com.hackathon.mentor.payload.request.ResetPassRequest;
 import com.hackathon.mentor.payload.request.SignupUpdateMenteeRequest;
 import com.hackathon.mentor.payload.request.SignupUpdateMentorRequest;
+import com.hackathon.mentor.repository.RoleRepository;
 import com.hackathon.mentor.repository.UserRepository;
 import com.hackathon.mentor.service.AuthenticationService;
 import com.hackathon.mentor.service.RegistrationService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import com.hackathon.mentor.payload.request.LoginRequest;
@@ -36,6 +39,8 @@ public class AuthController {
 	private final UserRepository userRepository;
 	private final RegistrationService registrationService;
 	private final AuthenticationService authenticationService;
+
+	private final RoleRepository roleRepository;
 
 	@PostMapping("/signin")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -55,14 +60,18 @@ public class AuthController {
 		MessageResponse messageResponse = registrationService.regMentee(signupUpdateMenteeRequest);
 		return ResponseEntity.ok(messageResponse);
 	}
+
 	@GetMapping("/user/role")
-	public ResponseEntity<?> getRole() {
-		String name = SecurityContextHolder.getContext().getAuthentication().getName();
-		User user = userRepository.getByEmail(name);
-		if (user == null){
-			user = new User(ERole.ANONYMOUS);
+	public ResponseEntity<?> getRole(Principal principal) {
+		User user;
+		if(principal != null) {
+			user = userRepository.getByEmail(principal.getName());
+		} else {
+			user = new User();
+			Role role = roleRepository.findByName(ERole.ANONYMOUS).orElse(null);
+			user.getRoles().add(role);
 		}
-		return ResponseEntity.ok().body(user.getRoles());
+		return ResponseEntity.ok(user.getRoles());
 	}
 
 	@PostMapping("/forgot")
