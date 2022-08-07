@@ -1,5 +1,6 @@
 package com.hackathon.mentor.controllers;
 
+import com.hackathon.mentor.security.jwt.JwtUtils;
 import com.hackathon.mentor.service.EmitterService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -14,9 +15,11 @@ import org.springframework.web.bind.annotation.*;
 public class NotificationsController {
 
     private final EmitterService emitterService;
+    private final JwtUtils jwtUtils;
     @GetMapping("/subscription")
-    public ResponseEntity<?> subscribe() {
-        return ResponseEntity.ok(emitterService.addEmitter());
+    public ResponseEntity<?> subscribe(@RequestParam String token) {
+        String email =  jwtUtils.getUserNameFromJwtToken(token);
+        return ResponseEntity.ok(emitterService.addEmitter(email));
     }
 
     @PostMapping("/send_to_rate")
@@ -24,6 +27,7 @@ public class NotificationsController {
         emitterService.sendToRateNotification(raterId, toRateID, true);
         return ResponseEntity.ok().body("message pushed to user " + toRateID);
     }
+
 
     @PostMapping("/send_news/{newsID}")
     public ResponseEntity<?> sendNews(@PathVariable Long newsID) {
