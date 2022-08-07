@@ -5,6 +5,7 @@ import com.hackathon.mentor.security.jwt.JwtUtils;
 import com.hackathon.mentor.service.EmitterService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -18,7 +19,8 @@ public class NotificationsController {
 
     private final EmitterService emitterService;
     private final JwtUtils jwtUtils;
-    @GetMapping("/subscription")
+    @GetMapping(value = "/subscription",headers = "Accept=*/*", consumes = MediaType.ALL_VALUE,
+            produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter subscribe(@RequestParam String token) {
         String email =  jwtUtils.getUserNameFromJwtToken(token);
         return (SseEmitter) emitterService.addEmitter(email);
