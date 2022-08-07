@@ -31,8 +31,9 @@ public class EmitterServiceImpl implements EmitterService {
     public SerializableSSE addEmitter(String email) {
         log.info("subscribing to notifications ...");
         User user= userRepository.findByEmail(email).orElseThrow(() -> new AccountNotFound("user - " + email));
-        SerializableSSE sseEmitter = new SerializableSSE(24 * 60 * 60 * 1000L);
-        SSEEmitter forRepo = sseEmitterRepository.findByUser(user).orElse(new SSEEmitter(sseEmitter));
+        SSEEmitter forRepo = sseEmitterRepository.findByUser(user).orElse(new SSEEmitter(
+                new SerializableSSE(24 * 60 * 60 * 1000L)));
+        SerializableSSE sseEmitter = forRepo.getSseEmitter();
         sseEmitter.onCompletion(() -> sseEmitterRepository.deleteBySseEmitter(sseEmitter));
         sseEmitter.onTimeout(() -> sseEmitterRepository.deleteBySseEmitter(sseEmitter));
         forRepo.setSseEmitter(sseEmitter);
