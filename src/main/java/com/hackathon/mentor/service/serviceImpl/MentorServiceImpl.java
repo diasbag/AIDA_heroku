@@ -119,6 +119,9 @@ public class MentorServiceImpl implements MentorService {
         if (university == null && country == null && major != null) {
             pageMentors = mentorRepository.getMentorByBachelorsMajor(major, paging);
         }
+        if (university == null && country == null && major == null) {
+            pageMentors = mentorRepository.findAll(paging);
+        }
         if (pageMentors == null) {
             return new ResponseEntity<>("Not Found!!!", HttpStatus.OK);
         }
