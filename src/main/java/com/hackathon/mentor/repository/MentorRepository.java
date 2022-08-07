@@ -29,13 +29,13 @@ public interface MentorRepository extends JpaRepository<Mentor, Long>, JpaSpecif
     List<Mentor> findBySubjectOfInterest1(String subjectOfInterest1);
     List<Mentor> findBySubjectOfInterest2(String subjectOfInterest2);
 
-    List<Mentor> findByBachelorsUniversityContainingIgnoreCase(String university);
+    Page<Mentor> findByBachelorsUniversityStartingWithIgnoreCase(String university, Pageable pageable);
 
-    Page<Mentor> findByBachelorsUniversityContainingIgnoreCaseAndCountryOfResidence(String university, String country, Pageable pageable);
-    Page<Mentor> findByBachelorsUniversityContainingIgnoreCaseAndCountryOfResidenceAndBachelorsMajor(String university,
+    Page<Mentor> findByBachelorsUniversityStartingWithIgnoreCaseAndCountryOfResidence(String university, String country, Pageable pageable);
+    Page<Mentor> findByBachelorsUniversityStartingWithIgnoreCaseAndCountryOfResidenceAndBachelorsMajor(String university,
                                                                                                      String country,
                                                                                                      String major, Pageable pageable);
-    Page<Mentor> findByBachelorsUniversityContainingIgnoreCaseAndBachelorsMajor(String university, String major, Pageable pageable);
+    Page<Mentor> findByBachelorsUniversityStartingWithIgnoreCaseAndBachelorsMajor(String university, String major, Pageable pageable);
     Page<Mentor> findByCountryOfResidenceAndBachelorsMajor(String country,
                                                            String major, Pageable pageable);
     List<Mentor> findByBachelorsUniversityContainingIgnoreCaseOrCountryOfResidenceOrBachelorsMajor(String university, String country, String major);
@@ -46,7 +46,7 @@ public interface MentorRepository extends JpaRepository<Mentor, Long>, JpaSpecif
     Set<Mentor> findByBachelorsUniversity(String bachelorsUniversity);
     Set<Mentor> findByBachelorsMajor(String bachelorsMajor);
 
-    Page<Mentor> getMentorByBachelorsUniversityContainingIgnoreCase(String university, Pageable pageable);
+    Page<Mentor> getMentorByBachelorsUniversityStartingWithIgnoreCase(String university, Pageable pageable);
 
     Page<Mentor> getMentorByBachelorsMajor(String major, Pageable pageable);
 

@@ -15,7 +15,7 @@ public interface MentorService {
 
     ResponseEntity<?> getMentors(Integer page);
 
-    ResponseEntity<?> filtration(FilterRequest request, Integer page);
+    ResponseEntity<?> filtration(String university, String country, String major, Integer page);
 
     ResponseEntity<?> getMentorById(Long id);
 
@@ -25,7 +25,7 @@ public interface MentorService {
 
     ResponseEntity<?> getMySubscribers(String email);
 
-    ResponseEntity<?> getMentorByUniversity(String name);
+    ResponseEntity<?> getMentorByUniversity(String name, Integer page);
 
     ResponseEntity<?> confirm(Long id, String email);
 
