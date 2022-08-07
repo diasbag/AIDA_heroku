@@ -8,4 +8,8 @@ public interface EmitterService {
     void sendToRateNotification(Long id, Long toRateID);
 
     SSEEmitter getEmitter(Long id);
+
+    void sendNews(Long id);
+
+    void sendSubscriptionNotification(Long id);
 }

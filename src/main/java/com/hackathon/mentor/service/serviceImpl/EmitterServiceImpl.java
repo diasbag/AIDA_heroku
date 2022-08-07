@@ -3,10 +3,7 @@ package com.hackathon.mentor.service.serviceImpl;
 import com.hackathon.mentor.exceptions.AccountNotFound;
 import com.hackathon.mentor.exceptions.EmitterGone;
 import com.hackathon.mentor.models.*;
-import com.hackathon.mentor.repository.MenteeRepository;
-import com.hackathon.mentor.repository.MentorRepository;
-import com.hackathon.mentor.repository.SSEEmitterRepository;
-import com.hackathon.mentor.repository.UserRepository;
+import com.hackathon.mentor.repository.*;
 import com.hackathon.mentor.service.EmitterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +23,7 @@ public class EmitterServiceImpl implements EmitterService {
     private final UserRepository userRepository;
     private final MentorRepository mentorRepository;
     private final MenteeRepository menteeRepository;
+    private final PostRepository postRepository;
     public void addEmitter() {
         log.info("subscribing to notifications ...");
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -72,5 +71,28 @@ public class EmitterServiceImpl implements EmitterService {
     @Override
     public SSEEmitter getEmitter(Long id) {
         return sseEmitterRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public void sendNews(Long id) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new AccountNotFound("post - " + id));
+        List<SSEEmitter> allEmitters = sseEmitterRepository.findAll();
+        for (SSEEmitter sseEmitter: allEmitters) {
+            try {
+                sseEmitter.getSseEmitter().send(SseEmitter
+                        .event()
+                        .name("news")
+                        .data("check news with id: " + post.getId() + ". Post - " + post));
+
+            } catch (IOException e) {
+                sseEmitterRepository.delete(sseEmitter);
+            }
+        }
+
+    }
+
+    @Override
+    public void sendSubscriptionNotification(Long id) {
+
     }
 }
