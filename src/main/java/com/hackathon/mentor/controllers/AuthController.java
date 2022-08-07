@@ -1,6 +1,8 @@
 package com.hackathon.mentor.controllers;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -52,7 +54,7 @@ public class AuthController {
 	@GetMapping("/user/role")
 	public ResponseEntity<?> getRole(Principal principal) {
 		User user = userRepository.getByEmail(principal.getName());
-		return ResponseEntity.ok(user.getRoles());
+		return ResponseEntity.ok().body(user != null ? user.getRoles() : new ArrayList<>());
 	}
 
 	@PostMapping("/forgot")
