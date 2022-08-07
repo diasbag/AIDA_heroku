@@ -5,7 +5,7 @@ import com.hackathon.mentor.models.SerializableSSE;
 public interface EmitterService {
     SerializableSSE addEmitter();
 
-    void sendToRateNotification(Long id, Long toRateID);
+    void sendToRateNotification(Long raterID, Long toRateID, boolean raterIsMentor);
 
     void sendNews(Long newsID);
 

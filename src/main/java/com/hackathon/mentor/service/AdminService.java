@@ -1,6 +1,6 @@
 package com.hackathon.mentor.service;
 
-import com.hackathon.mentor.models.MentorHistory;
+import com.hackathon.mentor.models.RatingNotification;
 import com.hackathon.mentor.models.User;
 
 import java.util.List;
@@ -14,6 +14,6 @@ public interface AdminService {
 
     void deactivateAccount(String email);
 
-    List<MentorHistory> getMentorsHistory();
+    List<RatingNotification> getMentorsHistory();
 
 }
