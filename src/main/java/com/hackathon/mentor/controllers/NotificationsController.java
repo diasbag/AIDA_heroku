@@ -1,5 +1,6 @@
 package com.hackathon.mentor.controllers;
 
+import com.hackathon.mentor.models.SerializableSSE;
 import com.hackathon.mentor.security.jwt.JwtUtils;
 import com.hackathon.mentor.service.EmitterService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -17,9 +18,9 @@ public class NotificationsController {
     private final EmitterService emitterService;
     private final JwtUtils jwtUtils;
     @GetMapping("/subscription")
-    public ResponseEntity<?> subscribe(@RequestParam String token) {
+    public SerializableSSE subscribe(@RequestParam String token) {
         String email =  jwtUtils.getUserNameFromJwtToken(token);
-        return ResponseEntity.ok(emitterService.addEmitter(email));
+        return emitterService.addEmitter(email);
     }
 
     @PostMapping("/send_to_rate")
