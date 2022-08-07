@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class RecommendationsServiceImpl implements RecommendationsService {
-
+    private final int returnLength = 5;
     private final MentorRepository mentorRepository;
     private final ModelMapper modelMapper = new ModelMapper();
     @Override
@@ -78,24 +78,25 @@ public class RecommendationsServiceImpl implements RecommendationsService {
         subjectsSet.removeAll(allSet);
         majorsSet.removeAll(allSet);
         majorsUniversity.removeAll(allSet);
-        if (subjectsSet.size() > 3 && majorsSet.size() > 3 && majorsUniversity.size() > 3) {
+        if (subjectsSet.size() > returnLength/3 && majorsSet.size() > returnLength/3
+                && majorsUniversity.size() > returnLength/3) {
             out.add(subjectsSet.iterator().next());
             out.add(subjectsSet.iterator().next());
             out.add(majorsSet.iterator().next());
             out.add(majorsSet.iterator().next());
-            for (int i = 0; i < 6; i++){
+            for (int i = 0; i < returnLength/2; i++){
                 out.add(majorsUniversity.iterator().next());
             }
-        } else if (subjectsSet.size() > 9){
-            for (int i = 0; i < 10; i++){
+        } else if (subjectsSet.size() > returnLength){
+            for (int i = 0; i < returnLength; i++){
                 out.add(subjectsSet.iterator().next());
             }
-        } else if (majorsSet.size() > 9){
-            for (int i = 0; i < 10; i++){
+        } else if (majorsSet.size() > returnLength){
+            for (int i = 0; i < returnLength; i++){
                 out.add(majorsSet.iterator().next());
             }
         } else if (majorsUniversity.size() > 9){
-            for (int i = 0; i < 10; i++){
+            for (int i = 0; i < returnLength; i++){
                 out.add(majorsUniversity.iterator().next());
             }
         } else {
@@ -104,14 +105,14 @@ public class RecommendationsServiceImpl implements RecommendationsService {
             out.addAll(majorsUniversity);
         }
         List<Mentor> result = null;
-        if (out.size() > 9) {
-            result = out.subList(0, 9);
+        if (out.size() > returnLength) {
+            result = out.subList(0, returnLength);
         } else {
             List <Mentor> filling = mentorRepository.findAll();
             filling.removeAll(out);
             out.addAll(filling);
-            if (out.size() > 9) {
-                result = out.subList(0, 9);
+            if (out.size() > returnLength) {
+                result = out.subList(0, returnLength);
             }
         }
         if (result != null) {
