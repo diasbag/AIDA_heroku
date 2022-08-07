@@ -24,10 +24,8 @@ public class EmitterServiceImpl implements EmitterService {
     private final MentorRepository mentorRepository;
     private final MenteeRepository menteeRepository;
     private final PostRepository postRepository;
-    public SerializableSSE addEmitter() {
+    public SerializableSSE addEmitter(String email) {
         log.info("subscribing to notifications ...");
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String email = userDetails.getUsername();
         User user= userRepository.findByEmail(email).orElseThrow(() -> new AccountNotFound("user - " + email));
         SerializableSSE sseEmitter = new SerializableSSE(24 * 60 * 60 * 1000L);
         SSEEmitter forRepo = sseEmitterRepository.findByUser(user).orElse(new SSEEmitter(sseEmitter));
