@@ -53,7 +53,7 @@ public class AuthController {
 	}
 	@GetMapping("/user/role")
 	public ResponseEntity<?> getRole(Principal principal) {
-		User user = userRepository.getByEmail(principal.getName());
+		User user = principal != null ? userRepository.getByEmail(principal.getName()) : null;
 		return ResponseEntity.ok().body(user != null ? user.getRoles() : new ArrayList<>());
 	}
 
