@@ -82,6 +82,10 @@ public class User {
 		this.password = password;
 	}
 
+	public User(ERole unauthorized) {
+		roles.add(new Role(unauthorized));
+	}
+
 	@Override
 	public String toString() {
 		return "User{" +

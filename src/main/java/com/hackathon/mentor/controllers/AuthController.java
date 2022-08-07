@@ -53,8 +53,11 @@ public class AuthController {
 	}
 	@GetMapping("/user/role")
 	public ResponseEntity<?> getRole(Principal principal) {
-		User user = principal != null ? userRepository.getByEmail(principal.getName()) : null;
-		return ResponseEntity.ok().body(user != null ? user.getRoles() : null);
+		User user = new User(ERole.ANONYMOUS);
+		if(principal != null){
+			 user =  userRepository.getByEmail(principal.getName());
+		}
+		return ResponseEntity.ok().body(user.getRoles());
 	}
 
 	@PostMapping("/forgot")
