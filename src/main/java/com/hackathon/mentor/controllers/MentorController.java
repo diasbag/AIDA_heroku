@@ -1,6 +1,7 @@
 package com.hackathon.mentor.controllers;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.hackathon.mentor.payload.request.FilterRequest;
 import com.hackathon.mentor.payload.request.SignupUpdateMentorRequest;
 import com.hackathon.mentor.service.serviceImpl.MentorServiceImpl;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -22,7 +23,7 @@ public class MentorController {
     private final MentorServiceImpl mentorService;
 
     @GetMapping("/mentors")
-    public ResponseEntity<?> getMentors(@RequestParam Integer page) {
+    public ResponseEntity<?> getMentors(@RequestParam("page") Integer page) {
         return mentorService.getMentors(page);
     }
 
@@ -59,6 +60,18 @@ public class MentorController {
         return mentorService.confirm(id, email);
     }
 
+    @GetMapping("/mentors/filter/university")
+    public ResponseEntity<?> getByUniversity(@RequestParam String university, @RequestParam Integer page) {
+        return mentorService.getMentorByUniversity(university, page);
+    }
+
+    @GetMapping("/mentors/filter")
+    public ResponseEntity<?> getFilteredMentor(@RequestParam(required = false) String university,
+                                               @RequestParam(required = false) String country,
+                                               @RequestParam(required = false) String major,
+                                               @RequestParam("page") Integer page) {
+        return mentorService.filtration(university, country, major, page);
+    }
     @PostMapping("/mentor/mentee/{id}/reject")
     public ResponseEntity<?> reject(@PathVariable("id") Long id) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -79,5 +92,6 @@ public class MentorController {
         String email = userDetails.getUsername();
         return mentorService.deleteFollower(id, email);
     }
+
 
 }
