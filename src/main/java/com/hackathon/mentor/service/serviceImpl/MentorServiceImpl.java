@@ -43,6 +43,7 @@ public class MentorServiceImpl implements MentorService {
 
 //    private final MentorHistoryRepository mentorHistoryRepository;
 
+    private final MailService mailService;
     private final ModelMapper modelMapper = new ModelMapper();
 
     @Override
