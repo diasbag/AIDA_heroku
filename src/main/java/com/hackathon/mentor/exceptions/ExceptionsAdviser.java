@@ -39,10 +39,11 @@ public class ExceptionsAdviser {
     }
 
     @ResponseBody
-    @ExceptionHandler(ServerFail.class)
-    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-    String serverFail(ServerFail ex) {
+    @ExceptionHandler(EmitterGone.class)
+    @ResponseStatus(value = HttpStatus.GONE)
+    String emitterGone(EmitterGone ex) {
         return ex.getMessage();
     }
+
 
 }
