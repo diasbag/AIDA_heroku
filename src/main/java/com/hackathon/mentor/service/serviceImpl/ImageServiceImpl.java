@@ -62,8 +62,7 @@ public class ImageServiceImpl implements ImageService {
         User user = userRepository.getByEmail(email);
         log.info("show image...");
         String fileName = user.getImage().getFileName();
-        Image image = findByFileName(fileName);
-        return image;
+        return findByFileName(fileName);
     }
 
     @Override
@@ -78,5 +77,13 @@ public class ImageServiceImpl implements ImageService {
         String fileName = user.getImage().getFileName();
         log.info("image search by id was completed <<<");
         return findByFileName(fileName);
+    }
+
+    @Override
+    public void fakeImages(MultipartFile[] files) {
+        for (MultipartFile file: files) {
+            Image image = Image.buildImage(file, fileHelper);
+            imageRepository.save(image);
+        }
     }
 }

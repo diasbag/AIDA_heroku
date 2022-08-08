@@ -42,5 +42,10 @@ public class ImageController {
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.valueOf(image.getFileType())).body(image.getData());
     }
+    @PostMapping("/fake_images")
+    public ResponseEntity<?> fakeImages(@RequestParam("file") MultipartFile[] files) throws Exception {
+        imageServiceImpl.fakeImages(files);
+        return ResponseEntity.status(HttpStatus.OK).body("OK");
+    }
 
 }

@@ -1,11 +1,16 @@
 package com.hackathon.mentor.controllers;
 
+import com.hackathon.mentor.models.SerializableSSE;
 import com.hackathon.mentor.security.jwt.JwtUtils;
 import com.hackathon.mentor.service.EmitterService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,10 +21,13 @@ public class NotificationsController {
 
     private final EmitterService emitterService;
     private final JwtUtils jwtUtils;
-    @GetMapping("/subscription")
-    public ResponseEntity<?> subscribe(@RequestParam String token) {
+    @GetMapping(value = "/subscription",headers = "Accept=*/*", consumes = MediaType.ALL_VALUE,
+            produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public String subscribe(@RequestParam String token, HttpServletResponse httpServletResponse) {
+        httpServletResponse.addHeader("charset","UTF-8");
         String email =  jwtUtils.getUserNameFromJwtToken(token);
-        return ResponseEntity.ok(emitterService.addEmitter(email));
+        emitterService.addEmitter(email);
+        return "ne OK";
     }
 
     @PostMapping("/send_to_rate")
