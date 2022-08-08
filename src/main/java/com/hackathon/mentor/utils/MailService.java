@@ -22,7 +22,7 @@ public class MailService {
     private final JavaMailSender mailSender;
     private final AdminService adminService;
 
-    private final String from = "diasbagzat2@gmail.com";
+    private final String from = "diasbagzat3@gmail.com";
     public void sendSubscribeMail(String to, String firstname, String lastname){
         //String to = "diasbagzat@gmail.com";
         log.info("sending message to Mentor...");

@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
             Role roleMentee = new Role(ERole.ROLE_MENTEE);
             roleRepository.save(roleMentee);
         }
-        if (!roleRepository.findByName(ERole.ROLE_MENTEE).isPresent()) {
+        if (!roleRepository.findByName(ERole.ANONYMOUS).isPresent()) {
             Role anonymous = new Role(ERole.ANONYMOUS);
             roleRepository.save(anonymous);
         }

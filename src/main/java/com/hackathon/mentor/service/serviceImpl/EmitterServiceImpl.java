@@ -51,20 +51,20 @@ public class EmitterServiceImpl implements EmitterService {
         Mentor mentor = null;
         Mentee mentee = null;
         if( raterIsMentor) {
-            mentor = mentorRepository.findById(toRateID).orElseThrow(() -> new AccountNotFound(
+            mentee = menteeRepository.findById(toRateID).orElseThrow(() -> new AccountNotFound(
                     "mentor with id - " + raterID));
         } else {
-            mentee = menteeRepository.findById(toRateID).orElseThrow(() -> new AccountNotFound(
+            mentor = mentorRepository.findById(toRateID).orElseThrow(() -> new AccountNotFound(
                     "mentee with id - " + raterID));
         }
         User user;
         if(raterIsMentor) {
-            user = mentor.getUser();
-        } else {
             user = mentee.getUser();
+        } else {
+            user = mentor.getUser();
         }
-        SSEEmitter sseEmitter = sseEmitterRepository.findByUser(user).orElseThrow(() ->
-                new AccountNotFound("emitter us user - " + user.getEmail()));
+        SSEEmitter sseEmitter = sseEmitterRepository.findByUser(user).orElse(new SSEEmitter(
+                new SerializableSSE(24 * 60 * 60 * 1000L)));
         try {
                 sseEmitter.getSseEmitter().send(SseEmitter
                         .event()
@@ -74,9 +74,9 @@ public class EmitterServiceImpl implements EmitterService {
         } catch (IOException e) {
                 sseEmitterRepository.delete(sseEmitter);
             if(raterIsMentor) {
-                throw new EmitterGone("emitter of mentor - " + mentor.getUser().getEmail());
+                throw new EmitterGone("emitter of mentor - " + mentee.getUser().getEmail());
             } else {
-                throw new EmitterGone("emitter of mentee - " + mentee.getUser().getEmail());
+                throw new EmitterGone("emitter of mentee - " + mentor.getUser().getEmail());
             }
         }
         log.info("to rate notification was sent <<<");

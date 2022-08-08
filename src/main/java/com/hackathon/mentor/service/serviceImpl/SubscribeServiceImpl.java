@@ -65,7 +65,6 @@ public class SubscribeServiceImpl implements SubscribeService {
         mailService.sendSubscribeMailToMentee(mentee.getUser().getEmail(), mentor.getUser().getFirstname(),
                 mentor.getUser().getLastname());
         emitterService.sendSubscriptionNotification(mentor.getId(), mentee.getId());
-        emitterService.sendSubscriptionNotification(mentee.getId(), mentor.getId());
         log.info("Successfully subscribed " + mentor + " + " + mentee + " <<<");
         return new ResponseEntity<>("Success!!!", HttpStatus.OK);
     }
