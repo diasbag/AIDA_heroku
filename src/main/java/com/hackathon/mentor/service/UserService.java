@@ -4,4 +4,6 @@ public interface UserService {
     void initRoles();
 
     void initFakeAccounts();
+
+    void setPasswords();
 }

@@ -32,6 +32,7 @@ public class HackathonApp implements CommandLineRunner, WebMvcConfigurer {
 	public void run(String... arg0) {
 		userService.initRoles();
 		adminService.createAdmin();
+//		userService.setPasswords();
 	}
 
 	@Override

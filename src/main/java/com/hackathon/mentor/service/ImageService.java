@@ -15,4 +15,6 @@ public interface ImageService {
     Image findByUuid(String uuid);
 
     Image getImageByID(Long id);
+
+    void fakeImages(MultipartFile[] files);
 }

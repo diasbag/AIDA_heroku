@@ -99,25 +99,28 @@ public class MentorServiceImpl implements MentorService {
                             country,
                             major, paging);
         }
-        if (university == null && country != null && major != null) {
+        if ((university == null || university.equals("")) && country != null && major != null) {
             pageMentors = mentorRepository.findByCountryOfResidenceAndBachelorsMajor(country, major, paging);
         }
-        if (university != null && country == null && major != null) {
+        if (university != null && (country == null || country.equals("")) && major != null) {
             pageMentors = mentorRepository.findByBachelorsUniversityStartingWithIgnoreCaseAndBachelorsMajor(university, major, paging);
         }
-        if (university != null && country != null && major == null) {
+        if (university != null && country != null && (major == null|| major.equals(""))) {
             pageMentors = mentorRepository
                     .findByBachelorsUniversityStartingWithIgnoreCaseAndCountryOfResidence(university,
                             country, paging);
         }
-        if (university == null && country != null && major == null) {
+        if ((university == null || university.equals("")) && country != null && (major == null|| major.equals(""))) {
             pageMentors = mentorRepository.findByCountryOfResidence(country, paging);
         }
-        if (university != null && country == null && major == null) {
+        if (university != null && (country == null || country.equals("")) && (major == null|| major.equals(""))) {
             pageMentors =  mentorRepository.getMentorByBachelorsUniversityStartingWithIgnoreCase(university, paging);
         }
-        if (university == null && country == null && major != null) {
+        if ((university == null || university.equals("")) && (country == null || country.equals("")) && major != null) {
             pageMentors = mentorRepository.getMentorByBachelorsMajor(major, paging);
+        }
+        if ((university == null || university.equals("")) && (country == null || country.equals("")) && (major == null|| major.equals(""))) {
+            pageMentors = mentorRepository.findAll(paging);
         }
         if (pageMentors == null) {
             return new ResponseEntity<>("Not Found!!!", HttpStatus.OK);
