@@ -34,7 +34,7 @@ public class EmitterServiceImpl implements EmitterService {
             .newCachedThreadPool();
     private List<SseEmitter> list = new ArrayList<>();
     @Async
-    public ResponseBodyEmitter addEmitter(String email) {
+    public SseEmitter addEmitter(String email) {
         log.info("subscribing to notifications ...");
         SseEmitter sseEmitter = new SseEmitter(-1L);
         list.add(sseEmitter);
