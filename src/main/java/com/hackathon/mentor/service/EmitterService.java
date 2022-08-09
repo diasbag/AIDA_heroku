@@ -1,11 +1,9 @@
 package com.hackathon.mentor.service;
 
-import com.hackathon.mentor.models.SerializableSSE;
-
-import java.util.concurrent.CompletableFuture;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
 public interface EmitterService {
-    CompletableFuture<SerializableSSE> addEmitter(String email);
+    ResponseBodyEmitter addEmitter(String email);
 
     void sendToRateNotification(Long raterID, Long toRateID, boolean raterIsMentor);
 

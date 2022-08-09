@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -22,11 +23,10 @@ public class NotificationsController {
 
     @GetMapping(value = "/subscription",headers = "Accept=*/*", consumes = MediaType.ALL_VALUE,
             produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public String subscribe(@RequestParam String token, HttpServletResponse httpServletResponse) {
+    public ResponseBodyEmitter subscribe(@RequestParam String token, HttpServletResponse httpServletResponse) {
         httpServletResponse.addHeader("charset","UTF-8");
         String email =  jwtUtils.getUserNameFromJwtToken(token);
-        emitterService.addEmitter(email);
-        return "ne OK";
+        return emitterService.addEmitter(email);
     }
 
     @PostMapping("/send_to_rate")
