@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -31,7 +32,7 @@ public class EmitterServiceImpl implements EmitterService {
     private final ExecutorService nonBlockingService = Executors
             .newCachedThreadPool();
     @Async
-    public SerializableSSE addEmitter(String email) {
+    public CompletableFuture<SerializableSSE> addEmitter(String email) {
         log.info("subscribing to notifications ...");
         User user= userRepository.findByEmail(email).orElseThrow(() -> new AccountNotFound("user - " + email));
         SSEEmitter forRepo = sseEmitterRepository.findByUser(user).orElse(new SSEEmitter(
@@ -42,7 +43,7 @@ public class EmitterServiceImpl implements EmitterService {
         forRepo.setSseEmitter(sseEmitter);
         sseEmitterRepository.save(forRepo);
         log.info("subscribed <<<");
-        return sseEmitter;
+        return CompletableFuture.completedFuture(sseEmitter);
 
     }
     @Async
