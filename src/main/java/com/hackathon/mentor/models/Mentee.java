@@ -7,10 +7,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -49,7 +46,7 @@ public class Mentee {
     @ManyToOne
     @JoinColumn(name = "mentor_id")
     private Mentor mentor;
-
+    private String userInfo;
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -62,6 +62,7 @@ public class MenteeServiceImpl implements MenteeService {
         user.setFirstname(updateMenteeRequest.getFirstname());
         user.setLastname(updateMenteeRequest.getLastname());
         user.setEmail(updateMenteeRequest.getEmail());
+        user.setTelegram(updateMenteeRequest.getTelegram());
         userRepository.save(user);
         modelMapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
         modelMapper.map(updateMenteeRequest, mentee);
