@@ -1,6 +1,5 @@
 package com.hackathon.mentor.controllers;
 
-import com.hackathon.mentor.models.SerializableSSE;
 import com.hackathon.mentor.security.jwt.JwtUtils;
 import com.hackathon.mentor.service.EmitterService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -21,13 +20,16 @@ public class NotificationsController {
 
     private final EmitterService emitterService;
     private final JwtUtils jwtUtils;
+
     @GetMapping(value = "/subscription",headers = "Accept=*/*", consumes = MediaType.ALL_VALUE,
             produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public String subscribe(@RequestParam String token, HttpServletResponse httpServletResponse) {
-        httpServletResponse.addHeader("charset","UTF-8");
+    public SseEmitter subscribe(@RequestParam String token, HttpServletResponse httpServletResponse) {
+        httpServletResponse.addHeader("Charset","UTF-8");
+        httpServletResponse.addHeader("Content-Type", "text/event-stream");
+        httpServletResponse.addHeader("Cache-Control", "no-cache");
+        httpServletResponse.addHeader("Connection", "keep-alive");
         String email =  jwtUtils.getUserNameFromJwtToken(token);
-        emitterService.addEmitter(email);
-        return "ne OK";
+        return emitterService.addEmitter(email);
     }
 
     @PostMapping("/send_to_rate")

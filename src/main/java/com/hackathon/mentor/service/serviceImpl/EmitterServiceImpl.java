@@ -9,13 +9,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,21 +27,21 @@ public class EmitterServiceImpl implements EmitterService {
     private final MentorRepository mentorRepository;
     private final MenteeRepository menteeRepository;
     private final PostRepository postRepository;
+
+    private final ExecutorService nonBlockingService = Executors
+            .newCachedThreadPool();
     @Async
-    public SerializableSSE addEmitter(String email) {
+    public SseEmitter addEmitter(String email) {
         log.info("subscribing to notifications ...");
         User user= userRepository.findByEmail(email).orElseThrow(() -> new AccountNotFound("user - " + email));
         SSEEmitter forRepo = sseEmitterRepository.findByUser(user).orElse(new SSEEmitter(
                 new SerializableSSE(24 * 60 * 60 * 1000L)));
         SerializableSSE sseEmitter = forRepo.getSseEmitter();
         forRepo.setUser(user);
-        sseEmitter.onCompletion(() -> sseEmitterRepository.deleteBySseEmitter(sseEmitter));
-        sseEmitter.onTimeout(() -> sseEmitterRepository.deleteBySseEmitter(sseEmitter));
         forRepo.setSseEmitter(sseEmitter);
         sseEmitterRepository.save(forRepo);
         log.info("subscribed <<<");
         return sseEmitter;
-
     }
     @Async
     @Override
@@ -58,27 +58,31 @@ public class EmitterServiceImpl implements EmitterService {
                     "mentee with id - " + raterID));
         }
         User user;
-        if(raterIsMentor) {
+        if (raterIsMentor) {
             user = mentee.getUser();
         } else {
             user = mentor.getUser();
         }
         SSEEmitter sseEmitter = sseEmitterRepository.findByUser(user).orElse(new SSEEmitter(
                 new SerializableSSE(24 * 60 * 60 * 1000L)));
-        try {
-                sseEmitter.getSseEmitter().send(SseEmitter
-                        .event()
-                        .name("rating")
-                        .data("rate mentor/mentee  with id: " + raterID));
-
-        } catch (IOException e) {
-                sseEmitterRepository.delete(sseEmitter);
-            if(raterIsMentor) {
-                throw new EmitterGone("emitter of mentor - " + mentee.getUser().getEmail());
-            } else {
-                throw new EmitterGone("emitter of mentee - " + mentor.getUser().getEmail());
-            }
-        }
+        Mentee errorMentee = mentee;
+        Mentor errorMentor = mentor;
+        nonBlockingService.execute(() -> {
+                    try {
+                        sseEmitter.getSseEmitter().send(SseEmitter
+                                .event()
+                                .name("rating")
+                                .data("rate mentor/mentee  with id: " + raterID));
+                        sseEmitter.getSseEmitter().complete();
+                    } catch (IOException e) {
+                        sseEmitterRepository.delete(sseEmitter);
+                        if (raterIsMentor) {
+                            throw new EmitterGone("emitter of mentor - " + errorMentee.getUser().getEmail());
+                        } else {
+                            throw new EmitterGone("emitter of mentee - " + errorMentor.getUser().getEmail());
+                        }
+                    }
+                });
         log.info("to rate notification was sent <<<");
     }
 
@@ -89,17 +93,20 @@ public class EmitterServiceImpl implements EmitterService {
         Post post = postRepository.findById(newsID).orElseThrow(() -> new AccountNotFound("post - " + newsID));
         List<SSEEmitter> allEmitters = sseEmitterRepository.findAll();
         for (SSEEmitter sseEmitter: allEmitters) {
-            try {
-                sseEmitter.getSseEmitter().send(SseEmitter
-                        .event()
-                        .id("1")
-                        .comment("asjdnakjsdnas")
-                        .name("news")
-                        .data("check news with id: " + post.getId() + ". Post - " + post));
+            nonBlockingService.execute(() -> {
+                try {
+                    sseEmitter.getSseEmitter().send(SseEmitter
+                            .event()
+                            .id("1")
+                            .comment("asjdnakjsdnas")
+                            .name("news")
+                            .data("check news with id: " + post.getId() + ". Post - " + post));
+                    sseEmitter.getSseEmitter().complete();
 
-            } catch (IOException e) {
-                sseEmitterRepository.delete(sseEmitter);
-            }
+                } catch (IOException e) {
+                    sseEmitterRepository.delete(sseEmitter);
+                }
+            });
         }
         log.info("news were sent <<<");
     }
@@ -112,17 +119,20 @@ public class EmitterServiceImpl implements EmitterService {
         User user = mentor.getUser();
         SSEEmitter sseEmitter = sseEmitterRepository.findByUser(user).orElseThrow(() ->
                 new AccountNotFound("emitter us user - " + user.getEmail()));
-        try {
-            sseEmitter.getSseEmitter().send(SseEmitter
-                    .event()
-                    .id("1")
-                    .comment("asjdnakjsdnas")
-                    .name("subscription")
-                    .data("you have new subscription of mentee with id: " + menteeID));
-        } catch (IOException e) {
-            sseEmitterRepository.delete(sseEmitter);
-            throw new EmitterGone("emitter of mentor - " + mentor.getUser().getEmail());
-        }
+        nonBlockingService.execute(() -> {
+                    try {
+                        sseEmitter.getSseEmitter().send(SseEmitter
+                                .event()
+                                .id("1")
+                                .comment("asjdnakjsdnas")
+                                .name("subscription")
+                                .data("you have new subscription of mentee with id: " + menteeID));
+                        sseEmitter.getSseEmitter().complete();
+                    } catch (IOException e) {
+                        sseEmitterRepository.delete(sseEmitter);
+                        throw new EmitterGone("emitter of mentor - " + mentor.getUser().getEmail());
+                    }
+                });
         log.info("subscription notification was sent <<<");
     }
     @Async
@@ -134,17 +144,20 @@ public class EmitterServiceImpl implements EmitterService {
         User user = mentee.getUser();
         SSEEmitter sseEmitter = sseEmitterRepository.findByUser(user).orElseThrow(() ->
                 new AccountNotFound("emitter us user - " + user.getEmail()));
-        try {
-            sseEmitter.getSseEmitter().send(SseEmitter
-                    .event()
-                    .id("1")
-                    .comment("asjdnakjsdnas")
-                    .name("confirmation")
-                    .data("you have new confirmation from mentor with id: " + mentorID));
-        } catch (IOException e) {
-            sseEmitterRepository.delete(sseEmitter);
-            throw new EmitterGone("emitter of mentor - " + mentee.getUser().getEmail());
-        }
+        nonBlockingService.execute(() -> {
+                    try {
+                        sseEmitter.getSseEmitter().send(SseEmitter
+                                .event()
+                                .id("1")
+                                .comment("asjdnakjsdnas")
+                                .name("confirmation")
+                                .data("you have new confirmation from mentor with id: " + mentorID));
+                        sseEmitter.getSseEmitter().complete();
+                    } catch (IOException e) {
+                        sseEmitterRepository.delete(sseEmitter);
+                        throw new EmitterGone("emitter of mentor - " + mentee.getUser().getEmail());
+                    }
+                });
         log.info("confirmation notification was sent <<<");
     }
 }

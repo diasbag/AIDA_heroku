@@ -1,9 +1,10 @@
 package com.hackathon.mentor.service;
 
-import com.hackathon.mentor.models.SerializableSSE;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 public interface EmitterService {
-    SerializableSSE addEmitter(String email);
+    SseEmitter addEmitter(String email);
 
     void sendToRateNotification(Long raterID, Long toRateID, boolean raterIsMentor);
 
