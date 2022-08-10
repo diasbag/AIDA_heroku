@@ -10,11 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -32,22 +30,17 @@ public class EmitterServiceImpl implements EmitterService {
 
     private final ExecutorService nonBlockingService = Executors
             .newCachedThreadPool();
-    private List<SseEmitter> list = new ArrayList<>();
     @Async
     public SseEmitter addEmitter(String email) {
         log.info("subscribing to notifications ...");
-        SseEmitter sseEmitter = new SseEmitter(-1L);
-        list.add(sseEmitter);
-//        User user= userRepository.findByEmail(email).orElseThrow(() -> new AccountNotFound("user - " + email));
-//        SSEEmitter forRepo = sseEmitterRepository.findByUser(user).orElse(new SSEEmitter(
-//                new SerializableSSE(24 * 60 * 60 * 1000L)));
-//        SerializableSSE sseEmitter = forRepo.getSseEmitter();
-//        forRepo.setUser(user);
-//        sseEmitter.onTimeout(() -> sseEmitterRepository.deleteBySseEmitter(sseEmitter));
-//        forRepo.setSseEmitter(sseEmitter);
-//        sseEmitterRepository.save(forRepo);
+        User user= userRepository.findByEmail(email).orElseThrow(() -> new AccountNotFound("user - " + email));
+        SSEEmitter forRepo = sseEmitterRepository.findByUser(user).orElse(new SSEEmitter(
+                new SerializableSSE(24 * 60 * 60 * 1000L)));
+        SerializableSSE sseEmitter = forRepo.getSseEmitter();
+        forRepo.setUser(user);
+        forRepo.setSseEmitter(sseEmitter);
+        sseEmitterRepository.save(forRepo);
         log.info("subscribed <<<");
-//        return CompletableFuture.completedFuture(sseEmitter);
         return sseEmitter;
     }
     @Async
@@ -98,21 +91,20 @@ public class EmitterServiceImpl implements EmitterService {
     public void sendNews(Long newsID) {
         log.info("sending news started ...");
         Post post = postRepository.findById(newsID).orElseThrow(() -> new AccountNotFound("post - " + newsID));
-//        List<SSEEmitter> allEmitters = sseEmitterRepository.findAll();
-        for (SseEmitter sseEmitter: list) {
+        List<SSEEmitter> allEmitters = sseEmitterRepository.findAll();
+        for (SSEEmitter sseEmitter: allEmitters) {
             nonBlockingService.execute(() -> {
                 try {
-                    sseEmitter.send(SseEmitter
+                    sseEmitter.getSseEmitter().send(SseEmitter
                             .event()
                             .id("1")
                             .comment("asjdnakjsdnas")
                             .name("news")
                             .data("check news with id: " + post.getId() + ". Post - " + post));
-                    sseEmitter.complete();
+                    sseEmitter.getSseEmitter().complete();
 
                 } catch (IOException e) {
-//                    sseEmitterRepository.delete(sseEmitter);
-                    list.remove(sseEmitter);
+                    sseEmitterRepository.delete(sseEmitter);
                 }
             });
         }
