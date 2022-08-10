@@ -308,4 +308,18 @@ public class MentorServiceImpl implements MentorService {
         log.info("Mentee has been removed!!!");
         return new ResponseEntity<>(mentor, HttpStatus.OK);
     }
+
+    @Override
+    public Boolean isMyMentor(String email, Long id) {
+        log.info("get mentor's mentee status ...");
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new AccountNotFound("user with email " + email));
+        Mentee mentee = menteeRepository.findById(id).orElseThrow(() ->
+                new AccountNotFound("mentee - " + user));
+        Mentor mentor = mentorRepository.findByUser(user).orElseThrow(() ->
+                new AccountNotFound("mentor with id " + id));
+        if (mentee.getMentor() == null)  { return false;}
+        log.info("got mentor's mentee status <<<");
+        return mentee.getMentor().equals(mentor);
+    }
 }

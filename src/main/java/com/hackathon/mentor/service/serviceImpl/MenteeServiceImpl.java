@@ -179,6 +179,7 @@ public class MenteeServiceImpl implements MenteeService {
         Mentor mentor = mentorRepository.findById(id).orElseThrow(() ->
                 new AccountNotFound("mentor with id " + id));
         if (mentee.getMentor() == null)  { return false;}
+        log.info("got mentee's mentor status <<<");
         return mentee.getMentor().equals(mentor);
     }
 }

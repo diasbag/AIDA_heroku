@@ -1,7 +1,6 @@
 package com.hackathon.mentor.controllers;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.hackathon.mentor.payload.request.FilterRequest;
+
 import com.hackathon.mentor.payload.request.SignupUpdateMentorRequest;
 import com.hackathon.mentor.service.serviceImpl.MentorServiceImpl;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -10,7 +9,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -92,6 +90,11 @@ public class MentorController {
         String email = userDetails.getUsername();
         return mentorService.deleteFollower(id, email);
     }
-
+    @GetMapping("mentor/is_my_mentee/{id}")
+    public Boolean isMyMentor(@PathVariable("id") Long id) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = userDetails.getUsername();
+        return mentorService.isMyMentor(email, id);
+    }
 
 }
