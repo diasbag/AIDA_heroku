@@ -22,9 +22,8 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("/posts")
-    public ResponseEntity<?> getPosts() {
-        List<PostResponse> postResponseList = postService.getPosts();
-        return ResponseEntity.ok(postResponseList);
+    public ResponseEntity<?> getPosts(@RequestParam("page") Integer page) {
+        return postService.getPosts(page);
     }
 
     @PostMapping("/post/upload_text_2")
