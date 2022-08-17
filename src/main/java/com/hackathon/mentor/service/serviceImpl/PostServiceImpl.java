@@ -14,6 +14,11 @@ import com.hackathon.mentor.service.PostService;
 import com.hackathon.mentor.utils.FileNameHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -21,9 +26,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -34,10 +38,12 @@ public class PostServiceImpl implements PostService {
     private final EmitterService emitterService;
     private final FileNameHelper fileHelper = new FileNameHelper();
     @Override
-    public List<PostResponse> getPosts() {
+    public ResponseEntity<?> getPosts(Integer page) {
         log.info("getting all posts ...");
-        List<Post> posts = postRepository.getAll();
+        Pageable paging =  PageRequest.of(page, 8);
+        Page<Post> posts = postRepository.getAll(paging);
         List<PostResponse> postResponseList = new ArrayList<>();
+        Map<String, Object> result = new HashMap<>();
         for (Post post : posts) {
             PostResponse postResponse = new PostResponse();
             postResponse.setId(post.getId());
@@ -46,11 +52,13 @@ public class PostServiceImpl implements PostService {
             postResponse.setDate(post.getDate());
             postResponse.setImage(post.getImage());
             postResponseList.add(postResponse);
+            result.put("news", postResponseList);
+            result.put("totalPages", posts.getTotalPages());
 //            postResponse.setFirstname(post.getUser().getFirstname());
 //            postResponse.setLastname(post.getUser().getLastname());
         }
         log.info("all posts were found <<<");
-        return postResponseList;
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @Override
