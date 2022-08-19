@@ -3,12 +3,13 @@ package com.hackathon.mentor.service;
 import com.hackathon.mentor.models.Post;
 import com.hackathon.mentor.payload.request.PostRequest;
 import com.hackathon.mentor.payload.response.PostResponse;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface PostService {
-    List<PostResponse> getPosts();
+    ResponseEntity<?> getPosts(Integer page);
 
     Post createPost(PostRequest postRequest);
 
