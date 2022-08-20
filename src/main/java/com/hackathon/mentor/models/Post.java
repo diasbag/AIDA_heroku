@@ -27,6 +27,9 @@ public class Post {
     @Column(name = "article", length = 10485760, columnDefinition = "TEXT")
     @Size(max =  10485760)
     private String article;
+    @Column(name = "url", length = 10485760, columnDefinition = "TEXT")
+    @Size(max =  10485760)
+    private String URL;
     @OneToOne(cascade = {CascadeType.ALL})
     private Image image;
     @OneToOne

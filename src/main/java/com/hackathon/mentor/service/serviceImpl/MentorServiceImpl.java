@@ -299,7 +299,6 @@ public class MentorServiceImpl implements MentorService {
 //        mentorHistoryRepository.save(mentorHistory);
         ratingNotificationRepository.save(ratingNotification);
         mentor.getMentees().remove(mentee);
-        mentee.setMentor(null);
         mailService.sendDeleteMailToMentee(mentee.getUser().getEmail(),
                 mentor.getUser().getFirstname(),
                 mentor.getUser().getLastname());
@@ -307,5 +306,19 @@ public class MentorServiceImpl implements MentorService {
         mentorRepository.save(mentor);
         log.info("Mentee has been removed!!!");
         return new ResponseEntity<>(mentor, HttpStatus.OK);
+    }
+
+    @Override
+    public Boolean isMyMentor(String email, Long id) {
+        log.info("get mentor's mentee status ...");
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new AccountNotFound("user with email " + email));
+        Mentee mentee = menteeRepository.findById(id).orElseThrow(() ->
+                new AccountNotFound("mentee - " + user));
+        Mentor mentor = mentorRepository.findByUser(user).orElseThrow(() ->
+                new AccountNotFound("mentor with id " + id));
+        if (mentee.getMentor() == null)  { return false;}
+        log.info("got mentor's mentee status <<<");
+        return mentee.getMentor().equals(mentor);
     }
 }

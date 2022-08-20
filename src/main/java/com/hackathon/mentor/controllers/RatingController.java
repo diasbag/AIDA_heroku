@@ -31,5 +31,10 @@ public class RatingController {
         List<Long> whoToRate = ratingService.whoToRate();
         return ResponseEntity.ok("{\"toRate\":\"" + whoToRate + "\"}");
     }
+    @GetMapping("/did_mentee_rate/{id}")
+    public ResponseEntity<?> didIRate(@PathVariable Long id) {
+        Boolean amIRated = ratingService.didIRate(id);
+        return ResponseEntity.ok("{\"didMenteeRate\":\"" + amIRated + "\"}");
+    }
 
 }

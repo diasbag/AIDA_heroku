@@ -77,6 +77,9 @@ public class PostServiceImpl implements PostService {
         post.setTitle(postRequest.getTitle());
         post.setArticle(postRequest.getArticle());
         post.setDate(Date.from(Instant.now()));
+        if (postRequest.getURL() != null) {
+            post.setURL(postRequest.getURL());
+        }
         Post post1 = postRepository.save(post);
         emitterService.sendNews(post1.getId());
         log.info("post was created <<<");
@@ -89,6 +92,9 @@ public class PostServiceImpl implements PostService {
         post.setTitle(postRequest.getTitle());
         post.setArticle(postRequest.getArticle());
         post.setDate(Date.from(Instant.now()));
+        if (postRequest.getURL() != null) {
+            post.setURL(postRequest.getURL());
+        }
         Image image =Image.buildImage(file, fileHelper);
         post.setImage(image);
         imageRepository.save(image);
@@ -137,6 +143,9 @@ public class PostServiceImpl implements PostService {
         post.setArticle(postRequest.getArticle());
         post.setTitle(postRequest.getTitle());
         post.setDate(Date.from(Instant.now()));
+        if (postRequest.getURL() != null) {
+            post.setURL(postRequest.getURL());
+        }
         post.setUser(user);
         postRepository.save(post);
         log.info("post text was edited " + post + " <<<");

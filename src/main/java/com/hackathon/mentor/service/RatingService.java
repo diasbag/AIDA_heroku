@@ -11,4 +11,6 @@ public interface RatingService {
     ResponseEntity<?> rateUser(Long id, String email, RatingRequest ratingRequest);
 
     List<Long> whoToRate() throws AccountConflict;
+
+    Boolean didIRate(Long id);
 }
