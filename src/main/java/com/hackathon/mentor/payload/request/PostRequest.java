@@ -25,4 +25,8 @@ public class PostRequest {
     @Size(max = 10485760)
     private String article;
 
+    @Length(max = 10485760)
+    @Size(max = 10485760)
+    private String URL;
+
 }

@@ -2,6 +2,7 @@ package com.hackathon.mentor.service.serviceImpl;
 
 import com.hackathon.mentor.exceptions.AccountConflict;
 import com.hackathon.mentor.exceptions.AccountNotFound;
+import com.hackathon.mentor.exceptions.AuthenticationFailed;
 import com.hackathon.mentor.models.*;
 import com.hackathon.mentor.payload.request.RatingRequest;
 import com.hackathon.mentor.repository.*;
@@ -15,8 +16,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.support.StandardMultipartHttpServletRequest;
 
 import javax.transaction.Transactional;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -77,6 +80,8 @@ public class RatingServiceImpl implements RatingService {
                             () -> new AccountNotFound("rating notification with mentor - " + mentor +
                                     " and mentee - " + mentee)
                     );
+            mentee.setMentor(null);
+            menteeRepository.save(mentee);
             ratingNotification = ratingNotificationList.get(ratingNotificationList.size() - 1);
             if (!ratingNotification.getMenteeRated()) {
                 ratingNotification.setMenteeRated(true);
@@ -172,6 +177,38 @@ public class RatingServiceImpl implements RatingService {
         }
         log.info("rate list was retrieved - " + toRate);
         return toRate;
+    }
+
+    @Override
+    public Boolean didIRate(Long id) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetails userDetails;
+        if(principal instanceof String) {
+            throw new AuthenticationFailed((String) principal);
+        } else {
+            userDetails = (UserDetails) principal;
+        }
+        String email = userDetails.getUsername();
+        Mentee mentee = menteeRepository.findMenteeByUser_Email(email).orElseThrow(() -> new AccountNotFound(
+                "mentee with email - " + email));
+        Mentor mentor;
+        if (mentee.getMentor() != null) {
+            mentor = mentee.getMentor();
+        } else {
+            throw new AccountConflict("mentee has not mentor - " + email);
+        }
+        Mentor mentorCheck = mentorRepository.findById(id).orElseThrow(() -> {throw new AccountNotFound(
+                "mentor  with id  - " + id);});
+        if (mentor != mentorCheck) {
+            throw new AccountConflict("mentee already have mentor with id - " + mentor.getId());
+        }
+        List<RatingNotification> ratingNotificationList = ratingNotificationRepository
+                .findRatingNotificationByMentorAndMentee(mentor,mentee)
+                .orElseThrow(() -> {
+                    throw new AccountConflict("mentee " + email + " has not match with mentor " + id);
+                });
+        RatingNotification ratingNotification = ratingNotificationList.get(ratingNotificationList.size() - 1);
+        return ratingNotification.getMenteeRated();
     }
     //    public User rate(User user, RatingRequest ratingRequest) {
 //        Comment comment = new Comment();

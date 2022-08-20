@@ -299,7 +299,6 @@ public class MentorServiceImpl implements MentorService {
 //        mentorHistoryRepository.save(mentorHistory);
         ratingNotificationRepository.save(ratingNotification);
         mentor.getMentees().remove(mentee);
-        mentee.setMentor(null);
         mailService.sendDeleteMailToMentee(mentee.getUser().getEmail(),
                 mentor.getUser().getFirstname(),
                 mentor.getUser().getLastname());

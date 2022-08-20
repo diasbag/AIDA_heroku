@@ -14,5 +14,6 @@ public interface MenteeRepository extends JpaRepository<Mentee, Long> {
     List<Mentee> getAll();
 
     Optional<Mentee> findByUser(User user);
+    Optional<Mentee> findMenteeByUser_Email(String email);
 
 }
