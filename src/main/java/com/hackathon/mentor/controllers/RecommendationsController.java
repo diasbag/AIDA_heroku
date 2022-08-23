@@ -1,10 +1,13 @@
 package com.hackathon.mentor.controllers;
 
+import com.hackathon.mentor.payload.response.MentorsResponse;
 import com.hackathon.mentor.service.RecommendationsService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -17,8 +20,11 @@ public class RecommendationsController {
 
     @GetMapping()
     public ResponseEntity<?> getRecommendations(@RequestParam Long mentorID) {
-        return ResponseEntity.ok(recommendationsService.getRecommendations(mentorID));
+        List<MentorsResponse> out = recommendationsService.getRecommendations(mentorID);
+        if (out.isEmpty()) {
+            return ResponseEntity.ok("{\"recommendations\": null}");
+        } else {
+            return ResponseEntity.ok(recommendationsService.getRecommendations(mentorID));
+        }
     }
-
-
 }
