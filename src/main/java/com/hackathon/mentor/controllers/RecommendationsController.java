@@ -4,6 +4,7 @@ import com.hackathon.mentor.payload.response.MentorsResponse;
 import com.hackathon.mentor.service.RecommendationsService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +19,7 @@ import java.util.List;
 public class RecommendationsController {
     private final RecommendationsService recommendationsService;
 
-    @GetMapping()
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getRecommendations(@RequestParam Long mentorID) {
         List<MentorsResponse> out = recommendationsService.getRecommendations(mentorID);
         if (out.isEmpty()) {

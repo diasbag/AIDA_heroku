@@ -197,16 +197,16 @@ public class RatingServiceImpl implements RatingService {
         } else {
             throw new AccountConflict("mentee has not mentor - " + email);
         }
-        Mentor mentorCheck = mentorRepository.findById(id).orElseThrow(() -> {throw new AccountNotFound(
-                "mentor  with id  - " + id);});
+        Mentor mentorCheck = mentorRepository.findById(id).orElseThrow(() ->new AccountNotFound(
+                "mentor  with id  - " + id));
         if (mentor != mentorCheck) {
             throw new AccountConflict("mentee already have mentor with id - " + mentor.getId());
         }
         List<RatingNotification> ratingNotificationList = ratingNotificationRepository
                 .findRatingNotificationByMentorAndMentee(mentor,mentee)
-                .orElseThrow(() -> {
-                    throw new AccountConflict("mentee " + email + " has not match with mentor " + id);
-                });
+                .orElseThrow(() ->
+                     new AccountConflict("mentee " + email + " has not match with mentor " + id)
+                );
         RatingNotification ratingNotification = ratingNotificationList.get(ratingNotificationList.size() - 1);
         return ratingNotification.getMenteeRated();
     }
