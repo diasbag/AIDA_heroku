@@ -22,7 +22,7 @@ public class RecommendationsController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getRecommendations(@RequestParam Long mentorID) {
         List<MentorsResponse> out = recommendationsService.getRecommendations(mentorID);
-        if (out.isEmpty()) {
+        if (out == null || out.isEmpty()) {
             return ResponseEntity.ok("{\"recommendations\": null}");
         } else {
             return ResponseEntity.ok(recommendationsService.getRecommendations(mentorID));
