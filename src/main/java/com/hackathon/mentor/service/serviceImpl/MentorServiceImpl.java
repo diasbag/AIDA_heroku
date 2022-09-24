@@ -47,6 +47,7 @@ public class MentorServiceImpl implements MentorService {
 
     private final MailService mailService;
     private final EmitterService emitterService;
+    private final FileRepository fileRepository;
     private final ModelMapper modelMapper = new ModelMapper();
 
     @Override
@@ -221,8 +222,6 @@ public class MentorServiceImpl implements MentorService {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-
-
     @Transactional
     @Override
     public ResponseEntity<?> confirm(Long id, String email) {
@@ -304,6 +303,7 @@ public class MentorServiceImpl implements MentorService {
                 mentor.getUser().getLastname());
         menteeRepository.save(mentee);
         mentorRepository.save(mentor);
+        fileRepository.deleteAllByMentorAndMentee(mentor, mentee);
         log.info("Mentee has been removed!!!");
         return new ResponseEntity<>(mentor, HttpStatus.OK);
     }

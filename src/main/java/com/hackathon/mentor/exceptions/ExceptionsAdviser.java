@@ -45,5 +45,11 @@ public class ExceptionsAdviser {
         return ex.getMessage();
     }
 
+    @ResponseBody
+    @ExceptionHandler(FileEmpty.class)
+    @ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY)
+    String fileEMpty(FileEmpty ex) {
+        return ex.getMessage();
+    }
 
 }
