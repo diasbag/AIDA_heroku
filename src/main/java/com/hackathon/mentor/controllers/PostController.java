@@ -22,8 +22,8 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("/posts")
-    public ResponseEntity<?> getPosts(@RequestParam("page") Integer page) {
-        return postService.getPosts(page);
+    public ResponseEntity<?> getPosts(@RequestParam("page") Integer page, @RequestParam("lang") String lang) {
+        return postService.getPosts(page, lang);
     }
 
     @PostMapping("/post/upload_text_2")

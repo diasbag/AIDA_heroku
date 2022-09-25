@@ -38,7 +38,7 @@ public class PostServiceImpl implements PostService {
     private final EmitterService emitterService;
     private final FileNameHelper fileHelper = new FileNameHelper();
     @Override
-    public ResponseEntity<?> getPosts(Integer page) {
+    public ResponseEntity<?> getPosts(Integer page, String lang) {
         log.info("getting all posts ...");
         Pageable paging =  PageRequest.of(page, 8);
         Page<Post> posts = postRepository.getAll(paging);
@@ -46,9 +46,18 @@ public class PostServiceImpl implements PostService {
         Map<String, Object> result = new HashMap<>();
         for (Post post : posts) {
             PostResponse postResponse = new PostResponse();
+            if (lang.equals("RU")) {
+                postResponse.setTitle(post.getTitleRus());
+                postResponse.setArticle(post.getArticleRus());
+            } else if (lang.equals("EN")) {
+                postResponse.setTitle(post.getTitleEng());
+                postResponse.setArticle(post.getArticleEng());
+            } else if (lang.equals("KZ")) {
+                postResponse.setTitle(post.getTitleKaz());
+                postResponse.setArticle(post.getArticleKaz());
+            }
+
             postResponse.setId(post.getId());
-            postResponse.setTitle(post.getTitle());
-            postResponse.setArticle(post.getArticle());
             postResponse.setDate(post.getDate());
             postResponse.setImage(post.getImage());
             postResponseList.add(postResponse);
@@ -74,8 +83,12 @@ public class PostServiceImpl implements PostService {
         } else {
             post = new Post();
         }
-        post.setTitle(postRequest.getTitle());
-        post.setArticle(postRequest.getArticle());
+        post.setTitleRus(postRequest.getTitleRus());
+        post.setArticleRus(postRequest.getArticleRus());
+        post.setTitleKaz(postRequest.getTitleKaz());
+        post.setArticleKaz(postRequest.getArticleKaz());
+        post.setTitleEng(postRequest.getTitleEng());
+        post.setArticleEng(postRequest.getArticleEng());
         post.setDate(Date.from(Instant.now()));
         if (postRequest.getURL() != null) {
             post.setURL(postRequest.getURL());
@@ -89,8 +102,12 @@ public class PostServiceImpl implements PostService {
     public Post createPostWithImage(@Valid PostRequest postRequest, MultipartFile file) {
         log.info("creating post ...");
         Post post = new Post();
-        post.setTitle(postRequest.getTitle());
-        post.setArticle(postRequest.getArticle());
+        post.setTitleRus(postRequest.getTitleRus());
+        post.setArticleRus(postRequest.getArticleRus());
+        post.setTitleKaz(postRequest.getTitleKaz());
+        post.setArticleKaz(postRequest.getArticleKaz());
+        post.setTitleEng(postRequest.getTitleEng());
+        post.setArticleEng(postRequest.getArticleEng());
         post.setDate(Date.from(Instant.now()));
         if (postRequest.getURL() != null) {
             post.setURL(postRequest.getURL());
@@ -140,8 +157,12 @@ public class PostServiceImpl implements PostService {
                 new AccountNotFound("user with email - " + email));
         Long id = postRequest.getId();
         Post post = postRepository.findById(id).orElseThrow(() -> new AccountNotFound("post with id " + id));
-        post.setArticle(postRequest.getArticle());
-        post.setTitle(postRequest.getTitle());
+        post.setTitleRus(postRequest.getTitleRus());
+        post.setArticleRus(postRequest.getArticleRus());
+        post.setTitleKaz(postRequest.getTitleKaz());
+        post.setArticleKaz(postRequest.getArticleKaz());
+        post.setTitleEng(postRequest.getTitleEng());
+        post.setArticleEng(postRequest.getArticleEng());
         post.setDate(Date.from(Instant.now()));
         if (postRequest.getURL() != null) {
             post.setURL(postRequest.getURL());

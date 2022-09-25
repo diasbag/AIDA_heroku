@@ -17,13 +17,32 @@ public class PostRequest {
     @NotNull
     @Size(max = 10485760)
     @Length(max = 10485760)
-    private String title;
+    private String titleRus;
 
+    @NotNull
+    @Size(max = 10485760)
+    @Length(max = 10485760)
+    private String titleKaz;
+
+    @NotNull
+    @Size(max = 10485760)
+    @Length(max = 10485760)
+    private String titleEng;
 
     @NotNull
     @Length(max = 10485760)
     @Size(max = 10485760)
-    private String article;
+    private String articleRus;
+
+    @NotNull
+    @Length(max = 10485760)
+    @Size(max = 10485760)
+    private String articleKaz;
+
+    @NotNull
+    @Length(max = 10485760)
+    @Size(max = 10485760)
+    private String articleEng;
 
     @Length(max = 10485760)
     @Size(max = 10485760)

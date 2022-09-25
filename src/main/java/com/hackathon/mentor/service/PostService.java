@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface PostService {
-    ResponseEntity<?> getPosts(Integer page);
+    ResponseEntity<?> getPosts(Integer page, String lang);
 
     Post createPost(PostRequest postRequest);
 

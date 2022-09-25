@@ -19,14 +19,32 @@ public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "title", length = 10485760, columnDefinition = "TEXT")
+
+    @Column(name = "title_rus", length = 10485760, columnDefinition = "TEXT")
     @Size(max =  1024)
-    private String title;
+    private String titleRus;
+
+    @Column(name = "title_kaz", length = 10485760, columnDefinition = "TEXT")
+    @Size(max =  1024)
+    private String titleKaz;
+    @Column(name = "title_eng", length = 10485760, columnDefinition = "TEXT")
+    @Size(max =  1024)
+    private String titleEng;
+
     @Column(name = "created_date")
     private Date date;
-    @Column(name = "article", length = 10485760, columnDefinition = "TEXT")
+    @Column(name = "article_rus", length = 10485760, columnDefinition = "TEXT")
     @Size(max =  10485760)
-    private String article;
+    private String articleRus;
+
+    @Column(name = "article_kaz", length = 10485760, columnDefinition = "TEXT")
+    @Size(max =  10485760)
+    private String articleKaz;
+
+    @Column(name = "article_eng", length = 10485760, columnDefinition = "TEXT")
+    @Size(max =  10485760)
+    private String articleEng;
+
     @Column(name = "url", length = 10485760, columnDefinition = "TEXT")
     @Size(max =  10485760)
     private String URL;
@@ -40,9 +58,9 @@ public class Post {
     public String toString() {
         return "Post{" +
                 "id=" + id +
-                ", title='" + title + '\'' +
+                ", title='" + titleRus + '\'' +
                 ", date=" + date +
-                ", article='" + article + '\'' +
+                ", article='" + articleRus + '\'' +
                 '}';
     }
 

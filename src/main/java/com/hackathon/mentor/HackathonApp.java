@@ -21,7 +21,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 		SecuritySchemeIn.HEADER)
 //@EnableSwagger2
 @RequiredArgsConstructor
-public class HackathonApp implements CommandLineRunner, WebMvcConfigurer {
+public class 	HackathonApp implements CommandLineRunner, WebMvcConfigurer {
 	private final AdminService adminService;
 	private final UserService userService;
 
