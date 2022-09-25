@@ -39,6 +39,8 @@ public class MenteeServiceImpl implements MenteeService {
 //    private final MentorHistoryRepository mentorHistoryRepository;
     private final RatingNotificationRepository ratingNotificationRepository;
 
+    private final FileRepository fileRepository;
+
     @Override
     public ResponseEntity<?> getAllMentees() {
         List<Mentee> mentees = menteeRepository.getAll();
@@ -92,6 +94,7 @@ public class MenteeServiceImpl implements MenteeService {
         menteeRepository.save(mentee);
         mentorRepository.save(mentor);
         subscribeRepository.deleteByMentorAndMentee(mentor, mentee);
+        fileRepository.deleteAllByMentorAndMentee(mentor, mentee);
         log.info("Mentor has been removed " + mentor + " <<<");
         return new ResponseEntity<>(mentor, HttpStatus.OK);
     }

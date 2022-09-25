@@ -2,12 +2,12 @@ package com.hackathon.mentor.service.serviceImpl;
 
 import com.hackathon.mentor.exceptions.AccountConflict;
 import com.hackathon.mentor.exceptions.AccountNotFound;
-import com.hackathon.mentor.exceptions.AuthenticationFailed;
 import com.hackathon.mentor.models.*;
 import com.hackathon.mentor.payload.request.RatingRequest;
 import com.hackathon.mentor.repository.*;
 import com.hackathon.mentor.service.EmitterService;
 import com.hackathon.mentor.service.RatingService;
+import com.hackathon.mentor.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -16,10 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.support.StandardMultipartHttpServletRequest;
 
 import javax.transaction.Transactional;
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -181,14 +179,7 @@ public class RatingServiceImpl implements RatingService {
 
     @Override
     public Boolean didIRate(Long id) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        UserDetails userDetails;
-        if(principal instanceof String) {
-            throw new AuthenticationFailed((String) principal);
-        } else {
-            userDetails = (UserDetails) principal;
-        }
-        String email = userDetails.getUsername();
+        String email = Utils.getEmail();
         Mentee mentee = menteeRepository.findMenteeByUser_Email(email).orElseThrow(() -> new AccountNotFound(
                 "mentee with email - " + email));
         Mentor mentor;
@@ -210,6 +201,8 @@ public class RatingServiceImpl implements RatingService {
         RatingNotification ratingNotification = ratingNotificationList.get(ratingNotificationList.size() - 1);
         return ratingNotification.getMenteeRated();
     }
+
+
     //    public User rate(User user, RatingRequest ratingRequest) {
 //        Comment comment = new Comment();
 //        Rating rating = user.getRating();
