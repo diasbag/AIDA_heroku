@@ -108,10 +108,8 @@ public class LibraryServiceImpl implements LibraryService {
     public void postText(LibraryTextRequest libraryTextRequest) {
         log.info("posting text of the file with id - " + libraryTextRequest.getId() + " ...");
         String email = Utils.getEmail();
-        User user =  userRepository.findByEmail(email).orElseThrow(() -> {
-                    throw new AccountNotFound(
-                            "user with email" + email);
-                });
+        User user =  userRepository.findByEmail(email).orElseThrow(() -> new AccountNotFound(
+                            "user with email" + email));
         String id = libraryTextRequest.getId();
         List<FileEntity> files;
         if (mentorRepository.findByUser(user).isPresent()) {
