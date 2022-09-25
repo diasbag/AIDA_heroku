@@ -9,7 +9,7 @@ import javax.validation.constraints.Max;
 @Setter
 @Builder
 public class LibraryTextRequest {
-    private Long id;
+    private String id;
     @Max(1000)
     private String text;
 }

@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.sql.Date;
 import java.time.Instant;
@@ -34,8 +35,9 @@ public class LibraryServiceImpl implements LibraryService {
     private final MentorRepository mentorRepository;
     private final MenteeRepository menteeRepository;
 
+    @Transactional
     @Override
-    public String save(MultipartFile file) throws IOException {
+    public String save(MultipartFile file, Long id) throws IOException {
         log.info("started uploading file ...");
         if (file == null) {
             throw new FileEmpty("upload date - " + Date.from(Instant.now()));
@@ -47,20 +49,26 @@ public class LibraryServiceImpl implements LibraryService {
         fileEntity.setSize(file.getSize());
         String email = Utils.getEmail();
         User user = userRepository.findByEmail(email).orElseThrow(() -> new AccountNotFound("user - " + email));
+        Mentor mentor;
+        Mentee mentee;
         if (mentorRepository.findByUser(user).isPresent()) {
-            Mentor mentor = mentorRepository.getByUser(user);
-            fileEntity.setMentor(mentor);
+            mentor = mentorRepository.getByUser(user);
+            mentee = menteeRepository.findById(id).orElseThrow(() -> {throw new AccountNotFound(
+                    "mentee with id - " + id);});
         } else if (menteeRepository.findByUser(user).isPresent()) {
-            Mentee mentee = menteeRepository.findByUser(user).get();
-            fileEntity.setMentee(mentee);
+            mentee = menteeRepository.findByUser(user).get();
+            mentor = mentorRepository.findById(id).orElseThrow(() -> {throw new AccountNotFound(
+                    "mentee with id - " + id);});
         } else {
             throw new AccountNotFound("mentor or mentee with id - " + email);
         }
+        fileEntity.setMentee(mentee);
+        fileEntity.setMentor(mentor);
         FileEntity fileSaved = fileRepository.save(fileEntity);
         log.info("file was saved <<<");
         return fileSaved.getId();
     }
-
+    @Transactional
     @Override
     public FileEntity getFile(String id) {
         log.info("finding file  - " + id + " ...");
@@ -96,20 +104,22 @@ public class LibraryServiceImpl implements LibraryService {
 //        return fileResponse;
 //    }
 
+    @Transactional
     @Override
     public void postText(LibraryTextRequest libraryTextRequest) {
+        log.info("posting text of the file with id - " + libraryTextRequest.getId() + " ...");
         String email = Utils.getEmail();
         User user =  userRepository.findByEmail(email).orElseThrow(() -> {
                     throw new AccountNotFound(
                             "user with email" + email);
                 });
-        Long id = libraryTextRequest.getId();
+        String id = libraryTextRequest.getId();
         List<FileEntity> files;
         if (mentorRepository.findByUser(user).isPresent()) {
             Long mentorId = mentorRepository.findByUser(user).get().getId();
             files = fileRepository.findByMentor_Id(mentorId);
             for (FileEntity file: files) {
-                if (file.getMentee().getId().equals(id)) {
+                if (file.getId().equals(id)) {
                     file.setText(libraryTextRequest.getText());
                 }
             }
@@ -117,18 +127,21 @@ public class LibraryServiceImpl implements LibraryService {
             Long menteeId = mentorRepository.findByUser(user).get().getId();
             files = fileRepository.findByMentee_Id(menteeId);
             for (FileEntity file: files) {
-                if (file.getMentor().getId().equals(id)) {
+                if (file.getId().equals(id)) {
                     file.setText(libraryTextRequest.getText());
                 }
             }
         } else {
             throw new AccountNotFound(" file by user details - " + email);
         }
+        log.info("text of the file with id - " + libraryTextRequest.getId() + " was saved <<<");
     }
 
+    @Transactional
     @Override
     public List<TextResponse> getText() {
         String email = Utils.getEmail();
+        log.info("getting all files with of user with email - " + email + " ...");
         User user = userRepository.findByEmail(email).orElseThrow(() -> {throw new AccountNotFound(
                 "user with email - " + email);
         });
@@ -136,35 +149,96 @@ public class LibraryServiceImpl implements LibraryService {
         if (mentorRepository.findByUser(user).isPresent()) {
             Mentor mentor = mentorRepository.getByUser(user);
             List<FileEntity> files = fileRepository.findByMentor_Id(mentor.getId());
-            textResponseListBuilder(uniques, files);
+            Boolean isMentor = true;
+            textResponseListBuilder(uniques, files, isMentor);
         } else if (menteeRepository.findByUser(user).isPresent()) {
             Mentee mentee = menteeRepository.findByUser(user).get();
             List<FileEntity> files = fileRepository.findByMentee_Id(mentee.getId());
-            textResponseListBuilder(uniques, files);
+            Boolean isMentor = false;
+            textResponseListBuilder(uniques, files, isMentor);
         } else {
             throw new AccountNotFound("user with email - " + email);
         }
+        log.info("all files with of user with email - " + email + " were retrieved <<<");
         return new ArrayList<>(uniques.values());
     }
+    @Transactional
+    @Override
+    public void deleteFIle(String id) {
+        log.info("deleting file with id - " + id + " ...");
+        fileRepository.findById(id).orElseThrow(() -> {throw new AccountNotFound("file with id - " + id);});
+        fileRepository.deleteById(id);
+        log.info("file with id - " + id + " was deleted <<<");
+    }
 
-    private void textResponseListBuilder(HashMap<Long, TextResponse> uniques, List<FileEntity> files) {
+    @Override
+    public void editText(LibraryTextRequest libraryTextRequest) {
+        log.info("editing text of the file with id - " + libraryTextRequest.getId() + " ...");
+        String id = libraryTextRequest.getId();
+        FileEntity file = fileRepository.findById(id).orElseThrow(() -> {throw new AccountNotFound(
+                "file with id - " + id);});
+        file.setText(libraryTextRequest.getText());
+        fileRepository.save(file);
+        log.info("editing text of the file with id - " + libraryTextRequest.getId() + " was finished <<<");
+    }
+
+    @Override
+    public void editFile(MultipartFile file, String id) throws IOException {
+        log.info("started changing the file ...");
+        if (file == null) {
+            throw new FileEmpty("upload date - " + Date.from(Instant.now()));
+        }
+        FileEntity fileEntity = fileRepository.findById(id).orElseThrow(() -> {throw new AccountNotFound(
+                "file with id - " + id);});
+        fileEntity.setName(StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename())));
+        fileEntity.setContentType(file.getContentType());
+        fileEntity.setData(file.getBytes());
+        fileEntity.setSize(file.getSize());
+        fileRepository.save(fileEntity);
+        log.info("file was saved <<<");
+    }
+
+    private void textResponseListBuilder(HashMap<Long, TextResponse> uniques, List<FileEntity> files,
+                                         Boolean isMentor) {
         for (FileEntity file: files) {
-            Long id  = file.getMentee().getId();
-            if (!uniques.containsKey(id)) {
-                List<String> materialList = new ArrayList<>();
+            Long id;
+            if (isMentor) {
+                id  = file.getMentee().getId();
+            } else {
+                id  = file.getMentor().getId();
+            }
+            List<String> materialList = new ArrayList<>();
+            List<String> text = new ArrayList<>();
+            if (!uniques.containsKey(id) && isMentor) {
                 materialList.add(file.getId());
+                text.add(file.getText());
                 TextResponse response = TextResponse.builder()
                         .id(id)
                         .firstName(file.getMentee().getUser().getFirstname())
                         .lastName(file.getMentee().getUser().getLastname())
+                        .text(text)
                         .material(materialList)
+                        .build();
+                uniques.put(id, response);
+            } else if (!uniques.containsKey(id) && !isMentor) {
+                materialList.add(file.getId());
+                text.add(file.getText());
+                TextResponse response = TextResponse.builder()
+                        .id(id)
+                        .firstName(file.getMentor().getUser().getFirstname())
+                        .lastName(file.getMentor().getUser().getLastname())
+                        .material(materialList)
+                        .text(text)
                         .build();
                 uniques.put(id, response);
             } else {
                 TextResponse tmp = uniques.get(id);
                 List<String> materialId = tmp.getMaterial();
+                List<String> newText = tmp.getText();
                 materialId.add(file.getId());
+                newText.add(file.getText());
                 tmp.setMaterial(materialId);
+                tmp.setText(newText);
                 uniques.replace(id, tmp);
             }
         }

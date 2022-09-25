@@ -13,5 +13,17 @@ public class TextResponse {
     private Long id;
     private String firstName;
     private String lastName;
+    private List<String> text;
     private List<String> material;
+
+    @Override
+    public String toString() {
+        return "{" +
+                "\"id\":" + id +
+                ", \"firstName\":\"" + firstName + '"' +
+                ", \"lastName\":\"" + lastName + '"' +
+                ", \"text\":\"" + text + '"' +
+                ", \"material\":" + material +
+                '}';
+    }
 }
