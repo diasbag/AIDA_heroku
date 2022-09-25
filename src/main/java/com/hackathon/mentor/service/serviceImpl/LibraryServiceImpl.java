@@ -53,12 +53,12 @@ public class LibraryServiceImpl implements LibraryService {
         Mentee mentee;
         if (mentorRepository.findByUser(user).isPresent()) {
             mentor = mentorRepository.getByUser(user);
-            mentee = menteeRepository.findById(id).orElseThrow(() -> {throw new AccountNotFound(
-                    "mentee with id - " + id);});
+            mentee = menteeRepository.findById(id).orElseThrow(() -> new AccountNotFound(
+                    "mentee with id - " + id));
         } else if (menteeRepository.findByUser(user).isPresent()) {
             mentee = menteeRepository.findByUser(user).get();
-            mentor = mentorRepository.findById(id).orElseThrow(() -> {throw new AccountNotFound(
-                    "mentee with id - " + id);});
+            mentor = mentorRepository.findById(id).orElseThrow(() -> new AccountNotFound(
+                    "mentee with id - " + id));
         } else {
             throw new AccountNotFound("mentor or mentee with id - " + email);
         }
@@ -72,9 +72,8 @@ public class LibraryServiceImpl implements LibraryService {
     @Override
     public FileEntity getFile(String id) {
         log.info("finding file  - " + id + " ...");
-        FileEntity out = fileRepository.findById(id).orElseThrow(() -> {throw new AccountNotFound(
-                "file with id - " + id);
-        });
+        FileEntity out = fileRepository.findById(id).orElseThrow(() -> new AccountNotFound(
+                "file with id - " + id));
         log.info("file was retrieved <<<");
         return out;
     }
@@ -142,9 +141,8 @@ public class LibraryServiceImpl implements LibraryService {
     public List<TextResponse> getText() {
         String email = Utils.getEmail();
         log.info("getting all files with of user with email - " + email + " ...");
-        User user = userRepository.findByEmail(email).orElseThrow(() -> {throw new AccountNotFound(
-                "user with email - " + email);
-        });
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new AccountNotFound(
+                "user with email - " + email));
         HashMap<Long, TextResponse> uniques = new HashMap<>();
         if (mentorRepository.findByUser(user).isPresent()) {
             Mentor mentor = mentorRepository.getByUser(user);
@@ -166,7 +164,7 @@ public class LibraryServiceImpl implements LibraryService {
     @Override
     public void deleteFIle(String id) {
         log.info("deleting file with id - " + id + " ...");
-        fileRepository.findById(id).orElseThrow(() -> {throw new AccountNotFound("file with id - " + id);});
+        fileRepository.findById(id).orElseThrow(() -> new AccountNotFound("file with id - " + id));
         fileRepository.deleteById(id);
         log.info("file with id - " + id + " was deleted <<<");
     }
@@ -175,8 +173,8 @@ public class LibraryServiceImpl implements LibraryService {
     public void editText(LibraryTextRequest libraryTextRequest) {
         log.info("editing text of the file with id - " + libraryTextRequest.getId() + " ...");
         String id = libraryTextRequest.getId();
-        FileEntity file = fileRepository.findById(id).orElseThrow(() -> {throw new AccountNotFound(
-                "file with id - " + id);});
+        FileEntity file = fileRepository.findById(id).orElseThrow(() -> new AccountNotFound(
+                "file with id - " + id));
         file.setText(libraryTextRequest.getText());
         fileRepository.save(file);
         log.info("editing text of the file with id - " + libraryTextRequest.getId() + " was finished <<<");
@@ -188,8 +186,8 @@ public class LibraryServiceImpl implements LibraryService {
         if (file == null) {
             throw new FileEmpty("upload date - " + Date.from(Instant.now()));
         }
-        FileEntity fileEntity = fileRepository.findById(id).orElseThrow(() -> {throw new AccountNotFound(
-                "file with id - " + id);});
+        FileEntity fileEntity = fileRepository.findById(id).orElseThrow(() -> new AccountNotFound(
+                "file with id - " + id));
         fileEntity.setName(StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename())));
         fileEntity.setContentType(file.getContentType());
         fileEntity.setData(file.getBytes());
