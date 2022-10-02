@@ -35,6 +35,6 @@ public class TestController {
 
 	@GetMapping("/cicd")
 	public String ciCdTest() {
-		return "test";
+		return "test2";
 	}
 }
