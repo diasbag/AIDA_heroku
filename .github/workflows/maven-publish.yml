@@ -37,6 +37,11 @@ jobs:
       run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
       env:
         GITHUB_TOKEN: ${{ github.token }}
+    - name: Run a multi-line script
+      run: |
+        mkdir ../build
+        cp -TR . ../build
+        tar -cvf deploy.tar ../build/
     - name: copy file via ssh key
       uses: appleboy/scp-action@master
       env:
@@ -44,5 +49,5 @@ jobs:
         USERNAME: ${{ secrets.USERNAME }}
         PORT: ${{ secrets.PORT }}
         KEY: ${{ secrets.KEY }}
-        source: '.'
-        target: '/home/ubuntu/flatbread/'
+        source: 'deploy.tar'
+        target: '/home/ubuntu/'
