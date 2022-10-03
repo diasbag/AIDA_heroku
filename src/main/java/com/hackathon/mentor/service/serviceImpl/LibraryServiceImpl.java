@@ -205,36 +205,44 @@ public class LibraryServiceImpl implements LibraryService {
             }
             List<String> materialList = new ArrayList<>();
             List<String> text = new ArrayList<>();
+            List<String> filename = new ArrayList<>();
             if (!uniques.containsKey(id) && isMentor) {
                 materialList.add(file.getId());
                 text.add(file.getText());
+                filename.add(file.getName());
                 TextResponse response = TextResponse.builder()
                         .id(id)
                         .firstName(file.getMentee().getUser().getFirstname())
                         .lastName(file.getMentee().getUser().getLastname())
                         .text(text)
+                        .filename(filename)
                         .material(materialList)
                         .build();
                 uniques.put(id, response);
             } else if (!uniques.containsKey(id) && !isMentor) {
                 materialList.add(file.getId());
                 text.add(file.getText());
+                filename.add(file.getName());
                 TextResponse response = TextResponse.builder()
                         .id(id)
                         .firstName(file.getMentor().getUser().getFirstname())
                         .lastName(file.getMentor().getUser().getLastname())
                         .material(materialList)
                         .text(text)
+                        .filename(filename)
                         .build();
                 uniques.put(id, response);
             } else {
                 TextResponse tmp = uniques.get(id);
                 List<String> materialId = tmp.getMaterial();
                 List<String> newText = tmp.getText();
+                List<String> fileNames = tmp.getFilename();
                 materialId.add(file.getId());
                 newText.add(file.getText());
+                fileNames.add(file.getName());
                 tmp.setMaterial(materialId);
                 tmp.setText(newText);
+                tmp.setFilename(fileNames);
                 uniques.replace(id, tmp);
             }
         }

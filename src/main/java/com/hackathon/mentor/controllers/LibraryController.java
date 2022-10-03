@@ -55,7 +55,7 @@ public class LibraryController {
     @GetMapping("/text/")
     public ResponseEntity<?> getText() {
         List<TextResponse> out = libraryService.getText();
-        return ResponseEntity.ok("{\"library\": " + out);
+        return ResponseEntity.ok("{\"library\": " + out + "}");
     }
 
     @DeleteMapping("/delete/{id}")

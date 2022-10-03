@@ -14,6 +14,7 @@ public class TextResponse {
     private String firstName;
     private String lastName;
     private List<String> text;
+    private List<String> filename;
     private List<String> material;
 
     @Override
