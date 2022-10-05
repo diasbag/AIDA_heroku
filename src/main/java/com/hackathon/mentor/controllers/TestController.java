@@ -33,7 +33,7 @@ public class TestController {
 		return "Admin Board.";
 	}
 
-	@GetMapping("/cicd")
+	@GetMapping("/cicd2")
 	public String ciCdTest() {
 		return "test2";
 	}
