@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
@@ -28,6 +29,7 @@ import java.sql.Date;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -115,6 +117,17 @@ public class RegistrationServiceImpl implements RegistrationService {
         user.setResetToken(null);
         userRepository.save(user);
         return new ResponseEntity<>("You have successfully reset your password." , HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<?> iinCheck(String iin) {
+        log.info("checking iin ...");
+        RestTemplate restTemplate = new RestTemplate();
+        String fooResourceUrl = "https://nisalumni.kz/getGraduateFromEIOS?iin=" + iin;
+        ResponseEntity<String> response = restTemplate.getForEntity(fooResourceUrl, String.class);
+        assert Objects.equals(response.getStatusCode(), HttpStatus.OK);
+        log.info("iin check was performed <<<");
+        return response;
     }
 
 }

@@ -20,4 +20,6 @@ public interface RegistrationService {
 
     @Async
     ResponseEntity<?> resetPassword(ResetPassRequest request);
+
+    ResponseEntity<?> iinCheck(String iin);
 }

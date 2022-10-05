@@ -83,4 +83,9 @@ public class AuthController {
 	public ResponseEntity<?> resetPassword(@RequestBody ResetPassRequest request) {
 		return registrationService.resetPassword(request);
 	}
+	@GetMapping("/iin_check/{iin}")
+	public ResponseEntity<?> iinCheck(@PathVariable String iin) {
+		return registrationService.iinCheck(iin);
+	}
+
 }
